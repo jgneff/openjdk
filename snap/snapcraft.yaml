@@ -83,7 +83,8 @@ apps:
 parts:
   app:
     plugin: dump
-    source: .
+    source: https://github.com/jgneff/openjdk.git
+    source-depth: 1
     stage: [bin]
 
   jdk:
