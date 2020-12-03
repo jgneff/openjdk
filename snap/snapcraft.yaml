@@ -1,0 +1,129 @@
+# snapcraft.yaml - builds a Snap package of OpenJDK
+# Copyright (C) 2020 John Neffenger
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published
+# by the Free Software Foundation; either version 2 of the License,
+# or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301 USA.
+
+name: openjdk
+title: OpenJDK
+summary: Open-source Java Development Kit (JDK)
+description: |
+  OpenJDK is the official reference implementation of the Java
+  Platform, Standard Edition, since version 7.
+
+  The Java Platform, Standard Edition, is a cross-platform computing
+  environment that lets you develop and deploy Java applications on
+  desktops, servers, and embedded systems.
+
+  This package contains all of the latest development tools, class
+  libraries, API documentation, and source code of OpenJDK. It provides
+  all you need to compile, run, debug, document, link, and package
+  your Java applications with the most recent features and bug fixes.
+
+  To get started, see the README file for this package on GitHub:
+
+  https://github.com/jgneff/openjdk
+
+  Java and OpenJDK are trademarks or registered trademarks of Oracle
+  and/or its affiliates.
+version: '15.0.1'
+license: (GPL-2.0 WITH Classpath-exception-2.0)
+
+base: core20
+grade: devel
+confinement: strict
+
+architectures:
+- build-on: amd64
+
+plugs:
+  home:
+
+apps:
+  openjdk:
+    command: bin/export.sh
+  java:
+    command: jvm/bin/java
+    environment:
+      JDK_JAVA_OPTIONS: -Duser.home=$SNAP_USER_COMMON
+      LC_ALL: C.UTF-8
+  javac:
+    command: jvm/bin/javac
+    environment:
+      LC_ALL: C.UTF-8
+  javadoc:
+    command: jvm/bin/javadoc
+    environment:
+      LC_ALL: C.UTF-8
+  jar:
+    command: jvm/bin/jar
+    environment:
+      LC_ALL: C.UTF-8
+  jlink:
+    command: jvm/bin/jlink
+    environment:
+      LC_ALL: C.UTF-8
+  jpackage:
+    command: jvm/bin/jpackage
+    environment:
+      LC_ALL: C.UTF-8
+
+parts:
+  app:
+    plugin: dump
+    source: .
+    stage: [bin]
+
+  jdk:
+    plugin: autotools
+    source: https://github.com/openjdk/jdk15u.git
+    source-depth: 1
+    source-branch: jdk-15.0.1-ga
+    build-packages:
+    - openjdk-14-jdk-headless
+    - libasound2-dev
+    - libcups2-dev
+    - libfontconfig1-dev
+    - libfreetype6-dev
+    - libx11-dev
+    - libxext-dev
+    - libxrandr-dev
+    - libxrender-dev
+    - libxt-dev
+    - libxtst-dev
+    - unzip
+    - zip
+    override-build: |
+      bash configure --with-native-debug-symbols=none \
+        --with-version-pre=no --with-version-opt=snap \
+        --enable-javac-server=no
+      make images docs
+      cd build/linux-*-server-release/images
+      mv jdk docs $SNAPCRAFT_PART_INSTALL/
+    organize:
+      jdk: jvm
+      docs: jvm/docs
+    stage-packages:
+    - libasound2
+    - libfreetype6
+    - libpng16-16
+    - libx11-6
+    - libxau6
+    - libxcb1
+    - libxdmcp6
+    - libxext6
+    - libxi6
+    - libxrender1
+    - libxtst6
