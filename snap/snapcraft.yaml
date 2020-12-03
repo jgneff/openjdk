@@ -18,7 +18,7 @@
 
 name: openjdk
 title: OpenJDK
-summary: Open-source Java Development Kit (JDK)
+summary: Open Java Development Kit
 description: |
   OpenJDK is the official reference implementation of the Java
   Platform, Standard Edition, since version 7.
@@ -38,7 +38,7 @@ description: |
 
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
-version: '15.0.1'
+version: '16+27'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
 base: core20
@@ -89,9 +89,11 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk15u.git
+    source: https://github.com/openjdk/jdk.git
     source-depth: 1
-    source-branch: jdk-15.0.1-ga
+    source-branch: jdk-16+27
+    build-snaps:
+    - openjdk/latest/edge
     build-packages:
     - openjdk-14-jdk-headless
     - libasound2-dev
@@ -109,6 +111,7 @@ parts:
     override-build: |
       bash configure --with-native-debug-symbols=none \
         --with-version-pre=no --with-version-opt=snap \
+        --with-boot-jdk=/snap/openjdk/current/jvm \
         --enable-javac-server=no
       make images docs
       cd build/linux-*-server-release/images
