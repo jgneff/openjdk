@@ -49,7 +49,7 @@ architectures:
 - build-on: amd64
 
 plugs:
-  home:
+  home: null
 
 apps:
   openjdk:
@@ -59,6 +59,7 @@ apps:
     plugs:
     - desktop
     - desktop-legacy
+    - wayland
     - unity7
     - opengl
     environment:
@@ -142,12 +143,8 @@ parts:
   # Deletes files already available in the base 'core20' snap
   # https://snapcraft.io/docs/desktop-snap-size-reduction
   del:
-    after:
-    - app
-    - jdk
+    after: [app, jdk]
     plugin: nil
-    build-snaps:
-    - core20
     override-prime: |
       cd /snap/core20/current
       find -L * -type f -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
