@@ -1,6 +1,8 @@
 ## ![Duke, the Java mascot, with arms akimbo](images/icon.png) OpenJDK Snap
 
-This project builds a [Snap package](https://snapcraft.io) of OpenJDK directly from its [official repository](https://github.com/openjdk/jdk). The resulting package provides everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK). OpenJDK is the official reference implementation of the Java Platform, Standard Edition, since version 7.
+This project builds a [Snap package](https://snapcraft.io) of OpenJDK directly from its [GitHub repository](https://github.com/openjdk/jdk). OpenJDK is the official reference implementation of the Java Platform, Standard Edition, since version 7.
+
+The resulting package provides everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
 ### Installation
 
@@ -10,21 +12,12 @@ Install the OpenJDK Snap package with the command:
 $ sudo snap install openjdk
 ```
 
-The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confinement) and adds only the [home interface](https://snapcraft.io/docs/home-interface) to its permissions. Its manifest file, `manifest.yaml`, lets you audit the build. The file's `build_url` key links to a page on Launchpad with more details, including the log from the [build machine](https://launchpad.net/builders) where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 20.04 LTS](https://cloud-images.ubuntu.com/focal/current/).
+The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confinement) and adds only two interfaces to its permissions:
 
-You can fully confine the Snap by removing its *home* interface with the command:
+* the [home interface](https://snapcraft.io/docs/home-interface) so that JDK tools like the Java compiler can read your Java source files and write Java class files under your home directory, and
+* the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) so that the `java` command can run Java desktop applications.
 
-```console
-$ sudo snap disconnect openjdk:home :home
-```
-
-However, without the *home* interface, the OpenJDK Snap has access to only the files you place in the *user data* directories under `$HOME/snap/openjdk`. In this case, you should put your Java source code under the directory for user data that is common across revisions of the package:
-
-```
-$HOME/snap/openjdk/common
-```
-
-**Note:** The documentation on [Snapshots](https://snapcraft.io/docs/snapshots) states, "a snapshot is generated automatically when a snap is removed. These snapshots are retained for 31 days before being deleted automatically." Therefore, consider making your own backup copy of any files you put in the OpenJDK `common` user data directory before removing the Snap package.
+Its manifest file, `manifest.yaml`, lets you audit the build. The file's `build_url` key links to a page on Launchpad with more details, including the log from the [build machine](https://launchpad.net/builders) where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 20.04 LTS](https://cloud-images.ubuntu.com/focal/current/).
 
 ### Usage
 
@@ -36,71 +29,78 @@ The installed package includes the following directories:
 
 You can use the OpenJDK Snap in two ways:
 
-1. as a set of self-contained programs that require no additional dependencies from your system, or
-2. as the collection of development tools, class libraries, API documentation, and source code that represent a Java Platform.
+1. as a set of self-contained programs that include all of their dependencies, or
+2. as the suite of software and documentation forming a complete Java Platform.
 
 #### Self-contained
 
-When you run the OpenJDK commands with the prefix `openjdk`, the programs use only the supporting libraries in the Snap package itself. The package defines the following commands for the JDK tools:
+When you run the OpenJDK commands with the prefix `openjdk`, the programs use only the supporting libraries in the Snap package itself. The package defines the following commands for the corresponding JDK tools:
 
 - openjdk.java
 - openjdk.javac
 - openjdk.javadoc
 - openjdk.jar
+- openjdk.jarsigner
 - openjdk.jlink
 - openjdk.jpackage
 
-For example, you can use the `openjdk` prefix when running the commands manually from the Terminal or invoking them from a Makefile:
+The `openjdk` command itself prints the location of a file that defines environment variables and aliases which make it more convenient to use the OpenJDK Snap package:
 
 ```console
-$ openjdk.java -version
-NOTE: Picked up JDK_JAVA_OPTIONS: -Duser.home=/home/john/snap/openjdk/common
-openjdk version "15.0.1" 2020-10-20
-OpenJDK Runtime Environment (build 15.0.1+0-snap)
-OpenJDK 64-Bit Server VM (build 15.0.1+0-snap, mixed mode, sharing)
+$ openjdk
+/var/snap/openjdk/common/openjdk.env
+```
+
+The file exports the `JAVA_HOME` environment variable and defines aliases for the JDK tools so that you can enter them without the package prefix:
+
+```console
+$ cat /var/snap/openjdk/common/openjdk.env
+# Source this file for OpenJDK environment variables and aliases
+export JAVA_HOME=/snap/openjdk/x1/jvm
+alias java='openjdk.java'
+alias javac='openjdk.javac'
+alias javadoc='openjdk.javadoc'
+alias jar='openjdk.jar'
+alias jarsigner='openjdk.jarsigner'
+alias jlink='openjdk.jlink'
+alias jpackage='openjdk.jpackage'
+```
+
+To set the `JAVA_HOME` environment variable and aliases in your current shell, use the `source` or "dot" (`.`) command to read and execute the commands from the file:
+
+```console
+$ . $(openjdk)
+```
+
+You can then verify that `JAVA_HOME` and the aliases are defined with:
+
+```console
+$ printenv | grep JAVA
+JAVA_HOME=/snap/openjdk/x1/jvm
+$ java -version
+openjdk version "16" 2021-03-16
+OpenJDK Runtime Environment (build 16+0-snap)
+OpenJDK 64-Bit Server VM (build 16+0-snap, mixed mode, sharing)
 ```
 
 #### Java Platform
 
-Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoke the commands in OpenJDK directly without the `openjdk` prefix.
+Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoke the JDK programs directly using their absolute paths on your system.
 
-When the commands are launched directly, they run outside of the container and in your system's environment like any normal program. In this case, the programs depend on having their supporting libraries installed on your system. You can provide the dependencies by installing a recent version of the Java Runtime Environment (JRE) from your distribution's package repositories:
+When the commands are launched directly, they run outside of the container and in your system's environment like any normal program. In this case, the programs depend on having their supporting libraries installed on your system. You may already have the required dependencies, but if you encounter errors, simply install the most recent version of the Java Runtime Environment (JRE) that's available in your distribution's package repositories. On Ubuntu 20.04 LTS, for example, you can install the most recent JRE with:
 
 ```console
 $ sudo apt install openjdk-14-jre
 ```
 
-You can then launch the programs directly from their installed location:
+You can then set the `JAVA_HOME` environment variable and launch the programs directly from their installed locations:
 
 ```console
-$ /snap/openjdk/current/jvm/bin/java -version
-openjdk version "15.0.1" 2020-10-20
-OpenJDK Runtime Environment (build 15.0.1+0-snap)
-OpenJDK 64-Bit Server VM (build 15.0.1+0-snap, mixed mode, sharing)
-```
-
-The `openjdk` command prints the location of the Java Platform as an `export` of the `JAVA_HOME` variable:
-
-```console
-$ openjdk
-export JAVA_HOME=/snap/openjdk/x1/jvm
-```
-
-To export the environment variable in your current shell, run the Bash `eval` command on the output of the `openjdk` command:
-
-```console
-$ eval $(openjdk)
-```
-
-You can then verify that the variable is defined with:
-
-```console
-$ printenv | grep JAVA
-JAVA_HOME=/snap/openjdk/x1/jvm
+$ export JAVA_HOME=/snap/openjdk/current/jvm
 $ $JAVA_HOME/bin/java -version
-openjdk version "15.0.1" 2020-10-20
-OpenJDK Runtime Environment (build 15.0.1+0-snap)
-OpenJDK 64-Bit Server VM (build 15.0.1+0-snap, mixed mode, sharing)
+openjdk version "16" 2021-03-16
+OpenJDK Runtime Environment (build 16+0-snap)
+OpenJDK 64-Bit Server VM (build 16+0-snap, mixed mode, sharing)
 ```
 
 ### Contributing
@@ -111,11 +111,11 @@ Ultimately, I would like to see the latest OpenJDK available from the package re
 $ sudo apt install openjdk-15-jdk
 ```
 
-Until that time, this Snap package can be a temporary solution by providing the latest OpenJDK on as many Linux distributions and architectures as possible.
-
-If you share in these goals, I welcome your help and support.
+Until that time, this Snap package can be a temporary solution by providing the latest OpenJDK on as many Linux distributions and architectures as possible. I welcome your help and support.
 
 ### Building
+
+On Linux systems, you can build the Snap package directly by installing [Snapcraft](https://snapcraft.io/snapcraft) on your development workstation. The bottom of the Snapcraft page shows how to enable Snaps for your Linux distribution.
 
 Whether you're running Windows, macOS, or Linux, you can use [Multipass](https://multipass.run) to build this project in an Ubuntu virtual machine (VM). For example, the following command will launch the Multipass [primary instance](https://multipass.run/docs/primary-instance) with 2 CPUs, 4 GiB of RAM, and Ubuntu 20.10 (Groovy Gorilla):
 
@@ -123,16 +123,18 @@ Whether you're running Windows, macOS, or Linux, you can use [Multipass](https:/
 $ multipass launch --name primary --cpus 2 --mem 4G groovy
 ```
 
-The [snapcraft.yaml](snap/snapcraft.yaml) file defines the build of the Snap package. Run the following commands to install Snapcraft and start building the package:
+The [snapcraft.yaml](snap/snapcraft.yaml) file defines the build of the Snap package. Run the following commands to install Snapcraft, clone this repository, and start building the package:
 
 ```console
 $ sudo snap install snapcraft
+$ git clone https://github.com/jgneff/openjdk.git
+$ cd openjdk
 $ snapcraft
 ```
 
 Snapcraft launches a new Multipass VM to ensure a clean and isolated build environment. The VM is named `snapcraft-openjdk` and runs Ubuntu 20.04 LTS (Focal Fossa). The project's directory on the host system is mounted as `/root/project` in the guest VM, so any changes you make on the host are seen immediately in the guest, and vice versa.
 
-**Note:** If you run the initial `snapcraft` command itself inside a VM, your system will need *nested VM* functionality. In that case, see the [Build Options](https://snapcraft.io/docs/build-options) for alternatives, such as using an LXD container or running on a remote server using Launchpad.
+**Note:** If you run the initial `snapcraft` command itself inside a VM, your system will need *nested VM* functionality. The [Build Options](https://snapcraft.io/docs/build-options) page lists alternatives, such as using an LXD container or running on a remote server using Launchpad.
 
 If the build fails, you can run the command again with the `--debug` option to remain in the VM after the error:
 
@@ -157,6 +159,8 @@ Snapped openjdk_15.0.1_amd64.snap
 
 When the build completes, you'll find the Snap package in the project's root directory, along with the log file if you ran the build remotely.
 
-### License
+### License and Trademarks
 
-This project is licensed under the GNU General Public License v2.0 with the Classpath exception — the same license used by Oracle for the OpenJDK project.
+This project is licensed under the GNU General Public License v2.0 with the Classpath exception — the same license used by Oracle for the OpenJDK project. See the files [LICENSE](LICENSE) and [ADDITIONAL_LICENSE_INFO](ADDITIONAL_LICENSE_INFO) for details.
+
+Java and OpenJDK are trademarks or registered trademarks of Oracle and/or its affiliates. See the [TRADEMARK](TRADEMARK) file for details.

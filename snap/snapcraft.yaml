@@ -53,11 +53,15 @@ plugs:
 
 apps:
   openjdk:
-    command: bin/export.sh
+    command: bin/openjdk.sh
   java:
     command: jvm/bin/java
+    plugs:
+    - desktop
+    - desktop-legacy
+    - unity7
+    - opengl
     environment:
-      JDK_JAVA_OPTIONS: -Duser.home=$SNAP_USER_COMMON
       LC_ALL: C.UTF-8
   javac:
     command: jvm/bin/javac
@@ -69,6 +73,10 @@ apps:
       LC_ALL: C.UTF-8
   jar:
     command: jvm/bin/jar
+    environment:
+      LC_ALL: C.UTF-8
+  jarsigner:
+    command: jvm/bin/jarsigner
     environment:
       LC_ALL: C.UTF-8
   jlink:
@@ -93,9 +101,8 @@ parts:
     source-depth: 1
     source-branch: jdk-16+27
     build-snaps:
-    - openjdk/latest/edge
+    - openjdk/latest/beta
     build-packages:
-    - openjdk-14-jdk-headless
     - libasound2-dev
     - libcups2-dev
     - libfontconfig1-dev
@@ -131,3 +138,16 @@ parts:
     - libxi6
     - libxrender1
     - libxtst6
+
+  # Deletes files already available in the base 'core20' snap
+  # https://snapcraft.io/docs/desktop-snap-size-reduction
+  del:
+    after:
+    - app
+    - jdk
+    plugin: nil
+    build-snaps:
+    - core20
+    override-prime: |
+      cd /snap/core20/current
+      find -L * -type f -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
