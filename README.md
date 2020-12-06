@@ -151,10 +151,18 @@ Cleaning pull step (and all subsequent steps) for jdk
   ...
 Staging app
 Staging jdk
+Pulling del
+Skipping build app (already ran)
+Skipping build jdk (already ran)
+Building del
+Skipping stage app (already ran)
+Skipping stage jdk (already ran)
+Staging del
 Priming app
 Priming jdk
+Priming del
 Snapping
-Snapped openjdk_15.0.1_amd64.snap
+Snapped openjdk_16+27_amd64.snap
 ```
 
 When the build completes, you'll find the Snap package in the project's root directory, along with the log file if you ran the build remotely.
