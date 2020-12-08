@@ -1,20 +1,18 @@
 # snapcraft.yaml - builds a Snap package of OpenJDK
 # Copyright (C) 2020 John Neffenger
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published
-# by the Free Software Foundation; either version 2 of the License,
-# or (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301 USA.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 name: openjdk
 title: OpenJDK
@@ -117,17 +115,21 @@ parts:
     - unzip
     - zip
     override-build: |
+      set -o xtrace
       bash configure --with-native-debug-symbols=none \
         --with-version-pre=no --with-version-opt=snap \
         --with-boot-jdk=/snap/openjdk/current/jvm \
         --enable-javac-server=no
       make images docs
       cd build/linux-*-server-release/images
-      mv jdk docs $SNAPCRAFT_PART_INSTALL/
+      mv jdk docs $SNAPCRAFT_PART_INSTALL
     organize:
       jdk: jvm
       docs: jvm/docs
     stage-packages:
+    - binutils
+    - dpkg
+    - fakeroot
     - libasound2
     - libfreetype6
     - libpng16-16
@@ -140,11 +142,24 @@ parts:
     - libxrender1
     - libxtst6
 
-  # Deletes files already available in the base 'core20' snap
+  # Deletes libraries already available in the base 'core20' snap
   # https://snapcraft.io/docs/desktop-snap-size-reduction
   del:
     after: [app, jdk]
     plugin: nil
     override-prime: |
+      set -o xtrace
       cd /snap/core20/current
-      find -L * -type f -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+      find -L \
+        lib/$SNAPCRAFT_ARCH_TRIPLET usr/lib/$SNAPCRAFT_ARCH_TRIPLET \
+        -type f -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+
+layout:
+  /etc/dpkg:
+    bind: $SNAP/etc/dpkg
+  /usr/bin/fakeroot:
+    symlink: $SNAP/usr/bin/fakeroot-sysv
+  /usr/bin/faked-sysv:
+    symlink: $SNAP/usr/bin/faked-sysv
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libfakeroot:
+    symlink: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libfakeroot
