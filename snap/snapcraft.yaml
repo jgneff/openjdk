@@ -36,11 +36,11 @@ description: |
 
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
-version: '16+27'
+version: '15.0.1'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
 base: core20
-grade: devel
+grade: stable
 confinement: strict
 
 architectures:
@@ -96,12 +96,11 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk.git
+    source: https://github.com/openjdk/jdk15u.git
     source-depth: 1
-    source-branch: jdk-16+27
-    build-snaps:
-    - openjdk/latest/beta
+    source-branch: jdk-15.0.1-ga
     build-packages:
+    - openjdk-14-jdk-headless
     - libasound2-dev
     - libcups2-dev
     - libfontconfig1-dev
@@ -118,7 +117,6 @@ parts:
       set -o xtrace
       bash configure --with-native-debug-symbols=none \
         --with-version-pre=no --with-version-opt=snap \
-        --with-boot-jdk=/snap/openjdk/current/jvm \
         --enable-javac-server=no
       make images docs
       cd build/linux-*-server-release/images
