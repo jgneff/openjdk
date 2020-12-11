@@ -36,7 +36,7 @@ description: |
 
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
-version: '16+27'
+version: '16+28'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
 base: core20
@@ -96,9 +96,9 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk.git
+    source: https://github.com/openjdk/jdk16.git
     source-depth: 1
-    source-branch: jdk-16+27
+    source-branch: jdk-$SNAPCRAFT_PROJECT_VERSION
     build-snaps:
     - openjdk/latest/candidate
     build-packages:
