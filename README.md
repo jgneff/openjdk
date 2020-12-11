@@ -15,7 +15,7 @@ $ sudo snap install openjdk
 The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confinement) and adds only two interfaces to its permissions:
 
 * the [home interface](https://snapcraft.io/docs/home-interface) so that JDK tools like the Java compiler can read your Java source files and write Java class files under your home directory, and
-* the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) so that the `java` command can run Java desktop applications.
+* the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) so that the Java launcher can run Java desktop applications.
 
 Its manifest file, `manifest.yaml`, lets you audit the build. The file's `build_url` key links to a page on Launchpad with more details, including the log from the [build machine](https://launchpad.net/builders) where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 20.04 LTS](https://cloud-images.ubuntu.com/focal/current/).
 
@@ -31,6 +31,8 @@ You can use the OpenJDK Snap in two ways:
 
 1. as a set of self-contained programs that include all of their dependencies, or
 2. as the suite of software and documentation forming a complete Java Platform.
+
+These methods are explained in detail in the two sections that follow.
 
 **Note:** The first method should work on any Linux system. The second method requires a system with Linux kernel version 3.2.0 or later and GNU C library version 2.29 or later, such as Ubuntu 20.04 LTS, Fedora 30, or later releases. See the Java Platform section below for details.
 
@@ -164,7 +166,7 @@ Until that time, this Snap package can be a temporary solution by providing the 
 
 ### Bootstrapping
 
-Building the JDK requires that you already have a JDK for your target operating system and architecture. The JDK used to build the JDK is called the *Boot JDK*. Furthermore, the version of the Boot JDK must be equal to, or one less than, the version of the JDK being built. This presents a challenge when you're getting started and want to build OpenJDK using only trusted sources.
+Building the JDK requires that you already have a JDK for your target operating system and architecture. The JDK used to build the JDK is called the *Boot JDK*. Furthermore, the minimum version required for the Boot JDK is either the previous version, or for an early access build, the most recently released version. This presents a challenge when you're getting started and want to build OpenJDK using only trusted sources.
 
 The most trusted source of software for Debian-based distributions is the set of system package repositories. OpenJDK 14 is available in Ubuntu starting with Ubuntu 20.04 LTS. Snap packages can use this Ubuntu release during their builds by selecting the Snapcraft `core20` base.
 
@@ -178,27 +180,29 @@ The problem with building on such a recent release, though, is that the programs
 | **Snap Package**      | 3.2.0  | 2.29 |
 | Ubuntu 20.10 LTS      | 3.2.0  | 2.32 |
 
-The easiest way to lower the GNU C library requirement is to build on an older system, but the Boot JDK makes that more complicated. For example, below is the chain of trust I'm using to build this Snap package into the *beta* and *edge* channels:
+The easiest way to lower the GNU C library requirement is to build on an older system, but the Boot JDK makes that more complicated. For example, below is the chain of trust I'm using to build this Snap package into the *candidate*, *beta*, and *edge* channels:
 
 ```
 Ubuntu 20.04 LTS with GLIBC 2.31 (core20 base)
 Ubuntu OpenJDK 14 (openjdk-14-jdk-headless)
-    ↳ Snap OpenJDK 15 (openjdk/latest/beta → stable)
-        ↳ Snap OpenJDK 16 (openjdk/latest/edge)
+    ↳ Snap OpenJDK 15 (openjdk/latest/candidate → stable)
+        ↳ Snap OpenJDK 16 (openjdk/latest/beta)
+        ↳ Snap OpenJDK 17 (openjdk/latest/edge)
 ```
 
-This works nicely because Launchpad can build into the two channels automatically when there are changes to the *main* and *release* branches of this repository on GitHub. With just two packages, and an automated build on Launchpad, it's easy to verify this chain of trust by looking at the build logs.
+This works nicely because Launchpad can build into the three channels automatically when there are changes to the *main*, *beta*, and *candidate* branches of this repository. With just three packages, and an automated build on Launchpad, it's easy to verify this chain of trust by looking at the build logs.
 
 To lower the GNU C library requirement from version 2.29 to version 2.27, however, I would have to build manually using the following chain just to get started, wiping out the audit trail of build logs as I went:
 
 ```
 Ubuntu 18.04 LTS with GLIBC 2.27 (core18 base)
 Ubuntu OpenJDK 11 (openjdk-11-jdk-headless)
-    ↳ Snap OpenJDK 12 (openjdk/latest/beta)
-        ↳ Snap OpenJDK 13 (openjdk/latest/beta)
-            ↳ Snap OpenJDK 14 (openjdk/latest/beta)
-                ↳ Snap OpenJDK 15 (openjdk/latest/beta → stable)
-                    ↳ Snap OpenJDK 16 (openjdk/latest/edge)
+    ↳ Snap OpenJDK 12 (openjdk/latest/candidate)
+        ↳ Snap OpenJDK 13 (openjdk/latest/candidate)
+            ↳ Snap OpenJDK 14 (openjdk/latest/candidate)
+                ↳ Snap OpenJDK 15 (openjdk/latest/candidate → stable)
+                    ↳ Snap OpenJDK 16 (openjdk/latest/beta)
+                    ↳ Snap OpenJDK 17 (openjdk/latest/edge)
 ```
 
 The situation should improve over time. If the Snap package can remain on the `core20` base, eventually the world's C libraries will pass it by, just as they have for the other OpenJDK builds. Meanwhile, you can always run the JDK tools self-contained in the Snap.

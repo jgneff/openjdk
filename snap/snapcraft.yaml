@@ -36,7 +36,7 @@ description: |
 
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
-version: '17+0-3-g6be1f5671'
+version: '17+1'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
 base: core20
@@ -97,8 +97,8 @@ parts:
   jdk:
     plugin: autotools
     source: https://github.com/openjdk/jdk.git
-    source-depth: 20
-    source-commit: 6be1f5671eab355c835ca38761ca6e427927bc7f
+    source-depth: 1
+    source-branch: jdk-$SNAPCRAFT_PROJECT_VERSION
     build-snaps:
     - openjdk/latest/candidate
     build-packages:
