@@ -36,7 +36,7 @@ description: |
 
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
-version: '17+1'
+version: '17+2'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
 base: core20
@@ -141,6 +141,7 @@ parts:
     - libxi6
     - libxrender1
     - libxtst6
+    - libfontconfig1
 
   # Deletes libraries already available in the base 'core20' snap
   # https://snapcraft.io/docs/desktop-snap-size-reduction
