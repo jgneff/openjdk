@@ -98,7 +98,7 @@ parts:
     plugin: autotools
     source: https://github.com/openjdk/jdk15u.git
     source-depth: 1
-    source-branch: jdk-15.0.1-ga
+    source-branch: jdk-${SNAPCRAFT_PROJECT_VERSION}-ga
     build-packages:
     - openjdk-14-jdk-headless
     - libasound2-dev
@@ -139,6 +139,7 @@ parts:
     - libxi6
     - libxrender1
     - libxtst6
+    - libfontconfig1
 
   # Deletes libraries already available in the base 'core20' snap
   # https://snapcraft.io/docs/desktop-snap-size-reduction
