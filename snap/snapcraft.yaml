@@ -19,7 +19,7 @@ title: OpenJDK
 summary: Open Java Development Kit
 description: |
   OpenJDK is the official reference implementation of the Java
-  Platform, Standard Edition, since version 7.
+  Platform, Standard Edition.
 
   The Java Platform, Standard Edition, is a cross-platform computing
   environment that lets you develop and deploy Java applications on
@@ -45,6 +45,10 @@ confinement: strict
 
 architectures:
 - build-on: amd64
+- build-on: arm64
+- build-on: armhf
+- build-on: ppc64el
+- build-on: s390x
 
 plugs:
   home: null
@@ -97,8 +101,8 @@ parts:
   jdk:
     plugin: autotools
     source: https://github.com/openjdk/jdk15u.git
-    source-depth: 1
     source-branch: jdk-${SNAPCRAFT_PROJECT_VERSION}-ga
+    source-depth: 1
     build-packages:
     - openjdk-14-jdk-headless
     - libasound2-dev
@@ -113,11 +117,12 @@ parts:
     - libxtst-dev
     - unzip
     - zip
+    # Option --disable-warnings-as-errors for armhf
     override-build: |
       set -o xtrace
       bash configure --with-native-debug-symbols=none \
         --with-version-pre=no --with-version-opt=snap \
-        --enable-javac-server=no
+        --enable-javac-server=no --disable-warnings-as-errors
       make images docs
       cd build/linux-*-server-release/images
       mv jdk docs $SNAPCRAFT_PART_INSTALL
@@ -141,17 +146,17 @@ parts:
     - libxtst6
     - libfontconfig1
 
-  # Deletes libraries already available in the base 'core20' snap
-  # https://snapcraft.io/docs/desktop-snap-size-reduction
   del:
     after: [app, jdk]
     plugin: nil
+    # Deletes files and links already available in the base core20 snap
     override-prime: |
       set -o xtrace
-      cd /snap/core20/current
-      find -L \
-        lib/$SNAPCRAFT_ARCH_TRIPLET usr/lib/$SNAPCRAFT_ARCH_TRIPLET \
-        -type f -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+      cd $SNAPCRAFT_PRIME
+      base=/snap/core20/current
+      find * -type f -exec test -f "$base/{}" \; -delete
+      find * -type l -exec test -L "$base/{}" \; -delete
+      find * -type d -empty -delete
 
 layout:
   /etc/dpkg:

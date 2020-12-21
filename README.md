@@ -34,11 +34,13 @@ You can use the OpenJDK Snap in two ways:
 
 These methods are explained in detail in the two sections that follow.
 
-**Note:** The first method should work on any Linux system. The second method requires a system with Linux kernel version 3.2.0 or later and GNU C library version 2.29 or later, such as Ubuntu 20.04 LTS, Fedora 30, or later releases. See the Java Platform section below for details.
+The first method should work on any Linux system, but the programs can access only non-hidden files owned by the user in the user's home directory. See the Self-contained section below for details.
+
+The second method runs with traditional file permissions, but the programs require a system with Linux kernel version 3.2.0 or later and GNU C library version 2.29 or later. Those versions of the kernel and C library are found, for example, in Ubuntu 20.04 LTS, Fedora 30, or later releases. See the Java Platform section below for details.
 
 #### Self-contained
 
-When you run the OpenJDK commands with the prefix `openjdk`, the programs use only the supporting libraries in the Snap package itself. The package defines the following commands for each of the corresponding JDK tools:
+When you run the OpenJDK commands with the prefix `openjdk`, the programs use only the supporting libraries contained in the Snap package. The package defines the following commands for each of the corresponding JDK tools:
 
 - openjdk.java
 - openjdk.javac
@@ -90,11 +92,30 @@ OpenJDK Runtime Environment (build 16+0-snap)
 OpenJDK 64-Bit Server VM (build 16+0-snap, mixed mode, sharing)
 ```
 
+If you reference locations outside of your home directory, such as the JavaFX SDK directory below, you'll see the following error message:
+
+```console
+$ java -p /snap/openjfx/current/sdk/lib \
+    --add-modules javafx.controls -jar dist/hello-javafx-1.0.0.jar
+Error occurred during initialization of boot layer
+java.lang.module.FindException: java.nio.file.AccessDeniedException:
+    /snap/openjfx/current/sdk/lib
+Caused by: java.nio.file.AccessDeniedException: /snap/openjfx/current/sdk/lib
+```
+
+In that case, you'll need to invoke the JDK tools directly as part of the Java Platform:
+
+```console
+$ $JAVA_HOME/bin/java -p /snap/openjfx/current/sdk/lib \
+    --add-modules javafx.controls -jar dist/hello-javafx-1.0.0.jar
+Hello World!
+```
+
 #### Java Platform
 
 Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoke the JDK programs directly using their absolute paths on your system.
 
-When the programs are launched directly, they run outside of their container and in your system's environment like any normal program. In this case, the programs depend on having their supporting libraries installed on your system. In particular, the Snap package build of OpenJDK requires a Linux system with Linux kernel version 3.2.0 or later and GNU C library (GLIBC) version 2.29 or later.
+When the programs are launched directly, they run outside of their container and in your system's environment like any normal program. In this case, the programs depend on having their supporting libraries installed on your system. In particular, the Snap package build of OpenJDK requires Linux kernel version 3.2.0 or later and GNU C library (GLIBC) version 2.29 or later.
 
 The commands below show the Linux kernel and GLIBC versions for Ubuntu 20.04 LTS:
 
@@ -106,7 +127,7 @@ ldd (Ubuntu GLIBC 2.31-0ubuntu9.1) 2.31
   ...
 ```
 
-With the required Linux kernel and C library, you can set the `JAVA_HOME` environment variable and launch the programs directly from their installed locations:
+With the required kernel and C library, you can set the `JAVA_HOME` environment variable and launch the programs directly from their installed locations:
 
 ```console
 $ export JAVA_HOME=/snap/openjdk/current/jvm
@@ -122,8 +143,8 @@ If your system has a version of the GNU C library older than 2.29, you'll see th
 $ $JAVA_HOME/bin/java -version
 Error: dl failure on line 542
 Error: failed /snap/openjdk/x1/jvm/lib/server/libjvm.so, because
-  /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.29' not found
-  (required by /snap/openjdk/x1/jvm/lib/server/libjvm.so)
+    /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.29' not found
+    (required by /snap/openjdk/x1/jvm/lib/server/libjvm.so)
 ```
 
 ##### Ubuntu
@@ -172,8 +193,8 @@ The most trusted source of software for Debian-based distributions is the set of
 
 The problem with building on such a recent release, though, is that the programs being built can end up requiring recent versions of the Linux kernel and GNU C library. The following table shows the minimum kernel and C library versions required by the various builds of OpenJDK 15, including this Snap package:
 
-| OpenJDK 15 Build      | Linux Kernel | GNU C Library |
-| --------------------- |:------------:|:-------------:|
+| OpenJDK 15 Build | Linux Kernel | GNU C Library |
+| ---------------- |:------------:|:-------------:|
 | AdoptOpenJDK          | 2.6.18 | 2.9  |
 | BellSoft Liberica JDK | 2.6.18 | 2.9  |
 | Oracle OpenJDK        | 2.6.18 | 2.9  |
@@ -190,7 +211,7 @@ Ubuntu OpenJDK 14 (openjdk-14-jdk-headless)
         ↳ Snap OpenJDK 17 (openjdk/latest/edge)
 ```
 
-This works nicely because Launchpad can build into the three channels automatically when there are changes to the *main*, *beta*, and *candidate* branches of this repository. With just three packages, and an automated build on Launchpad, it's easy to verify this chain of trust by looking at the build logs.
+This works nicely because Launchpad can build into the three channels automatically when there are changes to the *candidate*, *beta*, and *main* branches of this repository. With just three packages, and an automated build on Launchpad, it's easy to verify the chain of trust by looking at the build logs.
 
 To lower the GNU C library requirement from version 2.29 to version 2.27, however, I would have to build manually using the following chain just to get started, wiping out the audit trail of build logs as I went:
 
@@ -205,7 +226,7 @@ Ubuntu OpenJDK 11 (openjdk-11-jdk-headless)
                     ↳ Snap OpenJDK 17 (openjdk/latest/edge)
 ```
 
-The situation should improve over time. If the Snap package can remain on the `core20` base, eventually the world's C libraries will pass it by, just as they have for the other OpenJDK builds. Meanwhile, you can always run the JDK tools self-contained in the Snap.
+The situation should improve over time. If the Snap package can remain on the `core20` base, eventually the world's C libraries will pass it by, as they have for the other OpenJDK builds. Meanwhile, you can always run the JDK tools self-contained in the Snap.
 
 ### Building
 
@@ -228,7 +249,7 @@ $ snapcraft
 
 Snapcraft launches a new Multipass VM to ensure a clean and isolated build environment. The VM is named `snapcraft-openjdk` and runs Ubuntu 20.04 LTS (Focal Fossa). The project's directory on the host system is mounted as `/root/project` in the guest VM, so any changes you make on the host are seen immediately in the guest, and vice versa.
 
-**Note:** If you run the initial `snapcraft` command itself inside a VM, your system will need *nested VM* functionality. The [Build Options](https://snapcraft.io/docs/build-options) page lists alternatives, such as using an LXD container or running on a remote server using Launchpad.
+**Note:** If you run the initial `snapcraft` command itself inside a VM, your system will need *nested VM* functionality. See the [Build Options](https://snapcraft.io/docs/build-options) page for alternatives, such as running a remote build or using an LXD container.
 
 If the build fails, you can run the command again with the `--debug` option to remain in the VM after the error:
 
@@ -243,22 +264,19 @@ From within the VM, you can then clean the Snapcraft part and try again:
 Cleaning pull step (and all subsequent steps) for jdk
   ...
 # snapcraft
-Skipping pull app (already ran)
   ...
-Skipping prime app (already ran)
+Priming app
 Priming jdk
 Priming del
-+ cd /snap/core20/current
-+ find -L lib/x86_64-linux-gnu usr/lib/x86_64-linux-gnu \
-  -type f -exec rm -f /root/prime/{} ;
+  ...
 Snapping...
-Snapped openjdk_16+27_amd64.snap
+Snapped openjdk_15.0.1_amd64.snap
 ```
 
 When the build completes, you'll find the Snap package in the project's root directory, along with the log file if you ran the build remotely.
 
 ### License and Trademarks
 
-This project is licensed under the GNU General Public License v2.0 with the Classpath exception — the same license used by Oracle for the OpenJDK project. See the files [LICENSE](LICENSE) and [ADDITIONAL_LICENSE_INFO](ADDITIONAL_LICENSE_INFO) for details.
+This project is licensed under the GNU General Public License v2.0 with the Classpath exception, the same license used by Oracle for the OpenJDK project. See the files [LICENSE](LICENSE) and [ADDITIONAL_LICENSE_INFO](ADDITIONAL_LICENSE_INFO) for details.
 
-Java and OpenJDK are trademarks or registered trademarks of Oracle and/or its affiliates. See the [TRADEMARK](TRADEMARK) file for details.
+Java and OpenJDK are trademarks or registered trademarks of Oracle and/or its affiliates. See the file [TRADEMARK](TRADEMARK) for details.
