@@ -157,7 +157,7 @@ parts:
       set -o xtrace
       cd $SNAPCRAFT_PRIME
       base=/snap/core20/current
-      list="etc lib lib64 usr/lib usr/share"
+      list="etc lib* usr/lib usr/share"
       find $list -type f -exec test -f "$base/{}" \; -delete
       find $list -type l -exec test -L "$base/{}" \; -delete
       find -type d -empty -delete
