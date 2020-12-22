@@ -36,11 +36,11 @@ description: |
 
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
-version: '17+2'
+version: '15.0.1'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
 base: core20
-grade: devel
+grade: stable
 confinement: strict
 
 architectures:
@@ -100,12 +100,11 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk.git
-    source-branch: jdk-$SNAPCRAFT_PROJECT_VERSION
+    source: https://github.com/openjdk/jdk15u.git
+    source-branch: jdk-${SNAPCRAFT_PROJECT_VERSION}-ga
     source-depth: 1
-    build-snaps:
-    - openjdk/latest/candidate
     build-packages:
+    - openjdk-14-jdk-headless
     - libasound2-dev
     - libcups2-dev
     - libfontconfig1-dev
@@ -118,8 +117,6 @@ parts:
     - libxtst-dev
     - unzip
     - zip
-    build-environment:
-    - JAVA_HOME: /snap/openjdk/current/jvm
     # Option --disable-warnings-as-errors for armhf
     override-build: |
       set -o xtrace
