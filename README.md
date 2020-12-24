@@ -92,7 +92,7 @@ OpenJDK Runtime Environment (build 16+0-snap)
 OpenJDK 64-Bit Server VM (build 16+0-snap, mixed mode, sharing)
 ```
 
-If you reference locations outside of your home directory, such as the JavaFX SDK directory below, you'll see the following error message:
+If you refer to locations outside of your home directory in the arguments to the OpenJDK Snap commands or their aliases, such as the JavaFX SDK directory below, you'll see an *Access Denied* error:
 
 ```console
 $ java -p /snap/openjfx/current/sdk/lib \
@@ -103,7 +103,7 @@ java.lang.module.FindException: java.nio.file.AccessDeniedException:
 Caused by: java.nio.file.AccessDeniedException: /snap/openjfx/current/sdk/lib
 ```
 
-In that case, you'll need to invoke the JDK tools directly as part of the Java Platform:
+In this case, either copy the external libraries into your home directory for access, or invoke the JDK tools directly from their Java Platform location as follows:
 
 ```console
 $ $JAVA_HOME/bin/java -p /snap/openjfx/current/sdk/lib \
@@ -137,7 +137,7 @@ OpenJDK Runtime Environment (build 16+0-snap)
 OpenJDK 64-Bit Server VM (build 16+0-snap, mixed mode, sharing)
 ```
 
-If your system has a version of the GNU C library older than 2.29, you'll see the following error message instead:
+If your system has a version of the GNU C library older than 2.29, you'll see the following error message:
 
 ```console
 $ $JAVA_HOME/bin/java -version
