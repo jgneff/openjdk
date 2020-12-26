@@ -1,1 +1,179 @@
-local/candidate.yaml
+# snapcraft.yaml - builds a Snap package of OpenJDK
+# Copyright (C) 2020 John Neffenger
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+name: openjdk
+title: OpenJDK
+summary: Open Java Development Kit
+description: |
+  OpenJDK is the official reference implementation of the Java
+  Platform, Standard Edition.
+
+  The Java Platform, Standard Edition, is a cross-platform computing
+  environment that lets you develop and deploy Java applications on
+  desktops, servers, and embedded systems.
+
+  This package contains all of the latest development tools, class
+  libraries, API documentation, and source code of OpenJDK. It provides
+  all you need to compile, run, debug, document, link, and package
+  your Java applications with the most recent features and bug fixes.
+
+  To get started, see the README file for this package on GitHub:
+
+  https://github.com/jgneff/openjdk
+
+  Java and OpenJDK are trademarks or registered trademarks of Oracle
+  and/or its affiliates.
+version: '15.0.1'
+license: (GPL-2.0 WITH Classpath-exception-2.0)
+
+base: core20
+grade: stable
+confinement: strict
+
+architectures:
+- build-on: amd64
+- build-on: arm64
+- build-on: armhf
+- build-on: ppc64el
+- build-on: s390x
+
+plugs:
+  home: null
+
+apps:
+  openjdk:
+    command: bin/openjdk.sh
+  java:
+    command: jvm/bin/java
+    plugs:
+    - desktop
+    - desktop-legacy
+    - wayland
+    - unity7
+    - opengl
+    environment:
+      LC_ALL: C.UTF-8
+  javac:
+    command: jvm/bin/javac
+    environment:
+      LC_ALL: C.UTF-8
+  javadoc:
+    command: jvm/bin/javadoc
+    environment:
+      LC_ALL: C.UTF-8
+  jar:
+    command: jvm/bin/jar
+    environment:
+      LC_ALL: C.UTF-8
+  jarsigner:
+    command: jvm/bin/jarsigner
+    environment:
+      LC_ALL: C.UTF-8
+  jlink:
+    command: jvm/bin/jlink
+    environment:
+      LC_ALL: C.UTF-8
+  jpackage:
+    command: jvm/bin/jpackage
+    environment:
+      LC_ALL: C.UTF-8
+
+parts:
+  app:
+    plugin: dump
+    source: https://github.com/jgneff/openjdk.git
+    source-depth: 1
+    stage: [bin]
+
+  jdk:
+    plugin: autotools
+    source: https://github.com/openjdk/jdk15u.git
+    source-branch: jdk-${SNAPCRAFT_PROJECT_VERSION}-ga
+    source-depth: 1
+    build-packages:
+    - openjdk-14-jdk-headless
+    - libasound2-dev
+    - libcups2-dev
+    - libfontconfig1-dev
+    - libfreetype6-dev
+    - libx11-dev
+    - libxext-dev
+    - libxrandr-dev
+    - libxrender-dev
+    - libxt-dev
+    - libxtst-dev
+    - unzip
+    - zip
+    # Option --disable-warnings-as-errors for armhf
+    override-build: |
+      set -o xtrace
+      bash configure --enable-javac-server=no \
+        --with-version-pre=no \
+        --with-version-opt=snap \
+        --with-native-debug-symbols=none \
+        --disable-warnings-as-errors
+      make images docs
+      cd build/linux-*-server-release/images
+      mv jdk docs $SNAPCRAFT_PART_INSTALL
+    organize:
+      jdk: jvm
+      docs: jvm/docs
+    stage-packages:
+    - binutils
+    - dpkg
+    - fakeroot
+    - libasound2
+    - libfreetype6
+    - libpng16-16
+    - libx11-6
+    - libxau6
+    - libxcb1
+    - libxdmcp6
+    - libxext6
+    - libxi6
+    - libxrender1
+    - libxtst6
+    - libfontconfig1
+
+  del:
+    after: [app, jdk]
+    plugin: nil
+    # Deletes files and links already available in the base core20 snap
+    override-prime: |
+      set -o xtrace
+      cd $SNAPCRAFT_PRIME
+      base=/snap/core20/current
+      list="etc lib* usr/lib usr/share"
+      find $list -type f -exec test -f "$base/{}" \; -delete
+      find $list -type l -exec test -L "$base/{}" \; -delete
+      find -type d -empty -delete
+
+# Run 'openjdk.jpackage --verbose' to find the source of all errors.
+layout:
+  # dpkg: error: error opening configuration directory
+  #     '/etc/dpkg/dpkg.cfg.d': Permission denied
+  /etc/dpkg:
+    bind: $SNAP/etc/dpkg
+  # Can not find fakeroot. Reason: Cannot run program "fakeroot":
+  #     error=2, No such file or directory
+  /usr/bin/fakeroot:
+    symlink: $SNAP/usr/bin/fakeroot-sysv
+  # fakeroot: preload library `libfakeroot-sysv.so' not found, aborting.
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libfakeroot/libfakeroot-sysv.so:
+    symlink: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libfakeroot/libfakeroot-sysv.so
+  # /usr/bin/fakeroot: 1: eval: /usr/bin/faked-sysv: not found
+  /usr/bin/faked-sysv:
+    symlink: $SNAP/usr/bin/faked-sysv
