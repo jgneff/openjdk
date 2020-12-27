@@ -123,6 +123,7 @@ parts:
       bash configure --enable-javac-server=no \
         --with-version-pre=no \
         --with-version-opt=snap \
+        --with-version-build=9 \
         --with-native-debug-symbols=none \
         --disable-warnings-as-errors
       make images docs
