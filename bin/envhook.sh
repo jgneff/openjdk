@@ -2,7 +2,7 @@
 # Creates or updates the environment file
 {
     printf "# Source this file for OpenJDK environment variables and aliases\n"
-    printf "export JAVA_HOME=%s/jvm\n" "$SNAP"
+    printf "export JAVA_HOME=%s/jdk\n" "$SNAP"
     printf "alias java='openjdk.java'\n"
     printf "alias javac='openjdk.javac'\n"
     printf "alias javadoc='openjdk.javadoc'\n"
