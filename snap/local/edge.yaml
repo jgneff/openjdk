@@ -1,5 +1,5 @@
 # snapcraft.yaml - builds a Snap package of OpenJDK
-# Copyright (C) 2020 John Neffenger
+# Copyright (C) 2020-2021 John Neffenger
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,6 +36,9 @@ description: |
 
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
+
+# When the JDK release or build number changes, update the following:
+#   version, slots, parts.jdk.build-environment.BUILD_NUM
 version: '17+3'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
@@ -50,6 +53,11 @@ architectures:
 - build-on: ppc64el
 - build-on: s390x
 
+slots:
+  jdk-17-2004:
+    interface: content
+    read: [jdk]
+
 plugs:
   home: null
 
@@ -57,42 +65,41 @@ apps:
   openjdk:
     command: bin/openjdk.sh
   java:
-    command: jvm/bin/java
+    command: jdk/bin/java
     plugs:
     - desktop
     - desktop-legacy
     - wayland
-    - unity7
-    - opengl
+    - x11
     environment:
       LC_ALL: C.UTF-8
   javac:
-    command: jvm/bin/javac
+    command: jdk/bin/javac
     environment:
       LC_ALL: C.UTF-8
   javadoc:
-    command: jvm/bin/javadoc
+    command: jdk/bin/javadoc
     environment:
       LC_ALL: C.UTF-8
   jar:
-    command: jvm/bin/jar
+    command: jdk/bin/jar
     environment:
       LC_ALL: C.UTF-8
   jarsigner:
-    command: jvm/bin/jarsigner
+    command: jdk/bin/jarsigner
     environment:
       LC_ALL: C.UTF-8
   jlink:
-    command: jvm/bin/jlink
+    command: jdk/bin/jlink
     environment:
       LC_ALL: C.UTF-8
   jpackage:
-    command: jvm/bin/jpackage
+    command: jdk/bin/jpackage
     environment:
       LC_ALL: C.UTF-8
 
 parts:
-  app:
+  bin:
     plugin: dump
     source: https://github.com/jgneff/openjdk.git
     source-depth: 1
@@ -119,22 +126,22 @@ parts:
     - unzip
     - zip
     build-environment:
-    - JAVA_HOME: /snap/openjdk/current/jvm
+    - JAVA_HOME: /snap/openjdk/current/jdk
+    - BUILD_NUM: '3'
     # Option --disable-warnings-as-errors for armhf
     override-build: |
       set -o xtrace
       bash configure --enable-javac-server=no \
         --with-version-pre=ea \
         --with-version-opt=snap \
-        --with-version-build=3 \
+        --with-version-build=$BUILD_NUM \
         --with-native-debug-symbols=none \
         --disable-warnings-as-errors
       make images docs
       cd build/linux-*-server-release/images
       mv jdk docs $SNAPCRAFT_PART_INSTALL
     organize:
-      jdk: jvm
-      docs: jvm/docs
+      docs: jdk/docs
     stage-packages:
     - binutils
     - dpkg
@@ -153,7 +160,7 @@ parts:
     - libfontconfig1
 
   del:
-    after: [app, jdk]
+    after: [jdk]
     plugin: nil
     # Deletes files and links already available in the base core20 snap
     override-prime: |
@@ -163,7 +170,7 @@ parts:
       list="etc lib* usr/lib usr/share"
       find $list -type f -exec test -f "$base/{}" \; -delete
       find $list -type l -exec test -L "$base/{}" \; -delete
-      find -type d -empty -delete
+      find * -type d -empty -exec test -d "$base/{}" \; -delete
 
 # Run 'openjdk.jpackage --verbose' to find the source of all errors.
 layout:

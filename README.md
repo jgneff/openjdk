@@ -23,9 +23,9 @@ Its manifest file, `manifest.yaml`, lets you audit the build. The file's `build_
 
 The installed package includes the following directories:
 
-* `/snap/openjdk/current/jvm` - Java Platform location
-* `/snap/openjdk/current/jvm/docs` - Javadoc API documentation
-* `/snap/openjdk/current/jvm/lib/src.zip` - Source file archive
+* `/snap/openjdk/current/jdk` - Java Platform location
+* `/snap/openjdk/current/jdk/docs` - Javadoc API documentation
+* `/snap/openjdk/current/jdk/lib/src.zip` - Source file archive
 
 You can use the OpenJDK Snap in two ways:
 
@@ -62,7 +62,7 @@ The file exports the `JAVA_HOME` environment variable and defines aliases for th
 ```console
 $ cat /var/snap/openjdk/common/openjdk.env
 # Source this file for OpenJDK environment variables and aliases
-export JAVA_HOME=/snap/openjdk/x1/jvm
+export JAVA_HOME=/snap/openjdk/x1/jdk
 alias java='openjdk.java'
 alias javac='openjdk.javac'
 alias javadoc='openjdk.javadoc'
@@ -82,14 +82,14 @@ You can then verify that `JAVA_HOME` and the aliases are defined with:
 
 ```console
 $ printenv | grep JAVA
-JAVA_HOME=/snap/openjdk/x1/jvm
+JAVA_HOME=/snap/openjdk/x1/jdk
 $ type java javac
 java is aliased to `openjdk.java'
 javac is aliased to `openjdk.javac'
-$ java -version
-openjdk version "16" 2021-03-16
-OpenJDK Runtime Environment (build 16+0-snap)
-OpenJDK 64-Bit Server VM (build 16+0-snap, mixed mode, sharing)
+$ java --version
+openjdk 15.0.1 2020-10-20
+OpenJDK Runtime Environment (build 15.0.1+9-snap)
+OpenJDK 64-Bit Server VM (build 15.0.1+9-snap, mixed mode, sharing)
 ```
 
 If you refer to locations outside of your home directory in the arguments to the OpenJDK Snap commands or their aliases, such as the JavaFX SDK directory below, you'll see an *Access Denied* error:
@@ -121,7 +121,7 @@ The commands below show the Linux kernel and GLIBC versions for Ubuntu 20.04 LTS
 
 ```console
 $ uname -r
-5.4.0-56-generic
+5.4.0-58-generic
 $ ldd --version
 ldd (Ubuntu GLIBC 2.31-0ubuntu9.1) 2.31
   ...
@@ -130,21 +130,63 @@ ldd (Ubuntu GLIBC 2.31-0ubuntu9.1) 2.31
 With the required kernel and C library, you can set the `JAVA_HOME` environment variable and launch the programs directly from their installed locations:
 
 ```console
-$ export JAVA_HOME=/snap/openjdk/current/jvm
-$ $JAVA_HOME/bin/java -version
-openjdk version "16" 2021-03-16
-OpenJDK Runtime Environment (build 16+0-snap)
-OpenJDK 64-Bit Server VM (build 16+0-snap, mixed mode, sharing)
+$ export JAVA_HOME=/snap/openjdk/current/jdk
+$ $JAVA_HOME/bin/java --version
+openjdk 15.0.1 2020-10-20
+OpenJDK Runtime Environment (build 15.0.1+9-snap)
+OpenJDK 64-Bit Server VM (build 15.0.1+9-snap, mixed mode, sharing)
 ```
 
-If your system has a version of the GNU C library older than 2.29, you'll see the following error message:
+If your system has a version of the GNU C library older than 2.29, you'll see error messages similar to those shown below. On Ubuntu 16.04 LTS with GLIBC 2.23, for example, you'll see:
 
 ```console
-$ $JAVA_HOME/bin/java -version
-Error: dl failure on line 542
-Error: failed /snap/openjdk/x1/jvm/lib/server/libjvm.so, because
+$ $JAVA_HOME/bin/java --version
+Error: dl failure on line 534
+Error: failed /snap/openjdk/x1/jdk/lib/server/libjvm.so, because
+    /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.27' not found
+    (required by /snap/openjdk/x1/jdk/lib/server/libjvm.so)
+```
+
+On Ubuntu 18.04 LTS with GLIBC 2.27, you'll see:
+
+```console
+$ $JAVA_HOME/bin/java --version
+Error: dl failure on line 534
+Error: failed /snap/openjdk/x1/jdk/lib/server/libjvm.so, because
     /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.29' not found
-    (required by /snap/openjdk/x1/jvm/lib/server/libjvm.so)
+    (required by /snap/openjdk/x1/jdk/lib/server/libjvm.so)
+```
+
+In this case, either upgrade your Linux system to a more recent version, or invoke the JDK tools using the Snap package commands or their aliases as follows:
+
+```console
+$ openjdk.java --version
+openjdk 15.0.1 2020-10-20
+OpenJDK Runtime Environment (build 15.0.1+9-snap)
+OpenJDK 64-Bit Server VM (build 15.0.1+9-snap, mixed mode, sharing)
+```
+
+Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs requires two additional packages when they run outside of the Snap package container. They need the `objcopy` program from the `binutils` package to create the custom runtime image, and `jpackage` needs the `fakeroot` package to create a Debian package.
+
+Without these extra packages, you'll see error messages like the following:
+
+```console
+$ $JAVA_HOME/bin/jlink ...
+Error: java.io.IOException: Cannot run program "objcopy": error=2,
+    No such file or directory
+```
+
+```console
+$ $JAVA_HOME/bin/jpackage ...
+Bundler DEB Bundle skipped because of a configuration problem:
+    Can not find fakeroot. Reason: Cannot run program "fakeroot":
+    error=2, No such file or directory
+```
+
+Solve these errors by installing the required packages:
+
+```console
+$ sudo apt install binutils fakeroot
 ```
 
 ##### Ubuntu
