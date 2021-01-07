@@ -1,3 +1,0 @@
-#!/bin/bash
-# Creates the environment file on installation
-"$SNAP/bin/envhook.sh"

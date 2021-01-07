@@ -54,15 +54,15 @@ The `openjdk` command itself prints the location of a file that defines environm
 
 ```console
 $ openjdk
-/var/snap/openjdk/common/openjdk.env
+/snap/openjdk/x1/bin/openjdk.env
 ```
 
 The file exports the `JAVA_HOME` environment variable and defines aliases for the JDK tools so that you can enter them without the package prefix:
 
 ```console
-$ cat /var/snap/openjdk/common/openjdk.env
+$ cat $(openjdk)
 # Source this file for OpenJDK environment variables and aliases
-export JAVA_HOME=/snap/openjdk/x1/jdk
+export JAVA_HOME=/snap/openjdk/current/jdk
 alias java='openjdk.java'
 alias javac='openjdk.javac'
 alias javadoc='openjdk.javadoc'
@@ -82,7 +82,7 @@ You can then verify that `JAVA_HOME` and the aliases are defined with:
 
 ```console
 $ printenv | grep JAVA
-JAVA_HOME=/snap/openjdk/x1/jdk
+JAVA_HOME=/snap/openjdk/current/jdk
 $ type java javac
 java is aliased to `openjdk.java'
 javac is aliased to `openjdk.javac'
@@ -121,7 +121,7 @@ The commands below show the Linux kernel and GLIBC versions for Ubuntu 20.04 LTS
 
 ```console
 $ uname -r
-5.4.0-58-generic
+5.4.0-59-generic
 $ ldd --version
 ldd (Ubuntu GLIBC 2.31-0ubuntu9.1) 2.31
   ...
@@ -253,7 +253,7 @@ Ubuntu OpenJDK 14 (openjdk-14-jdk-headless)
         ↳ Snap OpenJDK 17 (openjdk/latest/edge)
 ```
 
-This works nicely because Launchpad can build into the three channels automatically when there are changes to the *candidate*, *beta*, and *main* branches of this repository. With just three packages, and an automated build on Launchpad, it's easy to verify the chain of trust by looking at the build logs.
+This works nicely because Launchpad can build into the three channels automatically when there are changes to the *candidate*, *beta*, and *edge* branches of this repository. With just three packages, and an automated build on Launchpad, it's easy to verify the chain of trust by looking at the build logs.
 
 To lower the GNU C library requirement from version 2.29 to version 2.27, however, I would have to build manually using the following chain just to get started, wiping out the audit trail of build logs as I went:
 
@@ -280,12 +280,13 @@ Whether you're running Windows, macOS, or Linux, you can use [Multipass](https:/
 $ multipass launch --name primary --cpus 2 --mem 4G groovy
 ```
 
-The [snapcraft.yaml](snap/snapcraft.yaml) file defines the build of the Snap package. Run the following commands to install Snapcraft, clone this repository, and start building the package:
+The `snap/snapcraft.yaml` files on the *candidate*, *beta*, and *edge* branches define the build of the Snap package. Run the following commands to install Snapcraft, clone this repository, switch to the *candidate* branch, and start building the package:
 
 ```console
 $ sudo snap install snapcraft
 $ git clone https://github.com/jgneff/openjdk.git
 $ cd openjdk
+$ git checkout candidate
 $ snapcraft
 ```
 
@@ -307,7 +308,7 @@ Cleaning pull step (and all subsequent steps) for jdk
   ...
 # snapcraft
   ...
-Priming app
+Priming bin
 Priming jdk
 Priming del
   ...
