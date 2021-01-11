@@ -286,7 +286,7 @@ The `snap/snapcraft.yaml` files on the *candidate*, *beta*, and *edge* branches 
 $ sudo snap install snapcraft
 $ git clone https://github.com/jgneff/openjdk.git
 $ cd openjdk
-$ git checkout candidate
+$ git switch candidate
 $ snapcraft
 ```
 
