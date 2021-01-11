@@ -39,10 +39,10 @@ description: |
 
 # When the JDK release or build number changes, update the following:
 #   version, slots, parts.jdk.build-environment.BUILD_NUM
-version: '15.0.1'
+version: '15.0.1+9'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
-base: core20
+base: core18
 grade: stable
 confinement: strict
 
@@ -50,11 +50,12 @@ architectures:
 - build-on: amd64
 - build-on: arm64
 - build-on: armhf
+- build-on: i386
 - build-on: ppc64el
 - build-on: s390x
 
 slots:
-  jdk-15-2004:
+  jdk-15-1804:
     interface: content
     read: [$SNAP/jdk]
 
@@ -102,15 +103,17 @@ parts:
   bin:
     plugin: dump
     source: .
+    source-type: local
     stage: [bin]
 
   jdk:
     plugin: autotools
     source: https://github.com/openjdk/jdk15u.git
-    source-branch: jdk-${SNAPCRAFT_PROJECT_VERSION}-ga
+    source-branch: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
+    build-snaps:
+    - bootjdk/latest/edge
     build-packages:
-    - openjdk-14-jdk-headless
     - libasound2-dev
     - libcups2-dev
     - libfontconfig1-dev
@@ -124,6 +127,7 @@ parts:
     - unzip
     - zip
     build-environment:
+    - JAVA_HOME: /snap/bootjdk/current/jdk
     - BUILD_NUM: '9'
     # Option --disable-warnings-as-errors for armhf
     override-build: |
@@ -159,18 +163,20 @@ parts:
   del:
     after: [jdk]
     plugin: nil
-    # Deletes files and links already available in the base core20 snap
+    # Deletes files and links already available in the base snap
     override-prime: |
       set -o xtrace
       cd $SNAPCRAFT_PRIME
-      base=/snap/core20/current
+      base=/snap/core18/current
       list="etc lib* usr/lib usr/share"
       find $list -type f -exec test -f "$base/{}" \; -delete
       find $list -type l -exec test -L "$base/{}" \; -delete
       find * -type d -empty -exec test -d "$base/{}" \; -delete
 
-# Run 'openjdk.jpackage --verbose' to find the source of all errors.
 layout:
+  # Fontconfig error: Cannot load config file from /etc/fonts/fonts.conf
+  /etc/fonts:
+    bind: $SNAP/etc/fonts
   # dpkg: error: error opening configuration directory
   #     '/etc/dpkg/dpkg.cfg.d': Permission denied
   /etc/dpkg:
