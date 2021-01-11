@@ -42,7 +42,7 @@ description: |
 version: '16+31'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
-base: core20
+base: core18
 grade: devel
 confinement: strict
 
@@ -50,11 +50,12 @@ architectures:
 - build-on: amd64
 - build-on: arm64
 - build-on: armhf
+- build-on: i386
 - build-on: ppc64el
 - build-on: s390x
 
 slots:
-  jdk-16-2004:
+  jdk-16-1804:
     interface: content
     read: [$SNAP/jdk]
 
@@ -102,6 +103,7 @@ parts:
   bin:
     plugin: dump
     source: .
+    source-type: local
     stage: [bin]
 
   jdk:
@@ -161,18 +163,20 @@ parts:
   del:
     after: [jdk]
     plugin: nil
-    # Deletes files and links already available in the base core20 snap
+    # Deletes files and links already available in the base snap
     override-prime: |
       set -o xtrace
       cd $SNAPCRAFT_PRIME
-      base=/snap/core20/current
+      base=/snap/core18/current
       list="etc lib* usr/lib usr/share"
       find $list -type f -exec test -f "$base/{}" \; -delete
       find $list -type l -exec test -L "$base/{}" \; -delete
       find * -type d -empty -exec test -d "$base/{}" \; -delete
 
-# Run 'openjdk.jpackage --verbose' to find the source of all errors.
 layout:
+  # Fontconfig error: Cannot load config file from /etc/fonts/fonts.conf
+  /etc/fonts:
+    bind: $SNAP/etc/fonts
   # dpkg: error: error opening configuration directory
   #     '/etc/dpkg/dpkg.cfg.d': Permission denied
   /etc/dpkg:
