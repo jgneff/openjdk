@@ -1,8 +1,20 @@
 ## ![Duke, the Java mascot, with arms akimbo](images/icon.png) OpenJDK Snap
 
-This project builds a [Snap package](https://snapcraft.io) of OpenJDK directly from its [GitHub repository](https://github.com/openjdk/jdk). OpenJDK is the official reference implementation of the Java Platform, Standard Edition, since version 7.
+**Update:** Now supports older systems like Ubuntu 18.04 LTS and Fedora 28.
 
-The resulting package provides everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
+This project builds [Snap packages](https://snapcraft.io) of OpenJDK directly from its [GitHub repositories](https://github.com/openjdk). OpenJDK is the official reference implementation of the Java Platform, Standard Edition.
+
+The resulting packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
+
+Packages are available on each of following architectures for the latest JDK 15 general-availability release and the JDK 16 and 17 early-access builds:
+
+| Release | amd64 | arm64 | armhf | i386 | ppc64el | s390x | Channel |
+|:-------:|:-----:|:-----:|:-----:|:----:|:-------:|:-----:|:------- |
+| JDK 15  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | latest/candidate |
+| JDK 16  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | latest/beta |
+| JDK 17  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | latest/edge |
+
+The OpenJDK 15 package will soon move to the *stable* channel once its packaging is unlikely to have any more major changes.
 
 ### Installation
 
@@ -17,26 +29,26 @@ The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confineme
 * the [home interface](https://snapcraft.io/docs/home-interface) so that JDK tools like the Java compiler can read your Java source files and write Java class files under your home directory, and
 * the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) so that the Java launcher can run Java desktop applications.
 
-Its manifest file, `manifest.yaml`, lets you audit the build. The file's `build_url` key links to a page on Launchpad with more details, including the log from the [build machine](https://launchpad.net/builders) where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 20.04 LTS](https://cloud-images.ubuntu.com/focal/current/).
+Its manifest file, `manifest.yaml`, lets you audit the build. The file's `build_url` key links to a page on Launchpad with more details, including the log from the [build machine](https://launchpad.net/builders) where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
 
 ### Usage
 
-The installed package includes the following directories:
+Once installed, the OpenJDK Snap package includes the following directories:
 
 * `/snap/openjdk/current/jdk` - Java Platform location
 * `/snap/openjdk/current/jdk/docs` - Javadoc API documentation
 * `/snap/openjdk/current/jdk/lib/src.zip` - Source file archive
 
-You can use the OpenJDK Snap in two ways:
+You can use the package in two ways:
 
 1. as a set of self-contained programs that include all of their dependencies, or
 2. as the suite of software and documentation forming a complete Java Platform.
 
 These methods are explained in detail in the two sections that follow.
 
-The first method should work on any Linux system, but the programs can access only non-hidden files owned by the user in the user's home directory. See the Self-contained section below for details.
+The first method should work on any Linux system, but the programs can access only non-hidden files owned by the user in the user's home directory. See the **Self-contained** section below for details.
 
-The second method runs with traditional file permissions, but the programs require a system with Linux kernel version 3.2.0 or later and GNU C library version 2.29 or later. Those versions of the kernel and C library are found, for example, in Ubuntu 20.04 LTS, Fedora 30, or later releases. See the Java Platform section below for details.
+The second method runs with traditional file permissions, but the programs require a system with Linux kernel version 3.2.0 or later and GNU C library version 2.27 or later. Those versions of the kernel and C library are found, for example, in Ubuntu 18.04 LTS, Fedora 28, or later releases. See the **Java Platform** section below for details.
 
 #### Self-contained
 
@@ -92,7 +104,7 @@ OpenJDK Runtime Environment (build 15.0.1+9-snap)
 OpenJDK 64-Bit Server VM (build 15.0.1+9-snap, mixed mode, sharing)
 ```
 
-If you refer to locations outside of your home directory in the arguments to the OpenJDK Snap commands or their aliases, such as the JavaFX SDK directory below, you'll see an *Access Denied* error:
+If you refer to locations outside of your home directory in the arguments to the Snap package commands or aliases, such as the JavaFX SDK directory below, you'll see an *Access Denied* error message:
 
 ```console
 $ java -p /snap/openjfx/current/sdk/lib \
@@ -115,13 +127,13 @@ Hello World!
 
 Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoke the JDK programs directly using their absolute paths on your system.
 
-When the programs are launched directly, they run outside of their container and in your system's environment like any normal program. In this case, the programs depend on having their supporting libraries installed on your system. In particular, the Snap package build of OpenJDK requires Linux kernel version 3.2.0 or later and GNU C library (GLIBC) version 2.29 or later.
+When the programs are launched directly, they run outside of their container and in your system's environment like any normal program. In this case, the programs depend on having their supporting libraries installed on your system. In particular, the Snap package build of OpenJDK requires Linux kernel version 3.2.0 or later and GNU C library (GLIBC) version 2.27 or later.
 
-The commands below show the Linux kernel and GLIBC versions for Ubuntu 20.04 LTS:
+The commands below show the current Linux kernel and GLIBC versions on Ubuntu 20.04 LTS:
 
 ```console
 $ uname -r
-5.4.0-59-generic
+5.8.0-36-generic
 $ ldd --version
 ldd (Ubuntu GLIBC 2.31-0ubuntu9.1) 2.31
   ...
@@ -137,7 +149,7 @@ OpenJDK Runtime Environment (build 15.0.1+9-snap)
 OpenJDK 64-Bit Server VM (build 15.0.1+9-snap, mixed mode, sharing)
 ```
 
-If your system has a version of the GNU C library older than 2.29, you'll see error messages similar to those shown below. On Ubuntu 16.04 LTS with GLIBC 2.23, for example, you'll see:
+If your system has a version of the GNU C library older than 2.27, you'll see error messages similar to those shown below. On Ubuntu 16.04 LTS with GLIBC 2.23, for example, you'll see:
 
 ```console
 $ $JAVA_HOME/bin/java --version
@@ -147,17 +159,7 @@ Error: failed /snap/openjdk/x1/jdk/lib/server/libjvm.so, because
     (required by /snap/openjdk/x1/jdk/lib/server/libjvm.so)
 ```
 
-On Ubuntu 18.04 LTS with GLIBC 2.27, you'll see:
-
-```console
-$ $JAVA_HOME/bin/java --version
-Error: dl failure on line 534
-Error: failed /snap/openjdk/x1/jdk/lib/server/libjvm.so, because
-    /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.29' not found
-    (required by /snap/openjdk/x1/jdk/lib/server/libjvm.so)
-```
-
-In this case, either upgrade your Linux system to a more recent version, or invoke the JDK tools using the Snap package commands or their aliases as follows:
+In this case, either upgrade your Linux system to a more recent version, or invoke the JDK tools using their Snap package commands or aliases as follows:
 
 ```console
 $ openjdk.java --version
@@ -166,7 +168,7 @@ OpenJDK Runtime Environment (build 15.0.1+9-snap)
 OpenJDK 64-Bit Server VM (build 15.0.1+9-snap, mixed mode, sharing)
 ```
 
-Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs requires two additional packages when they run outside of the Snap package container. They need the `objcopy` program from the `binutils` package to create the custom runtime image, and `jpackage` needs the `fakeroot` package to create a Debian package.
+Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They need the `objcopy` program from the `binutils` package to create the custom runtime image, and `jpackage` needs the `fakeroot` package to create a Debian package.
 
 Without these extra packages, you'll see error messages like the following:
 
@@ -189,14 +191,16 @@ Solve these errors by installing the required packages:
 $ sudo apt install binutils fakeroot
 ```
 
+The following two sections compare the systems supported when running the JDK programs self-contained or as a Java Platform.
+
 ##### Ubuntu
 
-The table below shows the Snap package support for recent versions of Ubuntu:
+The table below shows the Snap package support for recent releases of Ubuntu:
 
 | Ubuntu | GNU C Library | Self-contained | Java Platform | End of Updates |
 |:------:|:-------------:|:--------------:|:-------------:|:--------------:|
 | 16.04 LTS | 2.23 | ✔️ |   | April 2021 |
-| 18.04 LTS | 2.27 | ✔️ |   | April 2023 |
+| 18.04 LTS | 2.27 | ✔️ | ✔️ | April 2023 |
 | 20.04 LTS | 2.31 | ✔️ | ✔️ | April 2025 |
 | 20.10     | 2.32 | ✔️ | ✔️ | July 2021  |
 
@@ -210,8 +214,8 @@ The table below shows the same information for the Fedora distribution:
 | 25 | 2.24 | ✔️ |   | 2017-12-12 |
 | 26 | 2.25 | ✔️ |   | 2018-05-29 |
 | 27 | 2.26 | ✔️ |   | 2018-11-30 |
-| 28 | 2.27 | ✔️ |   | 2019-05-28 |
-| 29 | 2.28 | ✔️ |   | 2019-11-26 |
+| 28 | 2.27 | ✔️ | ✔️ | 2019-05-28 |
+| 29 | 2.28 | ✔️ | ✔️ | 2019-11-26 |
 | 30 | 2.29 | ✔️ | ✔️ | 2020-05-26 |
 | 31 | 2.30 | ✔️ | ✔️ | 2020-11-24 |
 | 32 | 2.31 | ✔️ | ✔️ | 2021-05-18 |
@@ -229,21 +233,11 @@ Until that time, this Snap package can be a temporary solution by providing the 
 
 ### Bootstrapping
 
-Building the JDK requires that you already have a JDK for your target operating system and architecture. The JDK used to build the JDK is called the *Boot JDK*. Furthermore, the minimum version required for the Boot JDK is either the previous version, or for an early access build, the most recently released version. This presents a challenge when you're getting started and want to build OpenJDK using only trusted sources.
+Building the JDK requires that you already have a JDK for your target operating system and architecture. The JDK used to build the JDK is called the *Boot JDK*. Furthermore, the minimum version required for the Boot JDK is either the previous version, or for an early-access build, the most recently released version. This presents a challenge when you're just getting started and want to build OpenJDK using only trusted sources.
 
-The most trusted source of software for Debian-based distributions is the set of system package repositories. OpenJDK 14 is available in Ubuntu starting with Ubuntu 20.04 LTS. Snap packages can use this Ubuntu release during their builds by selecting the Snapcraft `core20` base.
+The most trusted source of software for Debian-based distributions is the set of system package repositories. Snap packages have access to the repositories of either Ubuntu 18.04 LTS, using the `core18` base, or Ubuntu 20.04 LTS, using the `core20` base. The latest release of the Ubuntu OpenJDK package is JDK 11 for `core18` and JDK 14 for `core20`.
 
-The problem with building on such a recent release, though, is that the programs being built can end up requiring recent versions of the Linux kernel and GNU C library. The following table shows the minimum kernel and C library versions required by the various builds of OpenJDK 15, including this Snap package:
-
-| OpenJDK 15 Build | Linux Kernel | GNU C Library |
-| ---------------- |:------------:|:-------------:|
-| AdoptOpenJDK          | 2.6.18 | 2.9  |
-| BellSoft Liberica JDK | 2.6.18 | 2.9  |
-| Oracle OpenJDK        | 2.6.18 | 2.9  |
-| **Snap Package**      | 3.2.0  | 2.29 |
-| Ubuntu 20.10 LTS      | 3.2.0  | 2.32 |
-
-The easiest way to lower the GNU C library requirement is to build on an older system, but the Boot JDK makes that more complicated. For example, below is the chain of trust I'm using to build this Snap package into the *candidate*, *beta*, and *edge* channels:
+That gives us two options to create a chain of trusted builds that reaches the current OpenJDK 15 release. The first option is to use the `core20` base with Ubuntu OpenJDK 14 as the initial Boot JDK:
 
 ```
 Ubuntu 20.04 LTS with GLIBC 2.31 (core20 base)
@@ -253,22 +247,32 @@ Ubuntu OpenJDK 14 (openjdk-14-jdk-headless)
         ↳ Snap OpenJDK 17 (openjdk/latest/edge)
 ```
 
-This works nicely because Launchpad can build into the three channels automatically when there are changes to the *candidate*, *beta*, and *edge* branches of this repository. With just three packages, and an automated build on Launchpad, it's easy to verify the chain of trust by looking at the build logs.
-
-To lower the GNU C library requirement from version 2.29 to version 2.27, however, I would have to build manually using the following chain just to get started, wiping out the audit trail of build logs as I went:
+The second option is to use the `core18` base with Ubuntu OpenJDK 11 as the initial Boot JDK:
 
 ```
 Ubuntu 18.04 LTS with GLIBC 2.27 (core18 base)
 Ubuntu OpenJDK 11 (openjdk-11-jdk-headless)
-    ↳ Snap OpenJDK 12 (openjdk/latest/candidate)
-        ↳ Snap OpenJDK 13 (openjdk/latest/candidate)
-            ↳ Snap OpenJDK 14 (openjdk/latest/candidate)
+    ↳ Snap OpenJDK 12 (bootjdk/latest/candidate)
+        ↳ Snap OpenJDK 13 (bootjdk/latest/beta)
+            ↳ Snap OpenJDK 14 (bootjdk/latest/edge)
                 ↳ Snap OpenJDK 15 (openjdk/latest/candidate → stable)
                     ↳ Snap OpenJDK 16 (openjdk/latest/beta)
                     ↳ Snap OpenJDK 17 (openjdk/latest/edge)
 ```
 
-The situation should improve over time. If the Snap package can remain on the `core20` base, eventually the world's C libraries will pass it by, as they have for the other OpenJDK builds. Meanwhile, you can always run the JDK tools self-contained in the Snap.
+I started this project using the first option. The problem with building on such a recent release, though, is that the programs being built end up requiring recent versions of the Linux kernel and GNU C library. Building on the `core20` base creates a Snap package that requires GLIBC version 2.29 or later. Building on the `core18` base, on the other hand, reduces the requirement to GLIBC version 2.27. The lower GLIBC requirement lets the package fully support older systems such as Ubuntu 18.04 and Fedora 28.
+
+The following table shows the minimum kernel and C library versions for various builds of OpenJDK 15, including this Snap package:
+
+| OpenJDK 15 Build | Linux Kernel | GNU C Library |
+| ---------------- |:------------:|:-------------:|
+| AdoptOpenJDK          | 2.6.18    | 2.9      |
+| BellSoft Liberica JDK | 2.6.18    | 2.9      |
+| Oracle OpenJDK        | 2.6.18    | 2.9      |
+| **Snap Package**      | **3.2.0** | **2.27** |
+| Ubuntu 20.10 LTS      | 3.2.0     | 2.32     |
+
+The Snap package still requires relatively recent versions, but the situation should improve over time. If the package can remain on the `core18` base, eventually the world's C libraries will pass it by, as they have for the other builds. Meanwhile, you can always run the JDK programs on older systems using the self-contained package commands or aliases.
 
 ### Building
 
@@ -290,7 +294,7 @@ $ git switch candidate
 $ snapcraft
 ```
 
-Snapcraft launches a new Multipass VM to ensure a clean and isolated build environment. The VM is named `snapcraft-openjdk` and runs Ubuntu 20.04 LTS (Focal Fossa). The project's directory on the host system is mounted as `/root/project` in the guest VM, so any changes you make on the host are seen immediately in the guest, and vice versa.
+Snapcraft launches a new Multipass VM to ensure a clean and isolated build environment. The VM is named `snapcraft-openjdk` and runs Ubuntu 18.04 LTS (Bionic Beaver). The project's directory on the host system is mounted as `/root/project` in the guest VM, so any changes you make on the host are seen immediately in the guest, and vice versa.
 
 **Note:** If you run the initial `snapcraft` command itself inside a VM, your system will need *nested VM* functionality. See the [Build Options](https://snapcraft.io/docs/build-options) page for alternatives, such as running a remote build or using an LXD container.
 
@@ -313,7 +317,7 @@ Priming jdk
 Priming del
   ...
 Snapping...
-Snapped openjdk_15.0.1_amd64.snap
+Snapped openjdk_15.0.1+9_amd64.snap
 ```
 
 When the build completes, you'll find the Snap package in the project's root directory, along with the log file if you ran the build remotely.
