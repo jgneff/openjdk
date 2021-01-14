@@ -1,12 +1,10 @@
 ## ![Duke, the Java mascot, with arms akimbo](images/icon.png) OpenJDK Snap
 
-**Update:** Now supports older systems like Ubuntu 18.04 LTS and Fedora 28.
+**Update:** Now able to run as a Java Platform on older systems like Ubuntu 18.04 LTS and Fedora 28.
 
 This project builds [Snap packages](https://snapcraft.io) of OpenJDK directly from its [GitHub repositories](https://github.com/openjdk). OpenJDK is the official reference implementation of the Java Platform, Standard Edition.
 
-The resulting packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
-
-Packages are available on each of following architectures for the latest JDK 15 general-availability release and the JDK 16 and 17 early-access builds:
+The resulting packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK). Packages are available for the latest JDK 15 general-availability release and the JDK 16 and 17 early-access builds on each of following architectures:
 
 | Release | amd64 | arm64 | armhf | i386 | ppc64el | s390x | Channel |
 |:-------:|:-----:|:-----:|:-----:|:----:|:-------:|:-----:|:------- |
