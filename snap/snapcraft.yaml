@@ -39,7 +39,7 @@ description: |
 
 # When the JDK release or build number changes, update the following:
 #   version, slots, parts.jdk.build-environment.BUILD_NUM
-version: '15.0.1+9'
+version: '15.0.2'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
 base: core18
@@ -109,10 +109,10 @@ parts:
   jdk:
     plugin: autotools
     source: https://github.com/openjdk/jdk15u.git
-    source-branch: jdk-$SNAPCRAFT_PROJECT_VERSION
+    source-branch: jdk-${SNAPCRAFT_PROJECT_VERSION}-ga
     source-depth: 1
     build-snaps:
-    - bootjdk/latest/edge
+    - openjdk/latest/candidate
     build-packages:
     - libasound2-dev
     - libcups2-dev
@@ -127,8 +127,8 @@ parts:
     - unzip
     - zip
     build-environment:
-    - JAVA_HOME: /snap/bootjdk/current/jdk
-    - BUILD_NUM: '9'
+    - JAVA_HOME: /snap/openjdk/current/jdk
+    - BUILD_NUM: '7'
     # Option --disable-warnings-as-errors for armhf
     override-build: |
       set -o xtrace
