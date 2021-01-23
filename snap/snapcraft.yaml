@@ -65,6 +65,8 @@ plugs:
 apps:
   openjdk:
     command: bin/openjdk.sh
+    environment:
+      LC_ALL: C.UTF-8
   java:
     command: jdk/bin/java
     plugs:
