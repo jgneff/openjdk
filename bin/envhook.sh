@@ -2,26 +2,30 @@
 # Creates or updates the environment file
 
 # Checks for required environment variables
-: "${SNAP:?}"
+: "${SNAP_INSTANCE_NAME:?}"
+: "${SNAP_REVISION:?}"
 : "${SNAP_COMMON:?}"
 
-# Variables for finding the Java launcher
+# Snaps are under '/var/lib/snapd/snap' on Fedora, '/snap' on Debian.
 root=/var/lib/snapd
+snap=/snap/${SNAP_INSTANCE_NAME}/${SNAP_REVISION}
 java=/jdk/bin/java
+name=${SNAP_INSTANCE_NAME}
+
 {
     printf "# Source this file for OpenJDK environment variables and aliases\n"
-    if [ -x "${root}${SNAP}${java}" ]; then
-        printf "export JAVA_HOME=%s/jdk\n" "${root}${SNAP}"
-        printf "export MANPATH=%s/jdk/man:\n" "${root}${SNAP}"
-    elif [ -x "${SNAP}${java}" ]; then
-        printf "export JAVA_HOME=%s/jdk\n" "${SNAP}"
-        printf "export MANPATH=%s/jdk/man:\n" "${SNAP}"
+    if [ -x "${root}${snap}${java}" ]; then
+        printf "export JAVA_HOME=%s/jdk\n" "${root}${snap}"
+        printf "export MANPATH=%s/jdk/man:\n" "${root}${snap}"
+    elif [ -x "${snap}${java}" ]; then
+        printf "export JAVA_HOME=%s/jdk\n" "${snap}"
+        printf "export MANPATH=%s/jdk/man:\n" "${snap}"
     fi
-    printf "alias java='openjdk.java'\n"
-    printf "alias javac='openjdk.javac'\n"
-    printf "alias javadoc='openjdk.javadoc'\n"
-    printf "alias jar='openjdk.jar'\n"
-    printf "alias jarsigner='openjdk.jarsigner'\n"
-    printf "alias jlink='openjdk.jlink'\n"
-    printf "alias jpackage='openjdk.jpackage'\n"
+    printf "alias java='%s.java'\n" "${name}"
+    printf "alias javac='%s.javac'\n" "${name}"
+    printf "alias javadoc='%s.javadoc'\n" "${name}"
+    printf "alias jar='%s.jar'\n" "${name}"
+    printf "alias jarsigner='%s.jarsigner'\n" "${name}"
+    printf "alias jlink='%s.jlink'\n" "${name}"
+    printf "alias jpackage='%s.jpackage'\n" "${name}"
 } > "${SNAP_COMMON}/openjdk.env"

@@ -1,18 +1,25 @@
 ## ![Duke, the Java mascot, with arms akimbo](images/icon.png) OpenJDK Snap
 
-**Update:** Now able to run as a Java Platform on older systems like Ubuntu 18.04 LTS and Fedora 28.
+This project builds [Snap packages](https://snapcraft.io) of OpenJDK directly from its [GitHub repositories](https://github.com/openjdk). OpenJDK is the official reference implementation of the Java Platform, Standard Edition. The packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-This project builds [Snap packages](https://snapcraft.io) of OpenJDK directly from its [GitHub repositories](https://github.com/openjdk). OpenJDK is the official reference implementation of the Java Platform, Standard Edition.
+Snap packages of the JDK 15 general-availability release and the JDK 16 and 17 early-access builds are published for each architecture in the table below. The Architecture column lists the Debian architecture name with the machine hardware name in parentheses.
 
-The resulting packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK). Packages are available for the latest JDK 15 general-availability release and the JDK 16 and 17 early-access builds on each of following architectures:
+| Architecture | OpenJDK 15 | OpenJDK 16 | OpenJDK 17 |
+|:------------:|:------:|:------:|:------:|
+| amd64 (x86_64)    | ✔️ | ✔️ | ✔️ |
+| arm64 (aarch64)   | ✔️ | ✔️ | ✔️ |
+| armhf (armv7l)    | ✔️ | ✔️ | ✔️ |
+| i386 (i686)       | ✔️ | ✔️ | ✔️ |
+| ppc64el (ppc64le) | ✔️ | ✔️ | ✔️ |
+| s390x (s390x)     | ✔️ | ✔️ | ✔️ |
 
-| Release | amd64 | arm64 | armhf | i386 | ppc64el | s390x | Channel |
-|:-------:|:-----:|:-----:|:-----:|:----:|:-------:|:-----:|:------- |
-| JDK 15  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | latest/candidate |
-| JDK 16  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | latest/beta |
-| JDK 17  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | latest/edge |
+The following table shows the Git branch that builds each release and the Snap channel where it's published. The OpenJDK 15 package will move to the *stable* channel once its packaging is unlikely to have any more major changes.
 
-The OpenJDK 15 package will soon move to the *stable* channel once its packaging is unlikely to have any more major changes.
+| Release | Git Branch | Snap Channel |
+| ------- | ---------- | ------------ |
+| OpenJDK 15 | candidate | latest/candidate |
+| OpenJDK 16 | beta      | latest/beta |
+| OpenJDK 17 | edge      | latest/edge |
 
 ### Installation
 
@@ -35,7 +42,10 @@ Once installed, the OpenJDK Snap package includes the following directories:
 
 * `/snap/openjdk/current/jdk` - Java Platform location
 * `/snap/openjdk/current/jdk/docs` - Javadoc API documentation
+* `/snap/openjdk/current/jdk/man` - Tool reference manuals
 * `/snap/openjdk/current/jdk/lib/src.zip` - Source file archive
+
+On Fedora-based systems, these directories are found under the root `/var/lib/snapd` instead of their locations on Debian-based systems shown above.
 
 You can use the package in two ways:
 
@@ -64,15 +74,16 @@ The `openjdk` command itself prints the location of a file that defines environm
 
 ```console
 $ openjdk
-/snap/openjdk/x1/bin/openjdk.env
+/var/snap/openjdk/common/openjdk.env
 ```
 
-The file exports the `JAVA_HOME` environment variable and defines aliases for the JDK tools so that you can enter them without the package prefix:
+The file exports the `JAVA_HOME` and `MANPATH` environment variables, and it defines aliases for the JDK tools so that you can enter them without the package prefix:
 
 ```console
 $ cat $(openjdk)
 # Source this file for OpenJDK environment variables and aliases
-export JAVA_HOME=/snap/openjdk/current/jdk
+export JAVA_HOME=/snap/openjdk/x1/jdk
+export MANPATH=/snap/openjdk/x1/jdk/man:
 alias java='openjdk.java'
 alias javac='openjdk.javac'
 alias javadoc='openjdk.javadoc'
@@ -92,14 +103,14 @@ You can then verify that `JAVA_HOME` and the aliases are defined with:
 
 ```console
 $ printenv | grep JAVA
-JAVA_HOME=/snap/openjdk/current/jdk
+JAVA_HOME=/snap/openjdk/x1/jdk
 $ type java javac
 java is aliased to `openjdk.java'
 javac is aliased to `openjdk.javac'
 $ java --version
-openjdk 15.0.1 2020-10-20
-OpenJDK Runtime Environment (build 15.0.1+9-snap)
-OpenJDK 64-Bit Server VM (build 15.0.1+9-snap, mixed mode, sharing)
+openjdk 15.0.2 2021-01-19
+OpenJDK Runtime Environment (build 15.0.2+7-snap)
+OpenJDK 64-Bit Server VM (build 15.0.2+7-snap, mixed mode, sharing)
 ```
 
 If you refer to locations outside of your home directory in the arguments to the Snap package commands or aliases, such as the JavaFX SDK directory below, you'll see an *Access Denied* error message:
@@ -131,20 +142,31 @@ The commands below show the current Linux kernel and GLIBC versions on Ubuntu 20
 
 ```console
 $ uname -r
-5.8.0-36-generic
+5.4.0-65-generic
 $ ldd --version
-ldd (Ubuntu GLIBC 2.31-0ubuntu9.1) 2.31
+ldd (Ubuntu GLIBC 2.31-0ubuntu9.2) 2.31
   ...
 ```
 
-With the required kernel and C library, you can set the `JAVA_HOME` environment variable and launch the programs directly from their installed locations:
+With the required kernel and C library, you can set the `JAVA_HOME` environment variable and launch the programs directly. On Debian-based systems, define:
 
 ```console
 $ export JAVA_HOME=/snap/openjdk/current/jdk
+```
+
+On Fedora-based systems, define:
+
+```console
+$ export JAVA_HOME=/var/lib/snapd/snap/openjdk/current/jdk
+```
+
+You can then launch the programs directly from their installed locations:
+
+```console
 $ $JAVA_HOME/bin/java --version
-openjdk 15.0.1 2020-10-20
-OpenJDK Runtime Environment (build 15.0.1+9-snap)
-OpenJDK 64-Bit Server VM (build 15.0.1+9-snap, mixed mode, sharing)
+openjdk 15.0.2 2021-01-19
+OpenJDK Runtime Environment (build 15.0.2+7-snap)
+OpenJDK 64-Bit Server VM (build 15.0.2+7-snap, mixed mode, sharing)
 ```
 
 If your system has a version of the GNU C library older than 2.27, you'll see error messages similar to those shown below. On Ubuntu 16.04 LTS with GLIBC 2.23, for example, you'll see:
@@ -161,9 +183,9 @@ In this case, either upgrade your Linux system to a more recent version, or invo
 
 ```console
 $ openjdk.java --version
-openjdk 15.0.1 2020-10-20
-OpenJDK Runtime Environment (build 15.0.1+9-snap)
-OpenJDK 64-Bit Server VM (build 15.0.1+9-snap, mixed mode, sharing)
+openjdk 15.0.2 2021-01-19
+OpenJDK Runtime Environment (build 15.0.2+7-snap)
+OpenJDK 64-Bit Server VM (build 15.0.2+7-snap, mixed mode, sharing)
 ```
 
 Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They need the `objcopy` program from the `binutils` package to create the custom runtime image, and `jpackage` needs the `fakeroot` package to create a Debian package.
@@ -258,7 +280,9 @@ Ubuntu OpenJDK 11 (openjdk-11-jdk-headless)
                     ↳ Snap OpenJDK 17 (openjdk/latest/edge)
 ```
 
-I started this project using the first option. The problem with building on such a recent release, though, is that the programs being built end up requiring recent versions of the Linux kernel and GNU C library. Building on the `core20` base creates a Snap package that requires GLIBC version 2.29 or later. Building on the `core18` base, on the other hand, reduces the requirement to GLIBC version 2.27. The lower GLIBC requirement lets the package fully support older systems such as Ubuntu 18.04 and Fedora 28.
+I started this project using the first option, but now I've built all of the Snap packages on the older Ubuntu 18.04 release using the second option.
+
+The problem with the first option is that the programs end up requiring very recent versions of the Linux kernel and GNU C library. Building on the `core20` base creates Snap packages that require GLIBC version 2.29 or later. Building on the `core18` base, on the other hand, reduces the requirement to GLIBC version 2.27. The lower GLIBC requirement lets the package fully support older systems such as Ubuntu 18.04 and Fedora 28.
 
 The following table shows the minimum kernel and C library versions for various builds of OpenJDK 15, including this Snap package:
 
@@ -267,8 +291,9 @@ The following table shows the minimum kernel and C library versions for various 
 | AdoptOpenJDK          | 2.6.18    | 2.9      |
 | BellSoft Liberica JDK | 2.6.18    | 2.9      |
 | Oracle OpenJDK        | 2.6.18    | 2.9      |
-| **Snap Package**      | **3.2.0** | **2.27** |
-| Ubuntu 20.10 LTS      | 3.2.0     | 2.32     |
+| **Snap OpenJDK**      | **3.2.0** | **2.27** |
+| Ubuntu 20.10 OpenJDK  | 3.2.0     | 2.32     |
+| Fedora 28 OpenJDK     | 3.2.0     | 2.32     |
 
 The Snap package still requires relatively recent versions, but the situation should improve over time. If the package can remain on the `core18` base, eventually the world's C libraries will pass it by, as they have for the other builds. Meanwhile, you can always run the JDK programs on older systems using the self-contained package commands or aliases.
 
@@ -315,7 +340,7 @@ Priming jdk
 Priming del
   ...
 Snapping...
-Snapped openjdk_15.0.1+9_amd64.snap
+Snapped openjdk_15.0.2_amd64.snap
 ```
 
 When the build completes, you'll find the Snap package in the project's root directory, along with the log file if you ran the build remotely.
