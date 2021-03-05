@@ -1,6 +1,6 @@
 ![OpenJDK: Verifiable builds for Linux from source](images/banner.svg)
 
-OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK releases directly from their [source repositories](https://github.com/openjdk). The packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, documentation, and source code of the Java Development Kit (JDK).
+OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
 Packages of the OpenJDK 15 general-availability release and the OpenJDK 16 and 17 early-access builds are published for each of the following hardware platforms, listed below by their Debian architectures and machine hardware names:
 
@@ -13,7 +13,7 @@ Packages of the OpenJDK 15 general-availability release and the OpenJDK 16 and 1
 | ppc64el (ppc64le) | ✔️ | ✔️ | ✔️ |
 | s390x (s390x)     | ✔️ | ✔️ | ✔️ |
 
-Note that this repository uses branches in a way that's a little different from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snap/snapcraft.yaml` build file is found only on the channel-specific *candidate*, *beta*, and *edge* branches, and the repository's common files are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
+**Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build file is found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The repository's common files are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
 ## Installation
 
@@ -30,13 +30,13 @@ The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confineme
 
 ## Trust
 
-The packages are built as transparently as possible so that you can trust the process that creates them rather than the person who publishes them. In addition, Snap packages built on Launchpad include a manifest that lets you verify the build and identify its dependencies. [Launchpad builds](https://launchpad.net/builders) run on clean, isolated, transient containers created on demand from trusted Ubuntu images and verified dependencies.
+The packages are built in an open and transparent manner so that you can gain trust in the process that creates them instead of having to put all of your trust in the person who publishes them. Snap packages built on Launchpad include a manifest that lets you verify the build and identify its dependencies. [Launchpad builds](https://launchpad.net/builders) run on transient containers created from trusted images, ensuring that each package is created in a clean and isolated build environment.
 
 | Release | Branch | Source | Package | Channel |
-|:-------:|:------:|:------:|:------:|:-------:|
-| OpenJDK 15 | [candidate][1] | [openjdk/jdk15u][4] | [openjdk-candidate][7] | candidate |
-| OpenJDK 16 | [beta][2]      | [openjdk/jdk16][5]  | [openjdk-beta][8]      | beta      |
-| OpenJDK 17 | [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      | edge      |
+|:-------:|:------:|:------:|:-------:|:-------:|
+| OpenJDK 15 | [candidate][1] | [openjdk/jdk15u][4] | [openjdk-candidate][7] | [candidate][10] |
+| OpenJDK 16 | [beta][2]      | [openjdk/jdk16][5]  | [openjdk-beta][8]      | [beta][10]      |
+| OpenJDK 17 | [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      | [edge][10]      |
 
 [1]: https://github.com/jgneff/openjdk/tree/candidate
 [2]: https://github.com/jgneff/openjdk/tree/beta
@@ -50,14 +50,16 @@ The packages are built as transparently as possible so that you can trust the pr
 [8]: https://launchpad.net/~jgneff/+snap/openjdk-beta
 [9]: https://launchpad.net/~jgneff/+snap/openjdk-edge
 
+[10]: https://snapcraft.io/openjdk
+
 For each OpenJDK release, the table above shows:
 
 * the branch of this repository that creates the Snap package,
 * the source code repository of the OpenJDK release on GitHub,
-* the package information and its latest builds on Launchpad, and
+* the package information and latest builds on Launchpad, and
 * the channel where the package is published in the Snap Store.
 
-Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build logs. This information is in a file called `manifest.yaml`, found under the directory `/snap/openjdk/current/snap/` by default. The section `image-info` provides a link to a page on Launchpad with more details, including the log file from the build machine where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
+Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build logs. This information is in a file called `manifest.yaml`, found under the directory `/snap/openjdk/current/snap` by default. The section `image-info` provides a link to a page on Launchpad with more details, including the log file from the build machine where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
 
 For example, the current revision of the OpenJDK 15 package for *amd64* shows:
 
