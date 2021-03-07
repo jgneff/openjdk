@@ -2,10 +2,10 @@
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-Packages of the OpenJDK 15 general-availability release and the OpenJDK 16 and 17 early-access builds are published for each of the following hardware platforms, listed below by their Debian architectures and machine hardware names:
+The OpenJDK 15 general-availability release and the OpenJDK 16 and 17 early-access builds are published for all of the following hardware platforms, listed below by their Debian architectures and machine hardware names:
 
-| Architecture (Machine) | OpenJDK 15 | OpenJDK 16 | OpenJDK 17 |
-|:----------------------:|:----------:|:----------:|:----------:|
+| Architecture (Machine) | OpenJDK 15 GA | OpenJDK 16 EA | OpenJDK 17 EA |
+|:----------------------:|:-------------:|:-------------:|:-------------:|
 | amd64 (x86_64)    | ✔️ | ✔️ | ✔️ |
 | arm64 (aarch64)   | ✔️ | ✔️ | ✔️ |
 | armhf (armv7l)    | ✔️ | ✔️ | ✔️ |
@@ -13,9 +13,9 @@ Packages of the OpenJDK 15 general-availability release and the OpenJDK 16 and 1
 | ppc64el (ppc64le) | ✔️ | ✔️ | ✔️ |
 | s390x (s390x)     | ✔️ | ✔️ | ✔️ |
 
-**Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build file is found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The repository's common files are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
+**Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The build file `snapcraft.yaml` is found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
-## Installation
+## Install
 
 Install the OpenJDK Snap package with the command:
 
@@ -25,12 +25,12 @@ $ sudo snap install openjdk
 
 The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confinement) and adds only two interfaces to its permissions:
 
-* the [home interface](https://snapcraft.io/docs/home-interface) so that JDK tools like the Java compiler can read your Java source files and write Java class files under your home directory, and
-* the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) so that the Java launcher can run Java desktop applications.
+* the [home interface](https://snapcraft.io/docs/home-interface) for the JDK tools to read and write files under your home directory, and
+* the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) for the Java launcher to run Java desktop applications.
 
 ## Trust
 
-The packages are built in an open and transparent manner so that you can gain trust in the process that creates them instead of having to put all of your trust in the person who publishes them. Snap packages built on Launchpad include a manifest that lets you verify the build and identify its dependencies. [Launchpad builds](https://launchpad.net/builders) run on transient containers created from trusted images, ensuring that each package is created in a clean and isolated build environment.
+All of the steps in building the packages are open and transparent so that you can gain trust in the process that creates them instead of having to put all of your trust in the person who publishes them.
 
 | Release | Branch | Source | Package | Channel |
 |:-------:|:------:|:------:|:-------:|:-------:|
@@ -59,7 +59,13 @@ For each OpenJDK release, the table above shows:
 * the package information and latest builds on Launchpad, and
 * the channel where the package is published in the Snap Store.
 
-Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build logs. This information is in a file called `manifest.yaml`, found under the directory `/snap/openjdk/current/snap` by default. The section `image-info` provides a link to a page on Launchpad with more details, including the log file from the build machine where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
+The OpenJDK packages on the *candidate* channel are eventually promoted to the *stable* channel.
+
+The [Launchpad build farm](https://launchpad.net/builders) runs each build in a transient container created from trusted images to ensure a clean and isolated build environment. Snap packages built on Launchpad include a manifest that lets you verify the build and identify its dependencies.
+
+## Verify
+
+Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build logs. This information is contained in a file called `manifest.yaml` in the directory `/snap/openjdk/current/snap`. The section `image-info` provides a link to a page on Launchpad with the build status and details, including the log file from the machine where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
 
 For example, the current revision of the OpenJDK 15 package for *amd64* shows:
 
@@ -71,6 +77,15 @@ image-info:
 ```
 
 The `image-info` section is followed by other sections that provide the name and version of each package used during the build and each package included in the run-time image.
+
+Having a transparent build process is a good first step, but the only conclusive way to verify a software package is to [reproduce it](https://reproducible-builds.org/). That's the main recommendation of the Linux Foundation in the article [Preventing Supply Chain Attacks like SolarWinds](https://www.linuxfoundation.org/en/blog/preventing-supply-chain-attacks-like-solarwinds) by David Wheeler, Director of Open Source Supply Chain Security. "In the longer term," he wrote, "I know of only one strong countermeasure for this kind of attack: verified reproducible builds."
+
+The OpenJDK project has only just started to [add the necessary support](https://bugs.openjdk.java.net/browse/JDK-8244592). There are still many files that differ between any two builds from the same source. The Snap packages built by this project set the *configure* option `--with-source-date` to enable reproducible builds when the feature becomes fully functional. With this option, the build logs contain the messages:
+
+```
+checking what source date to use... 1631577600, from 'version'
+checking for --enable-reproducible-build... enabled, default
+```
 
 ## Usage
 
