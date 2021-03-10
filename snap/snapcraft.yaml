@@ -19,16 +19,14 @@ title: OpenJDK
 summary: Open Java Development Kit
 description: |
   OpenJDK is the official reference implementation of the Java
-  Platform, Standard Edition.
+  Platform, Standard Edition, a cross-platform computing environment
+  that lets you develop and deploy Java applications on desktops,
+  servers, and embedded systems.
 
-  The Java Platform, Standard Edition, is a cross-platform computing
-  environment that lets you develop and deploy Java applications on
-  desktops, servers, and embedded systems.
-
-  This package contains all of the latest development tools, class
-  libraries, API documentation, and source code of OpenJDK. It provides
-  all you need to compile, run, debug, document, link, and package
-  your Java applications with the most recent features and bug fixes.
+  This package provides everything you need to develop a Java
+  application on Linux, including all of the latest development tools,
+  class libraries, API documentation, and source code of the Java
+  Development Kit (JDK).
 
   To get started, see the README file for this package on GitHub:
 
