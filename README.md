@@ -2,7 +2,7 @@
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-The OpenJDK 15 general-availability release and the OpenJDK 16 and 17 early-access builds are published for all of the following hardware platforms, listed below by their Debian architectures and machine hardware names:
+The OpenJDK 15 General-Availability Release and the OpenJDK 16 and 17 Early-Access Builds are published for all of the following hardware platforms, listed below by their Debian architectures and machine hardware names:
 
 | Architecture (Machine) | OpenJDK 15 GA | OpenJDK 16 EA | OpenJDK 17 EA |
 |:----------------------:|:-------------:|:-------------:|:-------------:|
@@ -30,7 +30,9 @@ The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confineme
 
 ## Trust
 
-All of the steps in building the packages are open and transparent so that you can gain trust in the process that creates them instead of having to put all of your trust in the person who publishes them.
+All of the steps in building the packages are open and transparent so that you can gain trust in the process that creates them instead of having to put all of your trust in their publisher.
+
+Packages on the *candidate* channel are eventually promoted to the *stable* channel.
 
 | Release | Branch | Source | Package | Channel |
 |:-------:|:------:|:------:|:-------:|:-------:|
@@ -59,8 +61,6 @@ For each OpenJDK release, the table above shows:
 * the package information and latest builds on Launchpad, and
 * the channel where the package is published in the Snap Store.
 
-The OpenJDK packages on the *candidate* channel are eventually promoted to the *stable* channel.
-
 The [Launchpad build farm](https://launchpad.net/builders) runs each build in a transient container created from trusted images to ensure a clean and isolated build environment. Snap packages built on Launchpad include a manifest that lets you verify the build and identify its dependencies.
 
 ## Verify
@@ -78,7 +78,7 @@ image-info:
 
 The `image-info` section is followed by other sections that provide the name and version of each package used during the build and each package included in the run-time image.
 
-Having a transparent build process is a good first step, but the only conclusive way to verify a software package is to [reproduce it](https://reproducible-builds.org/). That's the main recommendation of the Linux Foundation in the article [Preventing Supply Chain Attacks like SolarWinds](https://www.linuxfoundation.org/en/blog/preventing-supply-chain-attacks-like-solarwinds) by David Wheeler, Director of Open Source Supply Chain Security. "In the longer term," he wrote, "I know of only one strong countermeasure for this kind of attack: verified reproducible builds."
+Having a transparent build process is a good first step, but the only conclusive way to verify a software package is to reproduce it. That's the main recommendation of the Linux Foundation in the article [Preventing Supply Chain Attacks like SolarWinds](https://www.linuxfoundation.org/en/blog/preventing-supply-chain-attacks-like-solarwinds) by David Wheeler, Director of Open Source Supply Chain Security. "In the longer term," he wrote, "I know of only one strong countermeasure for this kind of attack: verified reproducible builds."
 
 The OpenJDK project has only just started to [add the necessary support](https://bugs.openjdk.java.net/browse/JDK-8244592). There are still many files that differ between any two builds from the same source. The Snap packages built by this project set the *configure* option `--with-source-date` to enable reproducible builds when the feature becomes fully functional. With this option, the build logs contain the messages:
 
