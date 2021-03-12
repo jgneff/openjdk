@@ -1,11 +1,11 @@
-## ![Duke, the Java mascot, with arms akimbo](images/icon.png) OpenJDK Snap
+![OpenJDK: Verifiable builds for Linux from source](images/banner.svg)
 
-This project builds [Snap packages](https://snapcraft.io) of OpenJDK directly from its [GitHub repositories](https://github.com/openjdk). OpenJDK is the official reference implementation of the Java Platform, Standard Edition. The packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
+OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-Snap packages of the JDK 15 general-availability release and the JDK 16 and 17 early-access builds are published for each architecture in the table below. The Architecture column lists the Debian architecture name with the machine hardware name in parentheses.
+The OpenJDK 15 General-Availability Release and the OpenJDK 16 and 17 Early-Access Builds are published for all of the following hardware platforms, listed below by their Debian architectures and machine hardware names:
 
-| Architecture | OpenJDK 15 | OpenJDK 16 | OpenJDK 17 |
-|:------------:|:------:|:------:|:------:|
+| Architecture (Machine) | OpenJDK 15 GA | OpenJDK 16 EA | OpenJDK 17 EA |
+|:----------------------:|:-------------:|:-------------:|:-------------:|
 | amd64 (x86_64)    | ✔️ | ✔️ | ✔️ |
 | arm64 (aarch64)   | ✔️ | ✔️ | ✔️ |
 | armhf (armv7l)    | ✔️ | ✔️ | ✔️ |
@@ -13,15 +13,15 @@ Snap packages of the JDK 15 general-availability release and the JDK 16 and 17 e
 | ppc64el (ppc64le) | ✔️ | ✔️ | ✔️ |
 | s390x (s390x)     | ✔️ | ✔️ | ✔️ |
 
-The following table shows the Git branch that builds each release and the Snap channel where it's published. The OpenJDK 15 package will move to the *stable* channel once its packaging is unlikely to have any more major changes.
+**Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The build file `snapcraft.yaml` is found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
-| Release | Git Branch | Snap Channel |
-| ------- | ---------- | ------------ |
-| OpenJDK 15 | candidate | latest/candidate |
-| OpenJDK 16 | beta      | latest/beta |
-| OpenJDK 17 | edge      | latest/edge |
+The following list provides a direct link to each [Snapcraft build file](https://snapcraft.io/docs/snapcraft-yaml-reference):
 
-### Installation
+* [`snap/snapcraft.yaml`](https://github.com/jgneff/openjdk/blob/candidate/snap/snapcraft.yaml) at candidate
+* [`snap/snapcraft.yaml`](https://github.com/jgneff/openjdk/blob/beta/snap/snapcraft.yaml) at beta
+* [`snap/snapcraft.yaml`](https://github.com/jgneff/openjdk/blob/edge/snap/snapcraft.yaml) at edge
+
+## Install
 
 Install the OpenJDK Snap package with the command:
 
@@ -31,12 +31,69 @@ $ sudo snap install openjdk
 
 The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confinement) and adds only two interfaces to its permissions:
 
-* the [home interface](https://snapcraft.io/docs/home-interface) so that JDK tools like the Java compiler can read your Java source files and write Java class files under your home directory, and
-* the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) so that the Java launcher can run Java desktop applications.
+* the [home interface](https://snapcraft.io/docs/home-interface) for the JDK tools to read and write files under your home directory, and
+* the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) for the Java launcher to run Java desktop applications.
 
-Its manifest file, `manifest.yaml`, lets you audit the build. The file's `build_url` key links to a page on Launchpad with more details, including the log from the [build machine](https://launchpad.net/builders) where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
+## Trust
 
-### Usage
+All of the steps in building the packages are open and transparent so that you can gain trust in the process that creates them instead of having to put all of your trust in their publisher.
+
+Packages on the *candidate* channel are eventually promoted to the *stable* channel.
+
+| Release | Branch | Source | Package | Channel |
+|:-------:|:------:|:------:|:-------:|:-------:|
+| OpenJDK 15 | [candidate][1] | [openjdk/jdk15u][4] | [openjdk-candidate][7] | [candidate][10] |
+| OpenJDK 16 | [beta][2]      | [openjdk/jdk16][5]  | [openjdk-beta][8]      | [beta][10]      |
+| OpenJDK 17 | [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      | [edge][10]      |
+
+[1]: https://github.com/jgneff/openjdk/tree/candidate
+[2]: https://github.com/jgneff/openjdk/tree/beta
+[3]: https://github.com/jgneff/openjdk/tree/edge
+
+[4]: https://github.com/openjdk/jdk15u
+[5]: https://github.com/openjdk/jdk16
+[6]: https://github.com/openjdk/jdk
+
+[7]: https://launchpad.net/~jgneff/+snap/openjdk-candidate
+[8]: https://launchpad.net/~jgneff/+snap/openjdk-beta
+[9]: https://launchpad.net/~jgneff/+snap/openjdk-edge
+
+[10]: https://snapcraft.io/openjdk
+
+For each OpenJDK release, the table above shows:
+
+* the branch of this repository that creates the Snap package,
+* the source code repository of the OpenJDK release on GitHub,
+* the package information and latest builds on Launchpad, and
+* the channel where the package is published in the Snap Store.
+
+The [Launchpad build farm](https://launchpad.net/builders) runs each build in a transient container created from trusted images to ensure a clean and isolated build environment. Snap packages built on Launchpad include a manifest that lets you verify the build and identify its dependencies.
+
+## Verify
+
+Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build logs. This information is contained in a file called `manifest.yaml` in the directory `/snap/openjdk/current/snap`. The section `image-info` provides a link to a page on Launchpad with the build status and details, including the log file from the machine where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
+
+For example, the current revision of the OpenJDK 15 package for *amd64* shows:
+
+```yaml
+image-info:
+  build-request-id: lp-62060497
+  build-request-timestamp: '2021-01-29T05:09:33Z'
+  build_url: https://launchpad.net/~jgneff/+snap/openjdk-candidate/+build/1275897
+```
+
+The `image-info` section is followed by other sections that provide the name and version of each package used during the build and each package included in the run-time image.
+
+Having a transparent build process is a good first step, but the only conclusive way to verify a software package is to reproduce it. That's the main recommendation of the Linux Foundation in the article [Preventing Supply Chain Attacks like SolarWinds](https://www.linuxfoundation.org/en/blog/preventing-supply-chain-attacks-like-solarwinds) by David Wheeler, Director of Open Source Supply Chain Security. "In the longer term," he wrote, "I know of only one strong countermeasure for this kind of attack: verified reproducible builds."
+
+The OpenJDK project has only just started to [add the necessary support](https://bugs.openjdk.java.net/browse/JDK-8244592). There are still many files that differ between any two builds from the same source. The Snap packages built by this project set the *configure* option `--with-source-date` to enable reproducible builds when the feature becomes fully functional. With this option, the build logs contain the messages:
+
+```
+checking what source date to use... 1631577600, from 'version'
+checking for --enable-reproducible-build... enabled, default
+```
+
+## Usage
 
 Once installed, the OpenJDK Snap package includes the following directories:
 
@@ -45,7 +102,7 @@ Once installed, the OpenJDK Snap package includes the following directories:
 * `/snap/openjdk/current/jdk/man` - Tool reference manuals
 * `/snap/openjdk/current/jdk/lib/src.zip` - Source file archive
 
-On Fedora-based systems, these directories are found under the root `/var/lib/snapd` instead of their locations on Debian-based systems shown above.
+On Fedora-based systems, these directories are found under the root directory `/var/lib/snapd` instead of the locations shown above for Debian-based systems.
 
 You can use the package in two ways:
 
@@ -58,7 +115,7 @@ The first method should work on any Linux system, but the programs can access on
 
 The second method runs with traditional file permissions, but the programs require a system with Linux kernel version 3.2.0 or later and GNU C library version 2.27 or later. Those versions of the kernel and C library are found, for example, in Ubuntu 18.04 LTS, Fedora 28, or later releases. See the **Java Platform** section below for details.
 
-#### Self-contained
+### Self-contained
 
 When you run the OpenJDK commands with the prefix `openjdk`, the programs use only the supporting libraries contained in the Snap package. The package defines the following commands for each of the corresponding JDK tools:
 
@@ -132,7 +189,7 @@ $ $JAVA_HOME/bin/java -p /snap/openjfx/current/sdk/lib \
 Hello World!
 ```
 
-#### Java Platform
+### Java Platform
 
 Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoke the JDK programs directly using their absolute paths on your system.
 
@@ -213,7 +270,7 @@ $ sudo apt install binutils fakeroot
 
 The following two sections compare the systems supported when running the JDK programs self-contained or as a Java Platform.
 
-##### Ubuntu
+#### Ubuntu
 
 The table below shows the Snap package support for recent releases of Ubuntu:
 
@@ -224,7 +281,7 @@ The table below shows the Snap package support for recent releases of Ubuntu:
 | 20.04 LTS | 2.31 | ✔️ | ✔️ | April 2025 |
 | 20.10     | 2.32 | ✔️ | ✔️ | July 2021  |
 
-##### Fedora
+#### Fedora
 
 The table below shows the same information for the Fedora distribution:
 
@@ -241,17 +298,17 @@ The table below shows the same information for the Fedora distribution:
 | 32 | 2.31 | ✔️ | ✔️ | 2021-05-18 |
 | 33 | 2.32 | ✔️ | ✔️ | Current    |
 
-### Contributing
+## Contributing
 
-Ultimately, I would like to see the latest OpenJDK available from the package repositories of all Linux distributions. Then on Ubuntu 20.04 LTS, for example, you could install it with the command:
+Ultimately, I would like to see the latest OpenJDK available in the package repositories of all Linux distributions. Then on Ubuntu 20.04 LTS, for example, you could install it with the command:
 
 ```console
 $ sudo apt install openjdk-15-jdk
 ```
 
-Until that time, this Snap package can be a temporary solution by providing the latest OpenJDK on as many Linux distributions and architectures as possible. I welcome your help and support.
+Until that time, this Snap package can serve as a temporary solution by providing the latest OpenJDK on as many Linux distributions and architectures as possible. I welcome your help and support.
 
-### Bootstrapping
+## Bootstrapping
 
 Building the JDK requires that you already have a JDK for your target operating system and architecture. The JDK used to build the JDK is called the *Boot JDK*. Furthermore, the minimum version required for the Boot JDK is either the previous version, or for an early-access build, the most recently released version. This presents a challenge when you're just getting started and want to build OpenJDK using only trusted sources.
 
@@ -284,7 +341,7 @@ I started this project using the first option, but now I've built all of the Sna
 
 The problem with the first option is that the programs end up requiring very recent versions of the Linux kernel and GNU C library. Building on the `core20` base creates Snap packages that require GLIBC version 2.29 or later. Building on the `core18` base, on the other hand, reduces the requirement to GLIBC version 2.27. The lower GLIBC requirement lets the package fully support older systems such as Ubuntu 18.04 and Fedora 28.
 
-The following table shows the minimum kernel and C library versions for various builds of OpenJDK 15, including this Snap package:
+For comparison, the following table shows the minimum kernel and C library versions for various builds of OpenJDK 15, including this Snap package:
 
 | OpenJDK 15 Build | Linux Kernel | GNU C Library |
 | ---------------- |:------------:|:-------------:|
@@ -297,7 +354,7 @@ The following table shows the minimum kernel and C library versions for various 
 
 The Snap package still requires relatively recent versions, but the situation should improve over time. If the package can remain on the `core18` base, eventually the world's C libraries will pass it by, as they have for the other builds. Meanwhile, you can always run the JDK programs on older systems using the self-contained package commands or aliases.
 
-### Building
+## Building
 
 On Linux systems, you can build the Snap package directly by installing [Snapcraft](https://snapcraft.io/snapcraft) on your development workstation. The bottom of the Snapcraft page shows how to enable Snaps for your Linux distribution.
 
@@ -345,7 +402,7 @@ Snapped openjdk_15.0.2_amd64.snap
 
 When the build completes, you'll find the Snap package in the project's root directory, along with the log file if you ran the build remotely.
 
-### License and Trademarks
+## License and Trademarks
 
 This project is licensed under the GNU General Public License v2.0 with the Classpath exception, the same license used by Oracle for the OpenJDK project. See the files [LICENSE](LICENSE) and [ADDITIONAL_LICENSE_INFO](ADDITIONAL_LICENSE_INFO) for details.
 
