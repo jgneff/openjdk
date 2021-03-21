@@ -16,7 +16,7 @@
 
 name: openjdk
 title: OpenJDK
-summary: Open Java Development Kit
+summary: Current JDK release and early-access builds
 description: |
   OpenJDK is the official reference implementation of the Java
   Platform, Standard Edition, a cross-platform computing environment
