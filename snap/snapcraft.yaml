@@ -37,7 +37,7 @@ description: |
 
 # When the JDK release or build number changes, update the following:
 #   version, slots, parts.jdk.build-environment.BUILD_NUM
-version: '17+20'
+version: '17+21'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
 base: core18
@@ -128,7 +128,7 @@ parts:
     - zip
     build-environment:
     - JAVA_HOME: /snap/openjdk/current/jdk
-    - BUILD_NUM: '20'
+    - BUILD_NUM: '21'
     # Option '--disable-warnings-as-errors' for armhf
     override-build: |
       set -o xtrace
