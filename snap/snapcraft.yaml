@@ -112,7 +112,7 @@ parts:
     source-branch: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
     build-snaps:
-    - openjdk
+    - openjdk/latest/candidate
     build-packages:
     - libasound2-dev
     - libcups2-dev
