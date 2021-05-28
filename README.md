@@ -6,12 +6,12 @@ The OpenJDK 16 general-availability (GA) release and the OpenJDK 17 early-access
 
 | Architecture (Machine) | OpenJDK 16 GA | OpenJDK 17 EA |
 |:----------------------:|:-------------:|:-------------:|
-| amd64 (x86_64)    | ✔️ | ✔️ |
-| arm64 (aarch64)   | ✔️ | ✔️ |
-| armhf (armv7l)    | ✔️ | ✔️ |
-| i386 (i686)       | ✔️ | ✔️ |
-| ppc64el (ppc64le) | ✔️ | ✔️ |
-| s390x (s390x)     | ✔️ | ✔️ |
+| amd64 (x86_64)         | ✔️ | ✔️ |
+| arm64 (aarch64)        | ✔️ | ✔️ |
+| armhf (armv7l)         | ✔️ | ✔️ |
+| i386 (i686)            | ✔️ | ✔️ |
+| ppc64el (ppc64le)      | ✔️ | ✔️ |
+| s390x (s390x)          | ✔️ | ✔️ |
 
 **Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The build file `snapcraft.yaml` is found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
@@ -42,16 +42,27 @@ $ sudo snap install openjdk --beta
 $ sudo snap install openjdk --edge
 ```
 
-The general-availability release is published on the *candidate* channel and promoted to the *stable* channel after its first point release. The early-access builds are published on the *beta* and *edge* channels.
+## Schedule
 
-For example, the OpenJDK 17 general-availability release will be published on the *candidate* channel on September 14, 2021, or soon thereafter. OpenJDK 16 will remain on the *stable* channel until OpenJDK 17.0.1 is released within the following month. OpenJDK 17.0.1 will then be promoted to the *stable* channel, and OpenJDK 16 will no longer be available. This schedule allows for a one-month transition period during which both the prior and current releases are available on the *stable* and *candidate* channels.
+The following table maps the [JDK 17 release schedule](https://openjdk.java.net/projects/jdk/17/) to the channels of the OpenJDK Snap package. The channel columns show the OpenJDK release found on the channel during each phase of the release.
+
+| Date       | Phase                     | Stable | Candidate | Beta | Edge |
+| ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
+| 2021-03-16 | Current Release           | 16     | <         | <    | 17   |
+| 2021-06-10 | Rampdown Phase One        | 16     | <         | 17   | 18   |
+| 2021-07-15 | Rampdown Phase Two        | 16     | <         | 17   | 18   |
+| 2021-08-05 | Initial Release Candidate | 16     | 17        | <    | 18   |
+| 2021-08-19 | Final Release Candidate   | 16     | 17        | <    | 18   |
+| 2021-09-14 | General Availability      | 17     | <         | <    | 18   |
+
+The symbol "<" indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level to the left in the table. If the channel is re-opened, packages will once again be selected from the original channel.
 
 ## Trust
 
 The steps in building the packages are open and transparent so that you can gain trust in the process that creates them instead of having to put all of your trust in their publisher.
 
-| Branch | Source | Package | Channel | Release |
-| ------ | ------ | ------- | ------- | ------- |
+| Branch         | Source              | Package                | Channel   | Release  |
+| -------------- | ------------------- | ---------------------- | --------- |:--------:|
 | [candidate][1] | [openjdk/jdk16u][4] | [openjdk-candidate][7] | candidate | 16       |
 | [beta][2]      | [openjdk/jdk16][5]  | [openjdk-beta][8]      | beta      | *Unused* |
 | [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      | edge      | 17       |
@@ -285,31 +296,31 @@ The following two sections compare the support for running the JDK programs self
 
 The table below shows the Snap package support for recent releases of Ubuntu:
 
-| Ubuntu | GNU C Library | Self-contained | Java Platform | End of Updates |
-| ------ |:-------------:|:--------------:|:-------------:| --------------:|
-| 16.04 LTS | 2.23 | ✔️ |   | April 2021   |
-| 18.04 LTS | 2.27 | ✔️ | ✔️ | April 2023   |
-| 20.04 LTS | 2.31 | ✔️ | ✔️ | April 2025   |
-| 20.10     | 2.32 | ✔️ | ✔️ | July 2021    |
-| 21.04     | 2.33 | ✔️ | ✔️ | January 2022 |
+| Ubuntu    | End of Updates | C Library | Self-contained | Java Platform |
+| --------- | --------------:|:---------:|:--------------:|:-------------:|
+| 16.04 LTS | April 2021     | 2.23      | ✔️ |   |
+| 18.04 LTS | April 2023     | 2.27      | ✔️ | ✔️ |
+| 20.04 LTS | April 2025     | 2.31      | ✔️ | ✔️ |
+| 20.10     | July 2021      | 2.32      | ✔️ | ✔️ |
+| 21.04     | January 2022   | 2.33      | ✔️ | ✔️ |
 
 #### Fedora
 
 The table below shows the Snap package support for recent releases of Fedora:
 
-| Fedora | GNU C Library | Self-contained | Java Platform | End of Updates |
-|:------:|:-------------:|:--------------:|:-------------:|:--------------:|
-| 24 | 2.23 | ✔️ |   | 2017-08-08 |
-| 25 | 2.24 | ✔️ |   | 2017-12-12 |
-| 26 | 2.25 | ✔️ |   | 2018-05-29 |
-| 27 | 2.26 | ✔️ |   | 2018-11-30 |
-| 28 | 2.27 | ✔️ | ✔️ | 2019-05-28 |
-| 29 | 2.28 | ✔️ | ✔️ | 2019-11-26 |
-| 30 | 2.29 | ✔️ | ✔️ | 2020-05-26 |
-| 31 | 2.30 | ✔️ | ✔️ | 2020-11-24 |
-| 32 | 2.31 | ✔️ | ✔️ | 2021-05-25 |
-| 33 | 2.32 | ✔️ | ✔️ | Current    |
-| 34 | 2.33 | ✔️ | ✔️ | Current    |
+| Fedora | End of Updates | C Library | Self-contained | Java Platform |
+|:------:|:--------------:|:---------:|:--------------:|:-------------:|
+| 24     | 2017-08-08     | 2.23      | ✔️ |   |
+| 25     | 2017-12-12     | 2.24      | ✔️ |   |
+| 26     | 2018-05-29     | 2.25      | ✔️ |   |
+| 27     | 2018-11-30     | 2.26      | ✔️ |   |
+| 28     | 2019-05-28     | 2.27      | ✔️ | ✔️ |
+| 29     | 2019-11-26     | 2.28      | ✔️ | ✔️ |
+| 30     | 2020-05-26     | 2.29      | ✔️ | ✔️ |
+| 31     | 2020-11-24     | 2.30      | ✔️ | ✔️ |
+| 32     | 2021-05-25     | 2.31      | ✔️ | ✔️ |
+| 33     | Current        | 2.32      | ✔️ | ✔️ |
+| 34     | Current        | 2.33      | ✔️ | ✔️ |
 
 ## Bootstrapping
 
@@ -346,12 +357,12 @@ The problem with the first option is that the programs end up requiring very rec
 
 For comparison, the following table shows the minimum Linux kernel and C library versions for various builds of OpenJDK 15, including the initial OpenJDK 15 Snap package:
 
-| OpenJDK 15 Build | Linux Kernel | GNU C Library |
-| ---------------- | ------------ | ------------- |
-| AdoptOpenJDK          | 2.6.18 | 2.9  |
-| BellSoft Liberica JDK | 2.6.18 | 2.9  |
-| Oracle OpenJDK        | 2.6.18 | 2.9  |
-| Snap OpenJDK          | 3.2.0  | 2.27 |
+| OpenJDK 15 Build      | Linux Kernel | C Library |
+| --------------------- | ------------ | --------- |
+| AdoptOpenJDK          | 2.6.18       | 2.9       |
+| BellSoft Liberica JDK | 2.6.18       | 2.9       |
+| Oracle OpenJDK        | 2.6.18       | 2.9       |
+| Snap OpenJDK          | 3.2.0        | 2.27      |
 
 The Snap package still requires more recent versions of the Linux kernel and C library compared to other builds, but the situation should improve over time. If the package can remain on the `core18` base, eventually the world's C libraries will pass it by, as they have for the other builds. Meanwhile, you can always run the JDK programs on older systems using the self-contained package commands or aliases.
 
