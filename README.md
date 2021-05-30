@@ -48,14 +48,14 @@ The following table maps the [JDK 17 release schedule](https://openjdk.java.net/
 
 | Date       | Phase                     | Stable | Candidate | Beta | Edge |
 | ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
-| 2021-03-16 | Current Release           | 16     | <         | <    | 17   |
-| 2021-06-10 | Rampdown Phase One        | 16     | <         | 17   | 18   |
-| 2021-07-15 | Rampdown Phase Two        | 16     | <         | 17   | 18   |
-| 2021-08-05 | Initial Release Candidate | 16     | 17        | <    | 18   |
-| 2021-08-19 | Final Release Candidate   | 16     | 17        | <    | 18   |
-| 2021-09-14 | General Availability      | 17     | <         | <    | 18   |
+| 2021-03-16 | Current Release           | 16 | ←  | ←  | 17 |
+| 2021-06-10 | Rampdown Phase One        | 16 | ←  | 17 | 18 |
+| 2021-07-15 | Rampdown Phase Two        | 16 | ←  | 17 | 18 |
+| 2021-08-05 | Initial Release Candidate | 16 | 17 | ←  | 18 |
+| 2021-08-19 | Final Release Candidate   | 16 | 17 | ←  | 18 |
+| 2021-09-14 | General Availability      | 17 | ←  | ←  | 18 |
 
-The symbol "<" indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level to the left in the table. If the channel is re-opened, packages will once again be selected from the original channel.
+The arrow symbol "←" indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level to the left in the table. If the channel is re-opened, packages will once again be selected from the original channel.
 
 ## Trust
 
