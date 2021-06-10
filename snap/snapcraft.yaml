@@ -37,7 +37,7 @@ description: |
 
 # When the JDK release or build number changes, update the following:
 #   version, slots, parts.jdk.build-environment.BUILD_NUM
-version: '16+36'
+version: '17+25'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
 base: core18
@@ -53,7 +53,7 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-16-1804:
+  jdk-17-1804:
     interface: content
     read: [$SNAP/jdk]
 
@@ -108,7 +108,7 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk16.git
+    source: https://github.com/openjdk/jdk17.git
     source-branch: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
     build-snaps:
@@ -128,7 +128,7 @@ parts:
     - zip
     build-environment:
     - JAVA_HOME: /snap/openjdk/current/jdk
-    - BUILD_NUM: '36'
+    - BUILD_NUM: '25'
     # Option '--disable-warnings-as-errors' for armhf
     override-build: |
       set -o xtrace
