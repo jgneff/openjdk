@@ -2,18 +2,18 @@
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-The OpenJDK 16 general-availability (GA) release and the OpenJDK 17 early-access (EA) builds are published for all of the hardware platforms listed below, identified by their Debian architectures and their machine hardware names:
+The OpenJDK 16 general-availability (GA) release and the OpenJDK 17 and 18 early-access (EA) builds are published for all of the hardware platforms listed below, identified by their Debian architectures and their machine hardware names:
 
-| Architecture (Machine) | OpenJDK 16 GA | OpenJDK 17 EA |
-|:----------------------:|:-------------:|:-------------:|
-| amd64 (x86_64)         | ✔️ | ✔️ |
-| arm64 (aarch64)        | ✔️ | ✔️ |
-| armhf (armv7l)         | ✔️ | ✔️ |
-| i386 (i686)            | ✔️ | ✔️ |
-| ppc64el (ppc64le)      | ✔️ | ✔️ |
-| s390x (s390x)          | ✔️ | ✔️ |
+| Architecture (Machine) | OpenJDK 16 GA | OpenJDK 17 EA | OpenJDK 18 EA |
+|:----------------------:|:-------------:|:-------------:|:-------------:|
+| amd64 (x86_64)         | ✔️ | ✔️ | ✔️ |
+| arm64 (aarch64)        | ✔️ | ✔️ | ✔️ |
+| armhf (armv7l)         | ✔️ | ✔️ | ✔️ |
+| i386 (i686)            | ✔️ | ✔️ | ✔️ |
+| ppc64el (ppc64le)      | ✔️ | ✔️ | ✔️ |
+| s390x (s390x)          | ✔️ | ✔️ | ✔️ |
 
-**Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The build file `snapcraft.yaml` is found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
+**Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build files are found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
 The list below links directly to each of the [Snapcraft build files](https://snapcraft.io/docs/snapcraft-yaml-reference):
 
@@ -44,7 +44,7 @@ $ sudo snap install openjdk --edge
 
 ## Schedule
 
-The following table maps the [JDK 17 release schedule](https://openjdk.java.net/projects/jdk/17/) to the channels of the OpenJDK Snap package. The channel columns show the OpenJDK release found on the channel during each phase of the release.
+The following table maps the [JDK 17 release schedule](https://openjdk.java.net/projects/jdk/17/) to the channels of the OpenJDK Snap package. The channel columns show the OpenJDK release found on the channel during each phase of the schedule.
 
 | Date       | Phase                     | Stable | Candidate | Beta | Edge |
 | ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
@@ -55,24 +55,24 @@ The following table maps the [JDK 17 release schedule](https://openjdk.java.net/
 | 2021-08-19 | Final Release Candidate   | 16 | 17 | ←  | 18 |
 | 2021-09-14 | General Availability      | 17 | ←  | ←  | 18 |
 
-The arrow symbol "←" indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level to the left in the table. If the channel is re-opened, packages will once again be selected from the original channel.
+The leftwards arrow symbol "←" indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level to the left in the table. If the channel is re-opened, packages will once again be selected from the original channel.
 
 ## Trust
 
-The steps in building the packages are open and transparent so that you can gain trust in the process that creates them instead of having to put all of your trust in their publisher.
+The steps in building the packages are open and transparent so that you can gain trust in the process that creates them instead of having to put all of your trust in the publisher.
 
-| Branch         | Source              | Package                | Channel   | Release  |
-| -------------- | ------------------- | ---------------------- | --------- |:--------:|
-| [candidate][1] | [openjdk/jdk16u][4] | [openjdk-candidate][7] | candidate | 16       |
-| [beta][2]      | [openjdk/jdk16][5]  | [openjdk-beta][8]      | beta      | *Unused* |
-| [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      | edge      | 17       |
+| Branch         | Source              | Package                | Channel   | Release |
+| -------------- | ------------------- | ---------------------- | --------- |:-------:|
+| [candidate][1] | [openjdk/jdk16u][4] | [openjdk-candidate][7] | candidate | 16      |
+| [beta][2]      | [openjdk/jdk17][5]  | [openjdk-beta][8]      | beta      | 17      |
+| [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      | edge      | 18      |
 
 [1]: https://github.com/jgneff/openjdk/tree/candidate
 [2]: https://github.com/jgneff/openjdk/tree/beta
 [3]: https://github.com/jgneff/openjdk/tree/edge
 
 [4]: https://github.com/openjdk/jdk16u
-[5]: https://github.com/openjdk/jdk16
+[5]: https://github.com/openjdk/jdk17
 [6]: https://github.com/openjdk/jdk
 
 [7]: https://launchpad.net/~jgneff/+snap/openjdk-candidate
@@ -86,6 +86,8 @@ For each of the three branches, the table above shows:
 * the package information and latest builds on Launchpad,
 * the channel where the package is published in the Snap Store, and
 * the release of OpenJDK currently published on the channel.
+
+General-availability releases that are published on the *candidate* channel are promoted to the *stable* channel.
 
 The [Launchpad build farm](https://launchpad.net/builders) runs each build in a transient container created from trusted images to ensure a clean and isolated build environment. Snap packages built on Launchpad include a manifest that lets you verify the build and identify its dependencies.
 
@@ -265,7 +267,7 @@ OpenJDK Runtime Environment (build 16+36-snap)
 OpenJDK 64-Bit Server VM (build 16+36-snap, mixed mode, sharing)
 ```
 
-Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They both need the `objcopy` program from the `binutils` package to create the custom runtime image, and `jpackage` needs the `fakeroot` package to create a Debian package.
+Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They both need the `objcopy` program from the `binutils` package to create the custom run-time image, and `jpackage` needs the `fakeroot` package to create a Debian package.
 
 Without these extra packages, you'll see error messages like the following:
 
