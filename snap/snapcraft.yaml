@@ -35,8 +35,6 @@ description: |
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
 
-# When the JDK release or build number changes, update the following:
-#   version, slots, parts.jdk.build-environment.BUILD_NUM
 version: '17+35'
 license: (GPL-2.0 WITH Classpath-exception-2.0)
 
@@ -128,20 +126,19 @@ parts:
     - zip
     build-environment:
     - JAVA_HOME: /snap/openjdk/current/jdk
-    - BUILD_NUM: '35'
     # Option '--disable-warnings-as-errors' for armhf
     override-build: |
-      set -o xtrace
-      bash configure --enable-warnings-as-errors=no \
-        --enable-javac-server=no \
-        --with-version-pre=no \
-        --with-version-opt=snap \
-        --with-version-build=$BUILD_NUM \
-        --with-source-date=version \
-        --with-native-debug-symbols=none
+      bash configure \
+          --enable-warnings-as-errors=no \
+          --enable-javac-server=no \
+          --with-version-pre=no \
+          --with-version-opt=snap \
+          --with-version-build="${SNAPCRAFT_PROJECT_VERSION#*+}" \
+          --with-source-date=version \
+          --with-native-debug-symbols=none
       make images docs
-      cd build/linux-*-server-release/images
-      mv jdk docs $SNAPCRAFT_PART_INSTALL
+      cd build/linux-*-server-release/images || exit
+      mv jdk docs "$SNAPCRAFT_PART_INSTALL"
     organize:
       docs: jdk/docs
     stage-packages:
@@ -166,13 +163,13 @@ parts:
     plugin: nil
     # Deletes files and links already available in the base snap
     override-prime: |
-      set -o xtrace
-      cd $SNAPCRAFT_PRIME
+      cd "$SNAPCRAFT_PRIME" || exit
       base=/snap/core18/current
-      list="etc lib* usr/lib usr/share"
-      find $list -type f -exec test -f "$base/{}" \; -delete
-      find $list -type l -exec test -L "$base/{}" \; -delete
-      find * -type d -empty -exec test -d "$base/{}" \; -delete
+      for d in etc lib* usr/lib usr/share; do
+          find "$d" -type f -exec test -f "$base/{}" \; -delete
+          find "$d" -type l -exec test -L "$base/{}" \; -delete
+      done
+      find ./* -type d -empty -exec test -d "$base/{}" \; -delete
 
 layout:
   # Fontconfig error: Cannot load config file from /etc/fonts/fonts.conf
