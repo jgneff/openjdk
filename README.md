@@ -48,7 +48,7 @@ The following table maps the [JDK 17 release schedule](https://openjdk.java.net/
 
 | Date       | Phase                     | Stable | Candidate | Beta | Edge |
 | ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
-| 2021-03-16 | Current Release           | 16 | ←  | ←  | 17 |
+| 2021-03-16 | General Availability      | 16 | ←  | ←  | 17 |
 | 2021-06-10 | Rampdown Phase One        | 16 | ←  | 17 | 18 |
 | 2021-07-15 | Rampdown Phase Two        | 16 | ←  | 17 | 18 |
 | 2021-08-05 | Initial Release Candidate | 16 | 17 | ←  | 18 |
@@ -105,7 +105,7 @@ image-info:
 **Note:** After building JDK 17, I moved the OpenJDK Snap repositories into the Launchpad project `openjdk-snap`, so the Build URL changed to the following location:
 
 ```yaml
-  build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1486738
+build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1486738
 ```
 
 The `image-info` section is followed by other sections that provide the name and version of each package used during the build and any packages included in the run-time image.
