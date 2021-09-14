@@ -2,16 +2,16 @@
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-The OpenJDK 16 general-availability (GA) release and the OpenJDK 17 and 18 early-access (EA) builds are published for all of the hardware platforms listed below, identified by their Debian architectures and their machine hardware names:
+The OpenJDK 17 general-availability (GA) release and OpenJDK 18 early-access (EA) builds are published for all of the hardware platforms listed below, identified by their Debian architecture and machine hardware name:
 
-| Architecture (Machine) | OpenJDK 16 GA | OpenJDK 17 EA | OpenJDK 18 EA |
-|:----------------------:|:-------------:|:-------------:|:-------------:|
-| amd64 (x86_64)         | ✔️ | ✔️ | ✔️ |
-| arm64 (aarch64)        | ✔️ | ✔️ | ✔️ |
-| armhf (armv7l)         | ✔️ | ✔️ | ✔️ |
-| i386 (i686)            | ✔️ | ✔️ | ✔️ |
-| ppc64el (ppc64le)      | ✔️ | ✔️ | ✔️ |
-| s390x (s390x)          | ✔️ | ✔️ | ✔️ |
+| Architecture (Machine) | OpenJDK 17 GA |  OpenJDK 18 EA |
+|:----------------------:|:-------------:|:-------------:|
+| amd64 (x86_64)         | ✔️ | ✔️ |
+| arm64 (aarch64)        | ✔️ | ✔️ |
+| armhf (armv7l)         | ✔️ | ✔️ |
+| i386 (i686)            | ✔️ | ✔️ |
+| ppc64el (ppc64le)      | ✔️ | ✔️ |
+| s390x (s390x)          | ✔️ | ✔️ |
 
 **Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build files are found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
@@ -63,7 +63,7 @@ The steps in building the packages are open and transparent so that you can gain
 
 | Channel   | Branch         | Source              | Package                |
 | --------- | -------------- | ------------------- | ---------------------- |
-| candidate | [candidate][1] | [openjdk/jdk16u][4] | [openjdk-candidate][7] |
+| candidate | [candidate][1] | [openjdk/jdk17][5]  | [openjdk-candidate][7] |
 | beta      | [beta][2]      | [openjdk/jdk17][5]  | [openjdk-beta][8]      |
 | edge      | [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      |
 
@@ -93,13 +93,19 @@ The [Launchpad build farm](https://launchpad.net/builders) runs each build in a 
 
 Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build logs. This information is contained in a file called `manifest.yaml` in the directory `/snap/openjdk/current/snap`. The section `image-info` provides a link to a page on Launchpad with the build status and details, including the log file from the machine where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
 
-For example, the current revision of the OpenJDK 16 package for *amd64* shows:
+For example, the current revision of the OpenJDK 17 package for *amd64* shows:
 
 ```yaml
 image-info:
-  build-request-id: lp-64889383
-  build-request-timestamp: '2021-07-22T05:37:05Z'
-  build_url: https://launchpad.net/~jgneff/+snap/openjdk-candidate/+build/1471980
+  build-request-id: lp-65296432
+  build-request-timestamp: '2021-08-06T19:10:18Z'
+  build_url: https://launchpad.net/~jgneff/+snap/openjdk-candidate/+build/1486738
+```
+
+**Note:** After building JDK 17, I moved the OpenJDK Snap repositories into the Launchpad project `openjdk-snap`, so the Build URL changed to the following location:
+
+```yaml
+  build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1486738
 ```
 
 The `image-info` section is followed by other sections that provide the name and version of each package used during the build and any packages included in the run-time image.
@@ -180,9 +186,9 @@ $ type java javac
 java is aliased to `openjdk.java'
 javac is aliased to `openjdk.javac'
 $ java --version
-openjdk 16.0.2 2021-07-20
-OpenJDK Runtime Environment (build 16.0.2+7-snap)
-OpenJDK 64-Bit Server VM (build 16.0.2+7-snap, mixed mode, sharing)
+openjdk 17 2021-09-14
+OpenJDK Runtime Environment (build 17+35-snap)
+OpenJDK 64-Bit Server VM (build 17+35-snap, mixed mode, sharing)
 ```
 
 If you refer to locations outside of your home directory in the arguments to the Snap package commands or aliases, such as the JavaFX SDK directory below, you'll see an *Access Denied* error message:
@@ -214,7 +220,7 @@ The commands below show the current Linux kernel and GLIBC versions on Ubuntu 20
 
 ```console
 $ uname -r
-5.11.0-27-generic
+5.11.0-34-generic
 $ ldd --version
 ldd (Ubuntu GLIBC 2.31-0ubuntu9.3) 2.31
   ...
@@ -236,9 +242,9 @@ You can then launch the programs directly from their installed locations:
 
 ```console
 $ $JAVA_HOME/bin/java --version
-openjdk 16.0.2 2021-07-20
-OpenJDK Runtime Environment (build 16.0.2+7-snap)
-OpenJDK 64-Bit Server VM (build 16.0.2+7-snap, mixed mode, sharing)
+openjdk 17 2021-09-14
+OpenJDK Runtime Environment (build 17+35-snap)
+OpenJDK 64-Bit Server VM (build 17+35-snap, mixed mode, sharing)
 ```
 
 If your system has a version of the GNU C library older than 2.27, you'll see error messages similar to those shown below. On Ubuntu 16.04 LTS with GLIBC 2.23, for example, you'll see:
@@ -255,9 +261,9 @@ In this case, either upgrade your Linux system to a more recent version, or invo
 
 ```console
 $ openjdk.java --version
-openjdk 16.0.2 2021-07-20
-OpenJDK Runtime Environment (build 16.0.2+7-snap)
-OpenJDK 64-Bit Server VM (build 16.0.2+7-snap, mixed mode, sharing)
+openjdk 17 2021-09-14
+OpenJDK Runtime Environment (build 17+35-snap)
+OpenJDK 64-Bit Server VM (build 17+35-snap, mixed mode, sharing)
 ```
 
 Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They both need the `objcopy` program from the `binutils` package to create the custom run-time image. In addition, the `jpackage` program needs the `fakeroot` package to create a Debian package.
@@ -314,8 +320,8 @@ The table below shows the Snap package support for recent releases of Fedora:
 | 30     | 2020-05-26     | 2.29      | ✔️ | ✔️ |
 | 31     | 2020-11-24     | 2.30      | ✔️ | ✔️ |
 | 32     | 2021-05-25     | 2.31      | ✔️ | ✔️ |
-| 33     | Current        | 2.32      | ✔️ | ✔️ |
-| 34     | Current        | 2.33      | ✔️ | ✔️ |
+| 33     | 2021-11-16     | 2.32      | ✔️ | ✔️ |
+| 34     | 2022-05-17     | 2.33      | ✔️ | ✔️ |
 
 ## Bootstrapping
 
@@ -407,7 +413,7 @@ Priming jdk
 Priming del
   ...
 Snapping...
-Snapped openjdk_18+11_amd64.snap
+Snapped openjdk_18+14_amd64.snap
 ```
 
 When the build completes, you'll find the Snap package in the project's root directory, along with the log file if you ran the build remotely.
