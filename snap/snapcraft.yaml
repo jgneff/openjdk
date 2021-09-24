@@ -68,10 +68,12 @@ apps:
     plugs:
     - desktop
     - desktop-legacy
+    - network
     - wayland
     - x11
     environment:
       LC_ALL: C.UTF-8
+      XAUTHORITY: $SNAP_REAL_HOME/.Xauthority
   javac:
     command: jdk/bin/javac
     environment:
@@ -107,7 +109,7 @@ parts:
   jdk:
     plugin: autotools
     source: https://github.com/openjdk/jdk.git
-    source-branch: jdk-$SNAPCRAFT_PROJECT_VERSION
+    source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
     build-snaps:
     - openjdk/latest/candidate
@@ -142,10 +144,14 @@ parts:
     organize:
       docs: jdk/docs
     stage-packages:
+    # Adds all DejaVu fonts and the 'jlink' and 'jpackage' dependencies
     - binutils
     - dpkg
     - fakeroot
+    - fonts-dejavu-extra
+    # Adds library packages suggested by Snapcraft plus 'libfontconfig1'
     - libasound2
+    - libfontconfig1
     - libfreetype6
     - libpng16-16
     - libx11-6
@@ -156,7 +162,6 @@ parts:
     - libxi6
     - libxrender1
     - libxtst6
-    - libfontconfig1
 
   del:
     after: [jdk]
@@ -175,12 +180,18 @@ layout:
   # Fontconfig error: Cannot load config file from /etc/fonts/fonts.conf
   /etc/fonts:
     bind: $SNAP/etc/fonts
-  # dpkg: error: error opening configuration directory
-  #     '/etc/dpkg/dpkg.cfg.d': Permission denied
+  # Exception in thread "AWT-EventQueue-0" java.lang.InternalError:
+  # java.lang.reflect.InvocationTargetException
+  # Caused by: java.lang.NullPointerException: Cannot load from short array
+  # because "sun.awt.FontConfiguration.head" is null
+  /usr/share/fonts/truetype/dejavu:
+    bind: $SNAP/usr/share/fonts/truetype/dejavu
+  # dpkg: error: error opening configuration directory '/etc/dpkg/dpkg.cfg.d':
+  # Permission denied
   /etc/dpkg:
     bind: $SNAP/etc/dpkg
-  # Can not find fakeroot. Reason: Cannot run program "fakeroot":
-  #     error=2, No such file or directory
+  # Can not find fakeroot. Reason: Cannot run program "fakeroot": error=2,
+  # No such file or directory
   /usr/bin/fakeroot:
     symlink: $SNAP/usr/bin/fakeroot-sysv
   # fakeroot: preload library `libfakeroot-sysv.so' not found, aborting.
