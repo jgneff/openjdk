@@ -57,6 +57,9 @@ slots:
 
 plugs:
   home: null
+  jfx-18-1804:
+    interface: content
+    target: $SNAP/jfx
 
 apps:
   openjdk:
@@ -66,14 +69,19 @@ apps:
   java:
     command: jdk/bin/java
     plugs:
+    # Adds the interfaces of the GNOME Snapcraft Extensions plus 'network'
     - desktop
     - desktop-legacy
+    - gsettings
     - network
+    - opengl
     - wayland
     - x11
     environment:
       LC_ALL: C.UTF-8
       XAUTHORITY: $SNAP_REAL_HOME/.Xauthority
+      LD_LIBRARY_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET
+      GTK_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/gtk-3.0
   javac:
     command: jdk/bin/javac
     environment:
@@ -170,13 +178,15 @@ parts:
     override-prime: |
       cd "$SNAPCRAFT_PRIME" || exit
       base=/snap/core18/current
-      for d in etc lib* usr/lib usr/share; do
+      for d in etc lib usr/lib usr/share; do
           find "$d" -type f -exec test -f "$base/{}" \; -delete
           find "$d" -type l -exec test -L "$base/{}" \; -delete
       done
       find ./* -type d -empty -exec test -d "$base/{}" \; -delete
 
 layout:
+  # For Java Swing apps
+
   # Fontconfig error: Cannot load config file from /etc/fonts/fonts.conf
   /etc/fonts:
     bind: $SNAP/etc/fonts
@@ -186,6 +196,9 @@ layout:
   # because "sun.awt.FontConfiguration.head" is null
   /usr/share/fonts/truetype/dejavu:
     bind: $SNAP/usr/share/fonts/truetype/dejavu
+
+  # For the JDK 'jpackage' tool
+
   # dpkg: error: error opening configuration directory '/etc/dpkg/dpkg.cfg.d':
   # Permission denied
   /etc/dpkg:
@@ -200,3 +213,16 @@ layout:
   # /usr/bin/fakeroot: 1: eval: /usr/bin/faked-sysv: not found
   /usr/bin/faked-sysv:
     symlink: $SNAP/usr/bin/faked-sysv
+
+  # For JavaFX apps
+
+  # libGL error: MESA-LOADER: failed to open i965 (search paths
+  # /usr/lib/x86_64-linux-gnu/dri:\$${ORIGIN}/dri:/usr/lib/dri)
+  # libGL error: failed to load driver: i965
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri:
+    symlink: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
+  # GdkPixbuf-WARNING **: 16:04:55.707: Cannot open pixbuf loader module
+  # file '/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache':
+  # No such file or directory
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/gdk-pixbuf-2.0:
+    symlink: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/gdk-pixbuf-2.0
