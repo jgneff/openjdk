@@ -57,7 +57,7 @@ slots:
 
 plugs:
   home: null
-  jfx-18-1804:
+  jfx-17-1804:
     interface: content
     target: $SNAP/jfx
 
