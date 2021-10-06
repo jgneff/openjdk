@@ -2,16 +2,16 @@
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-The OpenJDK 17 general-availability (GA) release and OpenJDK 18 early-access (EA) builds are published for all of the hardware platforms listed below, identified by their Debian architecture and machine hardware name:
+The OpenJDK 17 general-availability (GA) release and OpenJDK 18 early-access (EA) builds are published for all of the hardware platforms listed below, identified by their Debian architecture name and machine hardware name:
 
-| Architecture (Machine) | OpenJDK 17 GA |  OpenJDK 18 EA |
-|:----------------------:|:-------------:|:-------------:|
-| amd64 (x86_64)         | ✔️ | ✔️ |
-| arm64 (aarch64)        | ✔️ | ✔️ |
-| armhf (armv7l)         | ✔️ | ✔️ |
-| i386 (i686)            | ✔️ | ✔️ |
-| ppc64el (ppc64le)      | ✔️ | ✔️ |
-| s390x (s390x)          | ✔️ | ✔️ |
+| Architecture | Hardware | OpenJDK 17 GA | OpenJDK 18 EA |
+|:------------:|:--------:|:-------------:|:-------------:|
+| amd64        | x86_64   | ✔️ | ✔️ |
+| arm64        | aarch64  | ✔️ | ✔️ |
+| armhf        | armv7l   | ✔️ | ✔️ |
+| i386         | i686     | ✔️ | ✔️ |
+| ppc64el      | ppc64le  | ✔️ | ✔️ |
+| s390x        | s390x    | ✔️ | ✔️ |
 
 **Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build files are found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
@@ -29,10 +29,11 @@ Install the OpenJDK Snap package with the command:
 $ sudo snap install openjdk
 ```
 
-The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confinement) and adds only two interfaces to its permissions:
+The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confinement) and adds only the following interfaces to its permissions:
 
-* the [home interface](https://snapcraft.io/docs/home-interface) for the JDK tools to read and write files under your home directory, and
-* the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) for the Java launcher to run Java desktop applications.
+* the [home interface](https://snapcraft.io/docs/home-interface) for the JDK tools to read and write files under your home directory,
+* the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) for the Java launcher to run Java desktop applications, and
+* the [network interface](https://snapcraft.io/docs/network-interface) for the Java launcher to run Java networking applications and remote Java desktop applications using X11 forwarding.
 
 Install the OpenJDK Snap package from a channel other than the *stable* channel with one of the following commands:
 
@@ -44,7 +45,7 @@ $ sudo snap install openjdk --edge
 
 ## Schedule
 
-The following table maps the [JDK 17 release schedule](https://openjdk.java.net/projects/jdk/17/) to the channels of the OpenJDK Snap package. The channel columns show the JDK release found on the channel during each phase of the schedule.
+The table below maps the [JDK 17 release schedule](https://openjdk.java.net/projects/jdk/17/) to the channels of the OpenJDK Snap package. The channel columns show the JDK release found on the channel during each phase of the schedule.
 
 | Date       | Phase                     | Stable | Candidate | Beta | Edge |
 | ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
@@ -63,7 +64,7 @@ The steps in building the packages are open and transparent so that you can gain
 
 | Channel   | Branch         | Source              | Package                |
 | --------- | -------------- | ------------------- | ---------------------- |
-| candidate | [candidate][1] | [openjdk/jdk17][5]  | [openjdk-candidate][7] |
+| candidate | [candidate][1] | [openjdk/jdk17u][4] | [openjdk-candidate][7] |
 | beta      | [beta][2]      | [openjdk/jdk17][5]  | [openjdk-beta][8]      |
 | edge      | [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      |
 
@@ -71,7 +72,7 @@ The steps in building the packages are open and transparent so that you can gain
 [2]: https://github.com/jgneff/openjdk/tree/beta
 [3]: https://github.com/jgneff/openjdk/tree/edge
 
-[4]: https://github.com/openjdk/jdk16u/tags
+[4]: https://github.com/openjdk/jdk17u/tags
 [5]: https://github.com/openjdk/jdk17/tags
 [6]: https://github.com/openjdk/jdk/tags
 
@@ -97,15 +98,9 @@ For example, the current revision of the OpenJDK 17 package for *amd64* shows:
 
 ```yaml
 image-info:
-  build-request-id: lp-65296432
-  build-request-timestamp: '2021-08-06T19:10:18Z'
-  build_url: https://launchpad.net/~jgneff/+snap/openjdk-candidate/+build/1486738
-```
-
-**Note:** After building JDK 17, I moved the OpenJDK Snap repositories into the Launchpad project `openjdk-snap`, so the Build URL changed to the following location:
-
-```yaml
-build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1486738
+  build-request-id: lp-66377625
+  build-request-timestamp: '2021-09-29T15:42:27Z'
+  build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1540855
 ```
 
 The `image-info` section is followed by other sections that provide the name and version of each package used during the build and any packages included in the run-time image.
@@ -191,36 +186,51 @@ OpenJDK Runtime Environment (build 17+35-snap)
 OpenJDK 64-Bit Server VM (build 17+35-snap, mixed mode, sharing)
 ```
 
-If you refer to locations outside of your home directory in the arguments to the Snap package commands or aliases, such as the JavaFX SDK directory below, you'll see an *Access Denied* error message:
+If you refer to locations outside of your home directory in the arguments to the Snap package commands or aliases, such as the JUnit libraries below, you'll see error messages like the following when compiling your program:
 
 ```console
-$ java -p /snap/openjfx/current/sdk/lib \
-    --add-modules javafx.controls -jar dist/hello-javafx-1.0.0.jar
-Error occurred during initialization of boot layer
-java.lang.module.FindException: java.nio.file.AccessDeniedException:
-    /snap/openjfx/current/sdk/lib
-Caused by: java.nio.file.AccessDeniedException: /snap/openjfx/current/sdk/lib
+$ openjdk.javac -d build/testing \
+  --class-path /usr/share/java/junit4.jar:/usr/share/java/hamcrest-core.jar \
+  org.status6.hello.world/src/main/java/org/status6/hello/world/Hello.java \
+  org.status6.hello.world/src/test/java/org/status6/hello/world/HelloTest.java
+org.status6.hello.world/src/test/java/org/status6/hello/world/HelloTest.java:19:
+  error: package org.junit does not exist
+import org.junit.Assert;
+                ^
 ```
 
-In this case, either copy the external libraries into your home directory to allow access, or invoke the JDK tools directly from their Java Platform location as follows:
+You'll see error messages like the following when running your program:
 
 ```console
-$ $JAVA_HOME/bin/java -p /snap/openjfx/current/sdk/lib \
-    --add-modules javafx.controls -jar dist/hello-javafx-1.0.0.jar
-Hello World!
+$ openjdk.java --class-path \
+  dist/hello-tests-1.0.0.jar:/usr/share/java/junit4.jar:/usr/share/java/hamcrest-core.jar \
+  org.junit.runner.JUnitCore \
+  org.status6.hello.world.HelloTest \
+  org.status6.hello.swing.HelloTest
+Error: Could not find or load main class org.junit.runner.JUnitCore
+Caused by: java.lang.ClassNotFoundException: org.junit.runner.JUnitCore
+```
+
+In this case, copy the external libraries into your home directory to allow access, as in the example shown below:
+
+```console
+$ openjdk.javac -d build/testing \
+  --class-path $HOME/lib/junit/junit4.jar:$HOME/lib/junit/hamcrest-core.jar \
+  org.status6.hello.world/src/main/java/org/status6/hello/world/Hello.java \
+  org.status6.hello.world/src/test/java/org/status6/hello/world/HelloTest.java
 ```
 
 ### Java Platform
 
 Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoke the JDK programs directly using their absolute paths on your system.
 
-When the programs are launched directly, they run outside of their container and in your system's environment like any normal program. In this case, the programs depend on having their supporting libraries installed on your system. In particular, the Snap package build of OpenJDK requires Linux kernel version 3.2.0 or later and GNU C library (GLIBC) version 2.27 or later.
+**Note:** When the programs are launched directly, they run outside of their strictly confined container and in your system's environment like any normal program. They have the same access to your system as the user account you use to run them, and they depend on having their supporting libraries installed on your system. This is not how you're supposed to run Snap packages. Nonetheless, it can still work, given the caveats explained below.
 
-The commands below show the current Linux kernel and GLIBC versions on Ubuntu 20.04 LTS:
+When invoked directly from their absolute paths, the commands in the OpenJDK Snap package require Linux kernel version 3.2.0 or later and GNU C library (GLIBC) version 2.27 or later. The following commands show the current Linux kernel and GLIBC versions on Ubuntu 20.04 LTS:
 
 ```console
 $ uname -r
-5.11.0-34-generic
+5.11.0-37-generic
 $ ldd --version
 ldd (Ubuntu GLIBC 2.31-0ubuntu9.3) 2.31
   ...
