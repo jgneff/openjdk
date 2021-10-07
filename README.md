@@ -1,4 +1,4 @@
-![OpenJDK: Verifiable builds for Linux from source](images/banner.svg)
+![OpenJDK: Current JDK Release and Early-Access Builds for Linux](images/banner.svg)
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
@@ -418,12 +418,8 @@ Cleaning pull step (and all subsequent steps) for jdk
   ...
 Finished building targets 'images docs' in configuration 'linux-x86_64-server-release'
   ...
-Priming jdk
-+ snapcraftctl prime
-Priming del
-  ...
 Snapping...
-Snapped openjdk_18+14_amd64.snap
+Snapped openjdk_18+18_amd64.snap
 ```
 
 When the build completes, you'll find the Snap package in the project's root directory, along with the log file if you ran the build remotely.
