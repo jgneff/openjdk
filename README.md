@@ -21,6 +21,46 @@ The list below links directly to each of the [Snapcraft build files](https://sna
 * [`snap/snapcraft.yaml`](https://github.com/jgneff/openjdk/blob/beta/snap/snapcraft.yaml) at beta
 * [`snap/snapcraft.yaml`](https://github.com/jgneff/openjdk/blob/edge/snap/snapcraft.yaml) at edge
 
+## Status
+
+I verify the Snap packages by compiling, packaging, testing, running, and linking some very simple Java console, Java Swing, and JavaFX applications on a variety of Linux distributions and architectures.
+
+The following table shows the status of my tests on QEMU **virtual machines:**
+
+| Arch    | Virtual Processor    | Operating System      | Works? | Notes |
+|:-------:| -------------------- | --------------------- |:------:|:-----:|
+| amd64   | Intel Core (Skylake) | Fedora 34 Workstation | ✔ | 1 |
+| arm64   | ARM Cortex-A57       | Ubuntu 20.04 LTS      | ✔ |   |
+| armhf   | ARM Cortex-A15       | Ubuntu 20.04 LTS      | ✔ |   |
+| i386    | Intel Core (Skylake) | Raspberry Pi Desktop  | ✔ |   |
+| ppc64el | IBM POWER9           | Ubuntu 20.04 LTS      | ✔ |   |
+| s390x   | IBM/S390 2964        | Ubuntu 20.04 LTS      | ❌ | 2 |
+
+1. The commands in Snap packages print the following message on Fedora 34 Workstation: `WARNING: cgroup v2 is not fully supported yet, proceeding with partial confinement`.
+
+2. Java crashes on QEMU virtual machines that use the *s390x* architecture. See [QEMU Issue #655](https://gitlab.com/qemu-project/qemu/-/issues/655).
+
+The following table shows the status of my tests on **physical machines:**
+
+| Arch    | Physical Processor    | Operating System | Hardware System                | Works? | Notes |
+|:-------:| --------------------- | ---------------- | ------------------------------ |:------:|:-----:|
+| amd64   | Intel Xeon E3-1225 v5 | Ubuntu 20.04 LTS | Dell Precision Tower 3420      | ✔ |   |
+| arm64   | ARM Cortex-A53        | Ubuntu 20.04 LTS | Raspberry Pi 3 Model A+        | ❓ | 1 |
+| armhf   | ARM Cortex-A7         | Raspberry Pi OS  | Raspberry Pi 2 Model B Rev 1.1 | ✔ | 2 |
+| i386    | Intel Atom N270       | Ubuntu 18.04 LTS | Dell Inspiron Mini 10v 1011    | ✔ |   |
+| ppc64el | IBM POWER9            | Ubuntu 20.04 LTS | IBM Power System LC921         | ✔ | 3 |
+| s390x   | IBM/S390 8561         | RHEL 8.4         | IBM LinuxONE III LT1           | ✔ | 4, 5 |
+
+1. My Raspberry Pi 3 Model A+ is on order from [CanaKit](https://www.canakit.com/raspberry-pi-3-model-a-plus.html).
+
+2. OpenJDK Snap revisions after 2021-10-13 [have the fix](https://github.com/jgneff/openjdk/commit/412ffe3) for the following repeated message on Raspberry Pi OS: `ERROR: ld.so: object '/usr/lib/arm-linux-gnueabihf/libarmmem-${PLATFORM}.so' from /etc/ld.so.preload cannot be preloaded (cannot open shared object file): ignored.`
+
+3. I thank the Open Source Lab at Oregon State University for a node on their [IBM POWER9 cluster](https://osuosl.org/services/powerdev/).
+
+4. I also thank Marist College for a virtual server on their massive [IBM LinuxONE mainframe](https://www.marist.edu/-/marist-first-linuxone-iii).
+
+5. Java console and Swing applications work, but JavaFX applications fail to start. The Prism ES2 pipeline fails in [`X11GLFactory.java`](https://github.com/openjdk/jfx/blob/master/modules/javafx.graphics/src/main/java/com/sun/prism/es2/X11GLFactory.java), perhaps because there is no graphics card. The software pipeline, chosen with `-Dprism.order=sw`, fails at [`ViewScene.java:78`](https://github.com/openjdk/jfx/blob/master/modules/javafx.graphics/src/main/java/com/sun/javafx/tk/quantum/ViewScene.java#L78) when it detects the machine's *big-endian* byte order.
+
 ## Install
 
 Install the OpenJDK Snap package with the command:
