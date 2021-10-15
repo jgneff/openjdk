@@ -6,12 +6,12 @@ The OpenJDK 17 general-availability (GA) release and OpenJDK 18 early-access (EA
 
 | Architecture | Hardware | OpenJDK 17 GA | OpenJDK 18 EA |
 |:------------:|:--------:|:-------------:|:-------------:|
-| amd64        | x86_64   | ✔️ | ✔️ |
-| arm64        | aarch64  | ✔️ | ✔️ |
-| armhf        | armv7l   | ✔️ | ✔️ |
-| i386         | i686     | ✔️ | ✔️ |
-| ppc64el      | ppc64le  | ✔️ | ✔️ |
-| s390x        | s390x    | ✔️ | ✔️ |
+| amd64        | x86_64   | ✔ | ✔ |
+| arm64        | aarch64  | ✔ | ✔ |
+| armhf        | armv7l   | ✔ | ✔ |
+| i386         | i686     | ✔ | ✔ |
+| ppc64el      | ppc64le  | ✔ | ✔ |
+| s390x        | s390x    | ✔ | ✔ |
 
 **Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build files are found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
@@ -36,30 +36,25 @@ The following table shows the status of my tests on QEMU **virtual machines:**
 | ppc64el | IBM POWER9           | Ubuntu 20.04 LTS      | ✔ |   |
 | s390x   | IBM/S390 2964        | Ubuntu 20.04 LTS      | ❌ | 2 |
 
-1. The commands in Snap packages print the following message on Fedora 34 Workstation: `WARNING: cgroup v2 is not fully supported yet, proceeding with partial confinement`.
-
+1. The commands in Snap packages print the following message on Fedora 34 Workstation:<br>`WARNING: cgroup v2 is not fully supported yet, proceeding with partial confinement`.
 2. Java crashes on QEMU virtual machines that use the *s390x* architecture. See [QEMU Issue #655](https://gitlab.com/qemu-project/qemu/-/issues/655).
 
 The following table shows the status of my tests on **physical machines:**
 
-| Arch    | Physical Processor    | Operating System | Hardware System                | Works? | Notes |
-|:-------:| --------------------- | ---------------- | ------------------------------ |:------:|:-----:|
-| amd64   | Intel Xeon E3-1225 v5 | Ubuntu 20.04 LTS | Dell Precision Tower 3420      | ✔ |   |
-| arm64   | ARM Cortex-A53        | Ubuntu 20.04 LTS | Raspberry Pi 3 Model A+        | ❓ | 1 |
-| armhf   | ARM Cortex-A7         | Raspberry Pi OS  | Raspberry Pi 2 Model B Rev 1.1 | ✔ | 2 |
-| i386    | Intel Atom N270       | Ubuntu 18.04 LTS | Dell Inspiron Mini 10v 1011    | ✔ |   |
-| ppc64el | IBM POWER9            | Ubuntu 20.04 LTS | IBM Power System LC921         | ✔ | 3 |
-| s390x   | IBM/S390 8561         | RHEL 8.4         | IBM LinuxONE III LT1           | ✔ | 4, 5 |
+| Arch    | Physical Processor | Operating System | Hardware System           | Works? | Notes |
+|:-------:| ------------------ | ---------------- | ------------------------- |:------:|:-----:|
+| amd64   | Intel Xeon E3-1225 | Ubuntu 20.04 LTS | Dell Precision Tower 3420 | ✔ |   |
+| arm64   | ARM Cortex-A53     | Ubuntu 20.04 LTS | Raspberry Pi 3 Model A+   | ❓ | 1 |
+| armhf   | ARM Cortex-A7      | Raspberry Pi OS  | Raspberry Pi 2 Model B    | ✔ | 2 |
+| i386    | Intel Atom N270    | Ubuntu 18.04 LTS | Dell Inspiron 1011        | ✔ |   |
+| ppc64el | IBM POWER9         | Ubuntu 20.04 LTS | IBM Power System LC921    | ✔ | 3 |
+| s390x   | IBM/S390 8561      | RHEL 8.4         | IBM LinuxONE III LT1      | ✔ | 4, 5 |
 
 1. My Raspberry Pi 3 Model A+ is on order from [CanaKit](https://www.canakit.com/raspberry-pi-3-model-a-plus.html).
-
-2. OpenJDK Snap revisions after 2021-10-13 [have the fix](https://github.com/jgneff/openjdk/commit/412ffe3) for the following repeated message on Raspberry Pi OS: `ERROR: ld.so: object '/usr/lib/arm-linux-gnueabihf/libarmmem-${PLATFORM}.so' from /etc/ld.so.preload cannot be preloaded (cannot open shared object file): ignored.`
-
+2. OpenJDK Snap revisions after 2021-10-13 [have the fix](https://github.com/jgneff/openjdk/commit/412ffe3) for the following message on Raspberry Pi OS:<br>`ERROR: ld.so: object '/usr/lib/arm-linux-gnueabihf/libarmmem-${PLATFORM}.so' from /etc/ld.so.preload cannot be preloaded (cannot open shared object file): ignored.`
 3. I thank the Open Source Lab at Oregon State University for a node on their [IBM POWER9 cluster](https://osuosl.org/services/powerdev/).
-
 4. I also thank Marist College for a virtual server on their massive [IBM LinuxONE mainframe](https://www.marist.edu/-/marist-first-linuxone-iii).
-
-5. Java console and Swing applications work, but JavaFX applications fail to start. The Prism ES2 pipeline fails in [`X11GLFactory.java`](https://github.com/openjdk/jfx/blob/master/modules/javafx.graphics/src/main/java/com/sun/prism/es2/X11GLFactory.java), perhaps because there is no graphics card. The software pipeline, chosen with `-Dprism.order=sw`, fails at [`ViewScene.java:78`](https://github.com/openjdk/jfx/blob/master/modules/javafx.graphics/src/main/java/com/sun/javafx/tk/quantum/ViewScene.java#L78) when it detects the machine's *big-endian* byte order.
+5. Java console and Swing applications work, but JavaFX applications fail to start on the IBM LinuxONE. The Prism ES2 pipeline fails in [`X11GLFactory.java`](https://github.com/openjdk/jfx/blob/master/modules/javafx.graphics/src/main/java/com/sun/prism/es2/X11GLFactory.java), perhaps because there is no graphics card. The software pipeline, chosen with `-Dprism.order=sw`, fails at [`ViewScene.java:78`](https://github.com/openjdk/jfx/blob/master/modules/javafx.graphics/src/main/java/com/sun/javafx/tk/quantum/ViewScene.java#L78) when it detects the machine's *big-endian* byte order.
 
 ## Install
 
@@ -349,11 +344,11 @@ The table below shows the Snap package support for recent releases of Ubuntu:
 
 | Ubuntu    | End of Updates | C Library | Self-contained | Java Platform |
 | --------- | --------------:|:---------:|:--------------:|:-------------:|
-| 16.04 LTS | April 2021     | 2.23      | ✔️ |   |
-| 18.04 LTS | April 2023     | 2.27      | ✔️ | ✔️ |
-| 20.04 LTS | April 2025     | 2.31      | ✔️ | ✔️ |
-| 20.10     | July 2021      | 2.32      | ✔️ | ✔️ |
-| 21.04     | January 2022   | 2.33      | ✔️ | ✔️ |
+| 16.04 LTS | April 2021     | 2.23      | ✔ |   |
+| 18.04 LTS | April 2023     | 2.27      | ✔ | ✔ |
+| 20.04 LTS | April 2025     | 2.31      | ✔ | ✔ |
+| 20.10     | July 2021      | 2.32      | ✔ | ✔ |
+| 21.04     | January 2022   | 2.33      | ✔ | ✔ |
 
 #### Fedora
 
@@ -361,17 +356,17 @@ The table below shows the Snap package support for recent releases of Fedora:
 
 | Fedora | End of Updates | C Library | Self-contained | Java Platform |
 |:------:|:--------------:|:---------:|:--------------:|:-------------:|
-| 24     | 2017-08-08     | 2.23      | ✔️ |   |
-| 25     | 2017-12-12     | 2.24      | ✔️ |   |
-| 26     | 2018-05-29     | 2.25      | ✔️ |   |
-| 27     | 2018-11-30     | 2.26      | ✔️ |   |
-| 28     | 2019-05-28     | 2.27      | ✔️ | ✔️ |
-| 29     | 2019-11-26     | 2.28      | ✔️ | ✔️ |
-| 30     | 2020-05-26     | 2.29      | ✔️ | ✔️ |
-| 31     | 2020-11-24     | 2.30      | ✔️ | ✔️ |
-| 32     | 2021-05-25     | 2.31      | ✔️ | ✔️ |
-| 33     | 2021-11-16     | 2.32      | ✔️ | ✔️ |
-| 34     | 2022-05-17     | 2.33      | ✔️ | ✔️ |
+| 24     | 2017-08-08     | 2.23      | ✔ |   |
+| 25     | 2017-12-12     | 2.24      | ✔ |   |
+| 26     | 2018-05-29     | 2.25      | ✔ |   |
+| 27     | 2018-11-30     | 2.26      | ✔ |   |
+| 28     | 2019-05-28     | 2.27      | ✔ | ✔ |
+| 29     | 2019-11-26     | 2.28      | ✔ | ✔ |
+| 30     | 2020-05-26     | 2.29      | ✔ | ✔ |
+| 31     | 2020-11-24     | 2.30      | ✔ | ✔ |
+| 32     | 2021-05-25     | 2.31      | ✔ | ✔ |
+| 33     | 2021-11-16     | 2.32      | ✔ | ✔ |
+| 34     | 2022-05-17     | 2.33      | ✔ | ✔ |
 
 ## Bootstrapping
 
