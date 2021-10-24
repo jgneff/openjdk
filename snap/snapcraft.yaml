@@ -36,7 +36,7 @@ description: |
   and/or its affiliates.
 
 version: '18+20'
-license: (GPL-2.0 WITH Classpath-exception-2.0)
+license: GPL-2.0-with-classpath-exception
 
 base: core18
 grade: devel
