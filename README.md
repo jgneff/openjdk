@@ -27,8 +27,8 @@ I verify the Snap packages by compiling, packaging, testing, running, and linkin
 
 The following table shows the status of my tests on QEMU **virtual machines:**
 
-| Arch    | Virtual Processor    | Operating System      | Works? | Notes |
-|:-------:| -------------------- | --------------------- |:------:|:-----:|
+| Arch | Virtual&nbsp;Processor | Operating&nbsp;System | Works? | Notes |
+|:-------:| -------------------- | --------------------- |:-:|:-:|
 | amd64   | Intel Core (Skylake) | Fedora 34 Workstation | ✔ | 1 |
 | arm64   | ARM Cortex-A57       | Ubuntu 20.04 LTS      | ✔ |   |
 | armhf   | ARM Cortex-A15       | Ubuntu 20.04 LTS      | ✔ |   |
@@ -41,16 +41,16 @@ The following table shows the status of my tests on QEMU **virtual machines:**
 
 The following table shows the status of my tests on **physical machines:**
 
-| Arch    | Physical Processor | Operating System | Hardware System           | Works? | Notes |
-|:-------:| ------------------ | ---------------- | ------------------------- |:------:|:-----:|
+| Arch | Physical&nbsp;Processor | Operating&nbsp;System | Hardware&nbsp;System | Works? | Notes |
+|:-------:| ------------------ | ---------------- | ------------------------- |:-:|:-:|
 | amd64   | Intel Xeon E3-1225 | Ubuntu 20.04 LTS | Dell Precision Tower 3420 | ✔ |   |
-| arm64   | ARM Cortex-A53     | Ubuntu 20.04 LTS | Raspberry Pi 3 Model A+   | ❓ | 1 |
+| arm64   | ARM Cortex-A53     | Ubuntu 20.04 LTS | Raspberry Pi 3 Model A+   | ✔ | 1 |
 | armhf   | ARM Cortex-A7      | Raspberry Pi OS  | Raspberry Pi 2 Model B    | ✔ | 2 |
 | i386    | Intel Atom N270    | Ubuntu 18.04 LTS | Dell Inspiron 1011        | ✔ |   |
 | ppc64el | IBM POWER9         | Ubuntu 20.04 LTS | IBM Power System LC921    | ✔ | 3 |
 | s390x   | IBM/S390 8561      | RHEL 8.4         | IBM LinuxONE III LT1      | ✔ | 4, 5 |
 
-1. My Raspberry Pi 3 Model A+ is on order from [CanaKit](https://www.canakit.com/raspberry-pi-3-model-a-plus.html).
+1. With just 512 MiB of RAM on the Pi 3 Model A+, the `jlink` and `jpackage` tools are killed when they run out of memory using a 64-bit OS. The other JDK tools still work. (The Pi 2 Model B has 1 GiB of RAM.)
 2. OpenJDK Snap revisions after 2021-10-13 [have the fix](https://github.com/jgneff/openjdk/commit/412ffe3) for the following message on Raspberry Pi OS:<br>`ERROR: ld.so: object '/usr/lib/arm-linux-gnueabihf/libarmmem-${PLATFORM}.so' from /etc/ld.so.preload cannot be preloaded (cannot open shared object file): ignored.`
 3. I thank the Open Source Lab at Oregon State University for a node on their [IBM POWER9 cluster](https://osuosl.org/services/powerdev/).
 4. I also thank Marist College for a virtual server on their massive [IBM LinuxONE mainframe](https://www.marist.edu/-/marist-first-linuxone-iii).
