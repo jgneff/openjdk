@@ -1,4 +1,4 @@
-![OpenJDK: Current JDK Release and Early-Access Builds for Linux](images/banner.svg)
+![OpenJDK: Current JDK Release and Early-Access Builds](images/banner.svg)
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
