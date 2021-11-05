@@ -129,13 +129,13 @@ The [Launchpad build farm](https://launchpad.net/builders) runs each build in a 
 
 Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build logs. This information is contained in a file called `manifest.yaml` in the directory `/snap/openjdk/current/snap`. The section `image-info` provides a link to a page on Launchpad with the build status and details, including the log file from the machine where it ran. The log file lets you verify that the package was built from source using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
 
-For example, the current revision of the OpenJDK 17 package for *amd64* shows:
+For example, revision 579 of the OpenJDK Snap package (version 17.0.1+12 for *amd64*) contains the following lines in its manifest:
 
 ```yaml
 image-info:
-  build-request-id: lp-66377625
-  build-request-timestamp: '2021-09-29T15:42:27Z'
-  build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1540855
+  build-request-id: lp-66949348
+  build-request-timestamp: '2021-10-26T15:44:52Z'
+  build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1566710
 ```
 
 The `image-info` section is followed by other sections that provide the name and version of each package used during the build and any packages included in the run-time image.
@@ -216,9 +216,9 @@ $ type java javac
 java is aliased to `openjdk.java'
 javac is aliased to `openjdk.javac'
 $ java --version
-openjdk 17 2021-09-14
-OpenJDK Runtime Environment (build 17+35-snap)
-OpenJDK 64-Bit Server VM (build 17+35-snap, mixed mode, sharing)
+openjdk 17.0.1 2021-10-19
+OpenJDK Runtime Environment (build 17.0.1+12-snap)
+OpenJDK 64-Bit Server VM (build 17.0.1+12-snap, mixed mode, sharing)
 ```
 
 If you refer to locations outside of your home directory in the arguments to the Snap package commands or aliases, such as the JUnit libraries below, you'll see error messages like the following when compiling your program:
@@ -265,7 +265,7 @@ When invoked directly from their absolute paths, the commands in the OpenJDK Sna
 
 ```console
 $ uname -r
-5.11.0-37-generic
+5.11.0-38-generic
 $ ldd --version
 ldd (Ubuntu GLIBC 2.31-0ubuntu9.3) 2.31
   ...
@@ -287,9 +287,9 @@ You can then launch the programs directly from their installed locations:
 
 ```console
 $ $JAVA_HOME/bin/java --version
-openjdk 17 2021-09-14
-OpenJDK Runtime Environment (build 17+35-snap)
-OpenJDK 64-Bit Server VM (build 17+35-snap, mixed mode, sharing)
+openjdk 17.0.1 2021-10-19
+OpenJDK Runtime Environment (build 17.0.1+12-snap)
+OpenJDK 64-Bit Server VM (build 17.0.1+12-snap, mixed mode, sharing)
 ```
 
 If your system has a version of the GNU C library older than 2.27, you'll see error messages similar to those shown below. On Ubuntu 16.04 LTS with GLIBC 2.23, for example, you'll see:
@@ -306,9 +306,9 @@ In this case, either upgrade your Linux system to a more recent version, or invo
 
 ```console
 $ openjdk.java --version
-openjdk 17 2021-09-14
-OpenJDK Runtime Environment (build 17+35-snap)
-OpenJDK 64-Bit Server VM (build 17+35-snap, mixed mode, sharing)
+openjdk 17.0.1 2021-10-19
+OpenJDK Runtime Environment (build 17.0.1+12-snap)
+OpenJDK 64-Bit Server VM (build 17.0.1+12-snap, mixed mode, sharing)
 ```
 
 Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They both need the `objcopy` program from the `binutils` package to create the custom run-time image. In addition, the `jpackage` program needs the `fakeroot` package to create a Debian package.
@@ -349,6 +349,7 @@ The table below shows the Snap package support for recent releases of Ubuntu:
 | 20.04 LTS | April 2025     | 2.31      | ✔ | ✔ |
 | 20.10     | July 2021      | 2.32      | ✔ | ✔ |
 | 21.04     | January 2022   | 2.33      | ✔ | ✔ |
+| 21.10     | July 2022      | 2.34      | ✔ | ✔ |
 
 #### Fedora
 
@@ -365,8 +366,9 @@ The table below shows the Snap package support for recent releases of Fedora:
 | 30     | 2020-05-26     | 2.29      | ✔ | ✔ |
 | 31     | 2020-11-24     | 2.30      | ✔ | ✔ |
 | 32     | 2021-05-25     | 2.31      | ✔ | ✔ |
-| 33     | 2021-11-16     | 2.32      | ✔ | ✔ |
+| 33     | 2021-11-30     | 2.32      | ✔ | ✔ |
 | 34     | 2022-05-17     | 2.33      | ✔ | ✔ |
+| 35     | 2022-12-07     | 2.34      | ✔ | ✔ |
 
 ## Bootstrapping
 
@@ -454,7 +456,7 @@ Cleaning pull step (and all subsequent steps) for jdk
 Finished building targets 'images docs' in configuration 'linux-x86_64-server-release'
   ...
 Snapping...
-Snapped openjdk_18+18_amd64.snap
+Snapped openjdk_17.0.1+12_amd64.snap
 ```
 
 When the build completes, you'll find the Snap package in the project's root directory, along with the log file if you ran the build remotely.
