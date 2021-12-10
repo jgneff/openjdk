@@ -35,8 +35,8 @@ description: |
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
 
-version: '17+35'
-license: (GPL-2.0 WITH Classpath-exception-2.0)
+version: '18+27'
+license: GPL-2.0-with-classpath-exception
 
 base: core18
 grade: devel
@@ -51,12 +51,15 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-17-1804:
+  jdk-18-1804:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
+  jfx-18-1804:
+    interface: content
+    target: $SNAP/jfx
 
 apps:
   openjdk:
@@ -66,12 +69,19 @@ apps:
   java:
     command: jdk/bin/java
     plugs:
+    # Adds the interfaces of the GNOME Snapcraft Extensions plus 'network'
     - desktop
     - desktop-legacy
+    - gsettings
+    - network
+    - opengl
     - wayland
     - x11
     environment:
       LC_ALL: C.UTF-8
+      XAUTHORITY: $SNAP_REAL_HOME/.Xauthority
+      LD_LIBRARY_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET
+      GTK_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/gtk-3.0
   javac:
     command: jdk/bin/javac
     environment:
@@ -106,8 +116,8 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk17.git
-    source-branch: jdk-$SNAPCRAFT_PROJECT_VERSION
+    source: https://github.com/openjdk/jdk.git
+    source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
     build-snaps:
     - openjdk/latest/candidate
@@ -142,10 +152,14 @@ parts:
     organize:
       docs: jdk/docs
     stage-packages:
+    # Adds all DejaVu fonts and the 'jlink' and 'jpackage' dependencies
     - binutils
     - dpkg
     - fakeroot
+    - fonts-dejavu-extra
+    # Adds library packages suggested by Snapcraft plus 'libfontconfig1'
     - libasound2
+    - libfontconfig1
     - libfreetype6
     - libpng16-16
     - libx11-6
@@ -156,7 +170,6 @@ parts:
     - libxi6
     - libxrender1
     - libxtst6
-    - libfontconfig1
 
   del:
     after: [jdk]
@@ -165,22 +178,33 @@ parts:
     override-prime: |
       cd "$SNAPCRAFT_PRIME" || exit
       base=/snap/core18/current
-      for d in etc lib* usr/lib usr/share; do
+      for d in etc lib usr/lib usr/share; do
           find "$d" -type f -exec test -f "$base/{}" \; -delete
           find "$d" -type l -exec test -L "$base/{}" \; -delete
       done
       find ./* -type d -empty -exec test -d "$base/{}" \; -delete
 
 layout:
+  # For Java Swing apps
+
   # Fontconfig error: Cannot load config file from /etc/fonts/fonts.conf
   /etc/fonts:
     bind: $SNAP/etc/fonts
-  # dpkg: error: error opening configuration directory
-  #     '/etc/dpkg/dpkg.cfg.d': Permission denied
+  # Exception in thread "AWT-EventQueue-0" java.lang.InternalError:
+  # java.lang.reflect.InvocationTargetException
+  # Caused by: java.lang.NullPointerException: Cannot load from short array
+  # because "sun.awt.FontConfiguration.head" is null
+  /usr/share/fonts/truetype/dejavu:
+    bind: $SNAP/usr/share/fonts/truetype/dejavu
+
+  # For the JDK 'jpackage' tool
+
+  # dpkg: error: error opening configuration directory '/etc/dpkg/dpkg.cfg.d':
+  # Permission denied
   /etc/dpkg:
     bind: $SNAP/etc/dpkg
-  # Can not find fakeroot. Reason: Cannot run program "fakeroot":
-  #     error=2, No such file or directory
+  # Can not find fakeroot. Reason: Cannot run program "fakeroot": error=2,
+  # No such file or directory
   /usr/bin/fakeroot:
     symlink: $SNAP/usr/bin/fakeroot-sysv
   # fakeroot: preload library `libfakeroot-sysv.so' not found, aborting.
@@ -189,3 +213,24 @@ layout:
   # /usr/bin/fakeroot: 1: eval: /usr/bin/faked-sysv: not found
   /usr/bin/faked-sysv:
     symlink: $SNAP/usr/bin/faked-sysv
+
+  # For JavaFX apps
+
+  # libGL error: MESA-LOADER: failed to open i965 (search paths
+  # /usr/lib/x86_64-linux-gnu/dri:\$${ORIGIN}/dri:/usr/lib/dri)
+  # libGL error: failed to load driver: i965
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri:
+    symlink: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
+  # GdkPixbuf-WARNING **: 16:04:55.707: Cannot open pixbuf loader module
+  # file '/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache':
+  # No such file or directory
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/gdk-pixbuf-2.0:
+    symlink: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/gdk-pixbuf-2.0
+
+  # For Raspberry Pi OS
+
+  # ERROR: ld.so: object '/usr/lib/arm-linux-gnueabihf/libarmmem-${PLATFORM}.so'
+  # from /etc/ld.so.preload cannot be preloaded (cannot open shared object
+  # file): ignored.
+  /etc/ld.so.preload:
+    bind-file: $SNAP/etc/ld.so.preload
