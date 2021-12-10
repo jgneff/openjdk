@@ -35,7 +35,7 @@ description: |
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
 
-version: '18+27'
+version: '19+0'
 license: GPL-2.0-with-classpath-exception
 
 base: core18
@@ -51,13 +51,13 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-18-1804:
+  jdk-19-1804:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
-  jfx-18-1804:
+  jfx-19-1804:
     interface: content
     target: $SNAP/jfx
 
