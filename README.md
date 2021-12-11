@@ -2,16 +2,16 @@
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk). These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-The OpenJDK 17 general-availability (GA) release and OpenJDK 18 early-access (EA) builds are published for all of the hardware platforms listed below, identified by their Debian architecture name and machine hardware name:
+The OpenJDK general-availability (GA) release and early-access (EA) builds are published for all of the hardware platforms listed below, identified by their Debian architecture name and machine hardware name:
 
-| Architecture | Hardware | OpenJDK 17 GA | OpenJDK 18 EA |
-|:------------:|:--------:|:-------------:|:-------------:|
-| amd64        | x86_64   | ✔ | ✔ |
-| arm64        | aarch64  | ✔ | ✔ |
-| armhf        | armv7l   | ✔ | ✔ |
-| i386         | i686     | ✔ | ✔ |
-| ppc64el      | ppc64le  | ✔ | ✔ |
-| s390x        | s390x    | ✔ | ✔ |
+| Architecture | Hardware | OpenJDK 17 GA | OpenJDK 18 EA | OpenJDK 19 EA |
+|:------------:|:--------:|:-------------:|:-------------:|:-------------:|
+| amd64        | x86_64   | ✔ | ✔ | ✔ |
+| arm64        | aarch64  | ✔ | ✔ | ✔ |
+| armhf        | armv7l   | ✔ | ✔ | ✔ |
+| i386         | i686     | ✔ | ✔ | ✔ |
+| ppc64el      | ppc64le  | ✔ | ✔ | ✔ |
+| s390x        | s390x    | ✔ | ✔ | ✔ |
 
 **Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build files are found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
@@ -27,28 +27,28 @@ I verify the Snap packages by compiling, packaging, testing, running, and linkin
 
 The following table shows the status of my tests on QEMU **virtual machines:**
 
-| Arch | Virtual&nbsp;Processor | Operating&nbsp;System | Works? | Notes |
-|:-------:| -------------------- | --------------------- |:-:|:-:|
-| amd64   | Intel Core (Skylake) | Fedora 34 Workstation | ✔ | 1 |
-| arm64   | ARM Cortex-A57       | Ubuntu 20.04 LTS      | ✔ |   |
-| armhf   | ARM Cortex-A15       | Ubuntu 20.04 LTS      | ✔ |   |
-| i386    | Intel Core (Skylake) | Raspberry Pi Desktop  | ✔ |   |
-| ppc64el | IBM POWER9           | Ubuntu 20.04 LTS      | ✔ |   |
-| s390x   | IBM/S390 2964        | Ubuntu 20.04 LTS      | ❌ | 2 |
+|   | Arch    | Processor      | System                | Notes |
+|:-:|:-------:| -------------- | --------------------- |:-----:|
+| ✔ | amd64   | Intel Core     | Fedora 34 Workstation | 1     |
+| ✔ | arm64   | ARM Cortex-A57 | Ubuntu 20.04 LTS      |       |
+| ✔ | armhf   | ARM Cortex-A15 | Ubuntu 20.04 LTS      |       |
+| ✔ | i386    | Intel Core     | Raspberry Pi Desktop  |       |
+| ✔ | ppc64el | IBM POWER9     | Ubuntu 20.04 LTS      |       |
+| ❌ | s390x   | IBM/S390 2964  | Ubuntu 20.04 LTS      | 2     |
 
 1. The commands in Snap packages print the following message on Fedora 34 Workstation:<br>`WARNING: cgroup v2 is not fully supported yet, proceeding with partial confinement`.
 2. Java crashes on QEMU virtual machines that use the *s390x* architecture. See [QEMU Issue #655](https://gitlab.com/qemu-project/qemu/-/issues/655).
 
 The following table shows the status of my tests on **physical machines:**
 
-| Arch | Physical&nbsp;Processor | Operating&nbsp;System | Hardware&nbsp;System | Works? | Notes |
-|:-------:| ------------------ | ---------------- | ------------------------- |:-:|:-:|
-| amd64   | Intel Xeon E3-1225 | Ubuntu 20.04 LTS | Dell Precision Tower 3420 | ✔ |   |
-| arm64   | ARM Cortex-A53     | Ubuntu 20.04 LTS | Raspberry Pi 3 Model A+   | ✔ | 1 |
-| armhf   | ARM Cortex-A7      | Raspberry Pi OS  | Raspberry Pi 2 Model B    | ✔ | 2 |
-| i386    | Intel Atom N270    | Ubuntu 18.04 LTS | Dell Inspiron 1011        | ✔ |   |
-| ppc64el | IBM POWER9         | Ubuntu 20.04 LTS | IBM Power System LC921    | ✔ | 3 |
-| s390x   | IBM/S390 8561      | RHEL 8.4         | IBM LinuxONE III LT1      | ✔ | 4, 5 |
+|   | Arch    | Processor          | System           | Hardware                  | Notes |
+|:-:|:-------:| ------------------ | ---------------- | ------------------------- |:-----:|
+| ✔ | amd64   | Intel Xeon E3-1225 | Ubuntu 20.04 LTS | Dell Precision Tower 3420 |       |
+| ✔ | arm64   | ARM Cortex-A53     | Ubuntu 20.04 LTS | Raspberry Pi 3 Model A+   | 1     |
+| ✔ | armhf   | ARM Cortex-A7      | Raspberry Pi OS  | Raspberry Pi 2 Model B    | 2     |
+| ✔ | i386    | Intel Atom N270    | Ubuntu 18.04 LTS | Dell Inspiron 1011        |       |
+| ✔ | ppc64el | IBM POWER9         | Ubuntu 20.04 LTS | IBM Power System LC921    | 3     |
+| ✔ | s390x   | IBM/S390 8561      | RHEL 8.4         | IBM LinuxONE III LT1      | 4, 5  |
 
 1. With just 512 MiB of RAM on the Pi 3 Model A+, the `jlink` and `jpackage` tools are killed when they run out of memory using a 64-bit OS. The other JDK tools still work. (The Pi 2 Model B has 1 GiB of RAM.)
 2. OpenJDK Snap revisions after 2021-10-13 [have the fix](https://github.com/jgneff/openjdk/commit/412ffe3) for the following message on Raspberry Pi OS:<br>`ERROR: ld.so: object '/usr/lib/arm-linux-gnueabihf/libarmmem-${PLATFORM}.so' from /etc/ld.so.preload cannot be preloaded (cannot open shared object file): ignored.`
@@ -80,16 +80,16 @@ $ sudo snap install openjdk --edge
 
 ## Schedule
 
-The table below maps the [JDK 17 release schedule](https://openjdk.java.net/projects/jdk/17/) to the channels of the OpenJDK Snap package. The channel columns show the JDK release found on the channel during each phase of the schedule.
+The table below maps the [JDK 18 release schedule](https://openjdk.java.net/projects/jdk/18/) to the channels of the OpenJDK Snap package. The channel columns show the JDK release found on the channel during each phase of the schedule.
 
 | Date       | Phase                     | Stable | Candidate | Beta | Edge |
 | ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
-| 2021-03-16 | General Availability      | 16 | ←  | ←  | 17 |
-| 2021-06-10 | Rampdown Phase One        | 16 | ←  | 17 | 18 |
-| 2021-07-15 | Rampdown Phase Two        | 16 | ←  | 17 | 18 |
-| 2021-08-05 | Initial Release Candidate | 16 | 17 | ←  | 18 |
-| 2021-08-19 | Final Release Candidate   | 16 | 17 | ←  | 18 |
 | 2021-09-14 | General Availability      | 17 | ←  | ←  | 18 |
+| 2021-12-09 | Rampdown Phase One        | 17 | ←  | 18 | 19 |
+| 2022-01-20 | Rampdown Phase Two        | 17 | ←  | 18 | 19 |
+| 2022-02-10 | Initial Release Candidate | 17 | 18 | ←  | 19 |
+| 2022-02-24 | Final Release Candidate   | 17 | 18 | ←  | 19 |
+| 2022-03-22 | General Availability      | 18 | ←  | ←  | 19 |
 
 The leftwards arrow symbol (←) indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level to the left in the table. If the channel is re-opened, packages will once again be selected from the original channel.
 
@@ -97,18 +97,18 @@ The leftwards arrow symbol (←) indicates that the channel is closed. When a sp
 
 The steps in building the packages are open and transparent so that you can gain trust in the process that creates them instead of having to put all of your trust in their publisher.
 
-| Channel   | Branch         | Source              | Package                |
+| Channel   | Build          | Source              | Package                |
 | --------- | -------------- | ------------------- | ---------------------- |
 | candidate | [candidate][1] | [openjdk/jdk17u][4] | [openjdk-candidate][7] |
-| beta      | [beta][2]      | [openjdk/jdk17][5]  | [openjdk-beta][8]      |
+| beta      | [beta][2]      | [openjdk/jdk][5]    | [openjdk-beta][8]      |
 | edge      | [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      |
 
-[1]: https://github.com/jgneff/openjdk/tree/candidate
-[2]: https://github.com/jgneff/openjdk/tree/beta
-[3]: https://github.com/jgneff/openjdk/tree/edge
+[1]: https://github.com/jgneff/openjdk/blob/candidate/snap/snapcraft.yaml
+[2]: https://github.com/jgneff/openjdk/blob/beta/snap/snapcraft.yaml
+[3]: https://github.com/jgneff/openjdk/blob/edge/snap/snapcraft.yaml
 
 [4]: https://github.com/openjdk/jdk17u/tags
-[5]: https://github.com/openjdk/jdk17/tags
+[5]: https://github.com/openjdk/jdk/tags
 [6]: https://github.com/openjdk/jdk/tags
 
 [7]: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate
@@ -117,7 +117,7 @@ The steps in building the packages are open and transparent so that you can gain
 
 For each of the three channels, the table above links to:
 
-* the branch of this repository that creates the Snap package,
+* the Snapcraft build file that creates the Snap package,
 * the release tags of the OpenJDK source code repository on GitHub, and
 * the package information and latest builds on Launchpad.
 
@@ -142,7 +142,7 @@ The `image-info` section is followed by other sections that provide the name and
 
 Having a transparent build process is a good first step, but the only conclusive way to verify a software package is to reproduce it. That's the main recommendation in the article [Preventing Supply Chain Attacks like SolarWinds](https://www.linuxfoundation.org/en/blog/preventing-supply-chain-attacks-like-solarwinds) by David Wheeler, Director of Open Source Supply Chain Security at the Linux Foundation. "In the longer term," he writes, "I know of only one strong countermeasure for this kind of attack: verified reproducible builds."
 
-The OpenJDK project has only just started to [add the necessary support](https://bugs.openjdk.java.net/browse/JDK-8244592). There are still many files that differ between any two builds from the same source. The Snap packages built by this project set the *configure* option `--with-source-date` to enable reproducible builds when the feature becomes fully functional.
+The OpenJDK project [is making progress](https://github.com/openjdk/jdk/pull/6481) on allowing for reproducible builds. The Snapcraft build files in this repository set the *configure* option `--with-source-date` to enable the feature when it becomes fully functional.
 
 ## Usage
 
@@ -265,7 +265,7 @@ When invoked directly from their absolute paths, the commands in the OpenJDK Sna
 
 ```console
 $ uname -r
-5.11.0-38-generic
+5.11.0-41-generic
 $ ldd --version
 ldd (Ubuntu GLIBC 2.31-0ubuntu9.3) 2.31
   ...
