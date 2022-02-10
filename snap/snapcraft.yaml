@@ -35,7 +35,7 @@ description: |
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
 
-version: '19+8'
+version: '19+9'
 license: GPL-2.0-with-classpath-exception
 
 base: core18
