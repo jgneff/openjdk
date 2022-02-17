@@ -35,7 +35,7 @@ description: |
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
 
-version: '19+9'
+version: '19+10'
 license: GPL-2.0-with-classpath-exception
 
 base: core18
@@ -120,7 +120,7 @@ parts:
     source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
     build-snaps:
-    - openjdk/latest/candidate
+    - openjdk/latest/stable
     build-packages:
     - libasound2-dev
     - libcups2-dev
