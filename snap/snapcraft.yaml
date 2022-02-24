@@ -117,10 +117,11 @@ parts:
   jdk:
     plugin: autotools
     source: https://github.com/openjdk/jdk17u.git
+    source-type: git
     source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
     build-snaps:
-    - openjdk/latest/candidate
+    - openjdk/latest/stable
     build-packages:
     - libasound2-dev
     - libcups2-dev
