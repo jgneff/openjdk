@@ -35,7 +35,7 @@ description: |
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
 
-version: '19+14'
+version: '19+15'
 license: GPL-2.0-with-classpath-exception
 
 base: core18
@@ -104,6 +104,12 @@ apps:
       LC_ALL: C.UTF-8
   jpackage:
     command: jdk/bin/jpackage
+    environment:
+      LC_ALL: C.UTF-8
+  jwebserver:
+    command: jdk/bin/jwebserver
+    plugs:
+    - network-bind
     environment:
       LC_ALL: C.UTF-8
 
