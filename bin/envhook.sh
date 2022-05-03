@@ -28,4 +28,5 @@ name=${SNAP_INSTANCE_NAME}
     printf "alias jarsigner='%s.jarsigner'\n" "${name}"
     printf "alias jlink='%s.jlink'\n" "${name}"
     printf "alias jpackage='%s.jpackage'\n" "${name}"
+    printf "alias jwebserver='%s.jwebserver'\n" "${name}"
 } > "${SNAP_COMMON}/openjdk.env"
