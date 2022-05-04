@@ -144,12 +144,10 @@ parts:
     build-environment:
     - JAVA_HOME: /snap/openjdk/current/jdk
     override-build: |
-      SOURCE_DATE_ISO=$(git log -1 --pretty=%cI)
       SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
-      export SOURCE_DATE_ISO SOURCE_DATE_EPOCH
+      export SOURCE_DATE_EPOCH
       # Option '--enable-warnings-as-errors=no' for armhf
       bash configure \
-          --enable-reproducible-build \
           --enable-warnings-as-errors=no \
           --enable-javac-server=no \
           --with-vendor-name="Snap Build" \
@@ -158,13 +156,10 @@ parts:
           --with-version-pre=ea \
           --with-version-opt=snap \
           --with-version-build="${SNAPCRAFT_PROJECT_VERSION#*+}" \
-          --with-copyright-year="${SOURCE_DATE_ISO%%-*}" \
           --with-extra-cflags="$CFLAGS" \
           --with-extra-cxxflags="$CXXFLAGS" \
           --with-extra-ldflags="$LDFLAGS" \
-          --with-source-date="$SOURCE_DATE_EPOCH" \
-          --with-native-debug-symbols=none \
-          --with-hotspot-build-time="$SOURCE_DATE_ISO"
+          --with-native-debug-symbols=none
       make images docs
       cd build/linux-*-server-release/images || exit
       mv jdk docs "$SNAPCRAFT_PART_INSTALL"
