@@ -164,7 +164,7 @@ The `openjdk` command itself prints the location of a file that defines environm
 
 ```console
 $ openjdk
-/var/snap/openjdk/common/openjdk.env
+/var/snap/openjdk/x1/openjdk.env
 ```
 
 The file exports the `JAVA_HOME` and `MANPATH` environment variables, and it defines aliases for the JDK tools so that you can enter them without the package prefix:
