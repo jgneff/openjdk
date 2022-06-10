@@ -35,7 +35,7 @@ description: |
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
 
-version: '18+35'
+version: '19+26'
 license: GPL-2.0-with-classpath-exception
 
 base: core18
@@ -51,13 +51,13 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-18-1804:
+  jdk-19-1804:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
-  jfx-18-1804:
+  jfx-19-1804:
     interface: content
     target: $SNAP/jfx
 
@@ -106,6 +106,12 @@ apps:
     command: jdk/bin/jpackage
     environment:
       LC_ALL: C.UTF-8
+  jwebserver:
+    command: jdk/bin/jwebserver
+    plugs:
+    - network-bind
+    environment:
+      LC_ALL: C.UTF-8
 
 parts:
   bin:
@@ -116,11 +122,12 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk18.git
+    source: https://github.com/openjdk/jdk.git
+    source-type: git
     source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
     build-snaps:
-    - openjdk/latest/candidate
+    - openjdk/latest/stable
     build-packages:
     - libasound2-dev
     - libcups2-dev
@@ -136,15 +143,22 @@ parts:
     - zip
     build-environment:
     - JAVA_HOME: /snap/openjdk/current/jdk
-    # Option '--disable-warnings-as-errors' for armhf
     override-build: |
+      SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
+      export SOURCE_DATE_EPOCH
+      # Option '--enable-warnings-as-errors=no' for armhf
       bash configure \
           --enable-warnings-as-errors=no \
           --enable-javac-server=no \
+          --with-vendor-name="Snap Build" \
+          --with-vendor-url="https://snapcraft.io/openjdk" \
+          --with-vendor-bug-url="https://github.com/jgneff/openjdk/issues" \
           --with-version-pre=ea \
           --with-version-opt=snap \
           --with-version-build="${SNAPCRAFT_PROJECT_VERSION#*+}" \
-          --with-source-date=version \
+          --with-extra-cflags="$CFLAGS" \
+          --with-extra-cxxflags="$CXXFLAGS" \
+          --with-extra-ldflags="$LDFLAGS" \
           --with-native-debug-symbols=none
       make images docs
       cd build/linux-*-server-release/images || exit
