@@ -51,6 +51,9 @@ architectures:
 - build-on: s390x
 
 slots:
+  jdk-18-1804:
+    interface: content
+    read: [$SNAP/jdk]
   jdk-19-1804:
     interface: content
     read: [$SNAP/jdk]
