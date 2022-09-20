@@ -15,6 +15,12 @@ The branches of this repository publish the JDK general-availability (GA) releas
 
 **Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build files are found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
+## See also
+
+* [OpenJFX](https://github.com/jgneff/openjfx) - Current JavaFX release and early-access builds
+* [Strictly Maven](https://github.com/jgneff/strictly-maven) - Apache Maven™ in a strictly-confined snap
+* [Strictly NetBeans](https://github.com/jgneff/strictly-netbeans) - Apache NetBeans® in a strictly-confined snap
+
 ## Schedule
 
 The table below shows the most recent schedule for OpenJDK. The channel columns list the JDK releases found on the channel during each phase of the schedule.
@@ -88,17 +94,17 @@ The [Launchpad build farm](https://launchpad.net/builders) runs each build in a 
 
 Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build log. This information is contained in a file called `manifest.yaml` in the directory `/snap/openjdk/current/snap`. The `image-info` section of the manifest provides a link to the package's page on Launchpad with its build status, including the complete log file from the container that ran the build. You can use this information to verify that the OpenJDK Snap package installed on your system was built from source on Launchpad using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
 
-For example, I'll demonstrate how I verify the OpenJDK Snap package installed on my system at the time of this writing. The `snap info` command shows that I installed OpenJDK version 18.0.2.1+1 with revision 1057, the revision for the *amd64* architecture:
+For example, I'll demonstrate how I verify the OpenJDK Snap package installed on my system at the time of this writing. The `snap info` command shows that I installed OpenJDK version 19+36 with revision 1079, the revision for the *amd64* architecture:
 
 ```console
 $ snap info openjdk
 ...
 channels:
-  latest/stable:    18.0.2.1+1 2022-08-25 (1057) 241MB -
-  latest/candidate: 19+36      2022-09-06 (1079) 247MB -
+  latest/stable:    19+36 2022-09-20 (1079) 247MB -
+  latest/candidate: ↑
   latest/beta:      ↑
-  latest/edge:      20+15      2022-09-15 (1090) 249MB -
-installed:          18.0.2.1+1            (1057) 241MB -
+  latest/edge:      20+15 2022-09-15 (1090) 249MB -
+installed:          19+36            (1079) 247MB -
 ```
 
 The following command prints the build information from the manifest file:
@@ -106,27 +112,30 @@ The following command prints the build information from the manifest file:
 ```console
 $ grep -A3 image-info /snap/openjdk/current/snap/manifest.yaml
 image-info:
-  build-request-id: lp-73508428
-  build-request-timestamp: '2022-08-23T15:24:32Z'
-  build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1860383
+  build-request-id: lp-73864071
+  build-request-timestamp: '2022-09-06T16:01:55Z'
+  build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1872495
 ```
 
-The `build_url` in the manifest is a link to the [page on Launchpad](https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1860383) with the package's **Build status** and **Store status**. The store status shows that Launchpad uploaded revision 1057 to the Snap Store, which matches the revision installed on my system. The build status shows a link to the log file with the label *buildlog*.
+The `build_url` in the manifest is a link to the [page on Launchpad](https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1872495) with the package's **Build status** and **Store status**. The store status shows that Launchpad uploaded revision 1079 to the Snap Store, which matches the revision installed on my system. The build status shows a link to the log file with the label *buildlog*.
 
 The end of the log file contains a line with the SHA512 checksum of the package just built, shown below with the checksum edited to fit on this page:
 
 ```
 Snapping...
-Snapped openjdk_18.0.2.1+1_amd64.snap
-e3174480f6fb4d5b...2d2c253e3712f74d  openjdk_18.0.2.1+1_amd64.snap
+Snapped openjdk_19+36_amd64.snap
+Starting Snapcraft 7.1.3
+Logging execution to
+  '/root/.cache/snapcraft/log/snapcraft-20220906-161326.995272.log'
+1594263134ecf752...bcc699101fca509f  openjdk_19+36_amd64.snap
 Revoking proxy token...
 ```
 
 The command below prints the checksum of the package installed on my system:
 
 ```console
-$ sudo sha512sum /var/lib/snapd/snaps/openjdk_1057.snap
-e3174480f6fb4d5b...2d2c253e3712f74d  /var/lib/snapd/snaps/openjdk_1057.snap
+$ sudo sha512sum /var/lib/snapd/snaps/openjdk_1079.snap
+1594263134ecf752...bcc699101fca509f  /var/lib/snapd/snaps/openjdk_1079.snap
 ```
 
 The two checksum strings are identical. Using this procedure, I verified that the OpenJDK Snap package installed on my system and the OpenJDK Snap package built and uploaded to the Snap Store by Launchpad are in fact the exact same package. For more information, see [Launchpad Bug #1979844](https://bugs.launchpad.net/launchpad/+bug/1979844), "Allow verifying that a snap recipe build corresponds to a store revision."
@@ -203,9 +212,9 @@ $ type java javac
 java is aliased to `openjdk.java'
 javac is aliased to `openjdk.javac'
 $ java --version
-openjdk 18.0.2.1 2022-08-18
-OpenJDK Runtime Environment (build 18.0.2.1+1-snap)
-OpenJDK 64-Bit Server VM (build 18.0.2.1+1-snap, mixed mode, sharing)
+openjdk 19 2022-09-20
+OpenJDK Runtime Environment (build 19+36-snap)
+OpenJDK 64-Bit Server VM (build 19+36-snap, mixed mode, sharing)
 ```
 
 If you refer to locations outside of your home directory in the arguments to the Snap package commands or aliases, such as the JUnit libraries shown below, you'll see error messages like the following when compiling your program:
@@ -269,9 +278,9 @@ You can then run the programs directly from their installed locations:
 
 ```console
 $ $JAVA_HOME/bin/java --version
-openjdk 18.0.2.1 2022-08-18
-OpenJDK Runtime Environment (build 18.0.2.1+1-snap)
-OpenJDK 64-Bit Server VM (build 18.0.2.1+1-snap, mixed mode, sharing)
+openjdk 19 2022-09-20
+OpenJDK Runtime Environment (build 19+36-snap)
+OpenJDK 64-Bit Server VM (build 19+36-snap, mixed mode, sharing)
 ```
 
 If your system has a version of the GNU C library older than 2.27, you'll see error messages similar to the example shown below, which ran on Ubuntu 16.04 LTS with GLIBC 2.23:
@@ -288,9 +297,9 @@ In this case, either upgrade your Linux system to a more recent version, or run 
 
 ```console
 $ openjdk.java --version
-openjdk 18.0.2.1 2022-08-18
-OpenJDK Runtime Environment (build 18.0.2.1+1-snap)
-OpenJDK 64-Bit Server VM (build 18.0.2.1+1-snap, mixed mode, sharing)
+openjdk 19 2022-09-20
+OpenJDK Runtime Environment (build 19+36-snap)
+OpenJDK 64-Bit Server VM (build 19+36-snap, mixed mode, sharing)
 ```
 
 Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They both need the `objcopy` program from the `binutils` package to create the custom run-time image, and the `jpackage` program needs the `fakeroot` package to create a Debian package.
