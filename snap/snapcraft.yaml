@@ -35,7 +35,7 @@ description: |
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
 
-version: '20+18'
+adopt-info: jdk
 license: GPL-2.0-with-classpath-exception
 
 base: core18
@@ -135,6 +135,7 @@ parts:
     build-snaps:
     - openjdk/latest/stable
     build-packages:
+    - curl
     - libasound2-dev
     - libcups2-dev
     - libfontconfig1-dev
@@ -147,9 +148,27 @@ parts:
     - libxtst-dev
     - unzip
     - zip
+    override-pull: |
+      # See: https://forum.snapcraft.io/t/17597
+      if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
+          feature=20
+          version=$(curl -s https://github.com/openjdk/jdk/tags.atom \
+              | grep "<title>jdk-$feature" \
+              | sed -E -e '1!d' -e 's| *<title>jdk-(.*)</title>|\1|')
+          snapcraftctl set-version "$version"
+          printf "export SNAPCRAFT_PROJECT_VERSION=%s\n" "$version" \
+              > /tmp/snapcraft-project-version
+          git clone --branch "jdk-$version" --depth 1 \
+              https://github.com/openjdk/jdk.git "$SNAPCRAFT_PART_SRC"
+      else
+          snapcraftctl pull
+      fi
     build-environment:
     - JAVA_HOME: /snap/openjdk/current/jdk
     override-build: |
+      if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
+          . /tmp/snapcraft-project-version
+      fi
       SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
       export SOURCE_DATE_EPOCH
       # Option '--enable-warnings-as-errors=no' for armhf
