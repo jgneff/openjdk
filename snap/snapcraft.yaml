@@ -51,9 +51,6 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-18-1804:
-    interface: content
-    read: [$SNAP/jdk]
   jdk-19-1804:
     interface: content
     read: [$SNAP/jdk]
@@ -149,15 +146,27 @@ parts:
     - unzip
     - zip
     override-pull: |
-      # See: https://forum.snapcraft.io/t/17597
-      if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
-          feature=20
-          version=$(curl -s https://github.com/openjdk/jdk/tags.atom \
+      # Gets the version from the latest release tag on GitHub
+      getversion() {
+          # OpenJDK feature-release counter (formerly "major")
+          local feature=20
+          curl -s https://github.com/openjdk/jdk/tags.atom \
               | grep "<title>jdk-$feature" \
-              | sed -E -e '1!d' -e 's| *<title>jdk-(.*)</title>|\1|')
-          snapcraftctl set-version "$version"
-          printf "export SNAPCRAFT_PROJECT_VERSION=%s\n" "$version" \
+              | sed -E -e '1!d' -e 's| *<title>jdk-(.*)</title>|\1|'
+      }
+
+      # Sets the version and saves its environment variable
+      #   $1 = the version string
+      setversion() {
+          snapcraftctl set-version "$1"
+          printf "export SNAPCRAFT_PROJECT_VERSION=%s\n" "$1" \
               > /tmp/snapcraft-project-version
+      }
+
+      # See https://forum.snapcraft.io/t/17597
+      if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
+          version=$(getversion)
+          setversion "$version"
           git clone --branch "jdk-$version" --depth 1 \
               https://github.com/openjdk/jdk.git "$SNAPCRAFT_PART_SRC"
       else
@@ -166,12 +175,16 @@ parts:
     build-environment:
     - JAVA_HOME: /snap/openjdk/current/jdk
     override-build: |
+      # Loads the version environment variable if not defined
       if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
           . /tmp/snapcraft-project-version
       fi
+
+      # Sets the environment variable for reproducible builds
       SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
       export SOURCE_DATE_EPOCH
-      # Option '--enable-warnings-as-errors=no' for armhf
+
+      # Builds the JDK ('--enable-warnings-as-errors=no' for armhf)
       bash configure \
           --enable-warnings-as-errors=no \
           --enable-javac-server=no \
@@ -186,6 +199,8 @@ parts:
           --with-extra-ldflags="$LDFLAGS" \
           --with-native-debug-symbols=none
       make images docs
+
+      # Installs the build output
       cd build/linux-*-server-release/images || exit
       mv jdk docs "$SNAPCRAFT_PART_INSTALL"
     organize:
