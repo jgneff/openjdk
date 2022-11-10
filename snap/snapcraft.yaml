@@ -151,7 +151,7 @@ parts:
           # OpenJDK feature-release counter (formerly "major")
           local feature=20
           curl -s https://github.com/openjdk/jdk/tags.atom \
-              | grep "<title>jdk-$feature" \
+              | grep "<title>jdk-${feature}[.0-9]*+" \
               | sed -E -e '1!d' -e 's| *<title>jdk-(.*)</title>|\1|'
       }
 
