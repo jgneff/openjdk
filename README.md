@@ -4,22 +4,36 @@ OpenJDK is the official reference implementation of the Java Platform, Standard 
 
 The branches of this repository publish the JDK general-availability (GA) release and early-access (EA) builds for six hardware platforms, listed below by their Debian architectures and machine hardware names:
 
-| Architecture | Hardware | JDK GA | JDK EA |
-|:------------:|:--------:|:------:|:------:|
-| amd64        | x86_64   | ✔ | ✔ |
-| arm64        | aarch64  | ✔ | ✔ |
-| armhf        | armv7l   | ✔ | ✔ |
-| i386         | i686     | ✔ | ✔ |
-| ppc64el      | ppc64le  | ✔ | ✔ |
-| s390x        | s390x    | ✔ | ✔ |
+| Architecture | Machine | JDK GA | JDK EA |
+|:------------:|:-------:|:------:|:------:|
+| amd64        | x86_64  | ✔ | ✔ |
+| arm64        | aarch64 | ✔ | ✔ |
+| armhf        | armv7l  | ✔ | ✔ |
+| i386         | i686    | ✔ | ✔ |
+| ppc64el      | ppc64le | ✔ | ✔ |
+| s390x        | s390x   | ✔ | ✔ |
 
 **Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build files are found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
 
 ## See also
 
+This project is one of four that I created to gain control of my development environment:
+
+* [OpenJDK](https://github.com/jgneff/openjdk) - Current JDK release and early-access builds
+
+    [![openjdk](https://snapcraft.io/openjdk/badge.svg)](https://snapcraft.io/openjdk)
+
 * [OpenJFX](https://github.com/jgneff/openjfx) - Current JavaFX release and early-access builds
+
+    [![openjfx](https://snapcraft.io/openjfx/badge.svg)](https://snapcraft.io/openjfx)
+
 * [Strictly Maven](https://github.com/jgneff/strictly-maven) - Apache Maven™ in a strictly-confined snap
+
+    [![strictly-maven](https://snapcraft.io/strictly-maven/badge.svg)](https://snapcraft.io/strictly-maven)
+
 * [Strictly NetBeans](https://github.com/jgneff/strictly-netbeans) - Apache NetBeans® in a strictly-confined snap
+
+    [![strictly-netbeans](https://snapcraft.io/strictly-netbeans/badge.svg)](https://snapcraft.io/strictly-netbeans)
 
 ## Schedule
 
