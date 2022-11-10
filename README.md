@@ -41,12 +41,12 @@ The table below shows the most recent schedule for OpenJDK. The channel columns 
 
 | Date       | Phase                     | Stable | Candidate | Beta | Edge |
 | ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
-| 2022-03-22 | General Availability      | 18 | ←  | ←  | 19 |
-| 2022-06-09 | Rampdown Phase One        | 18 | ←  | 19 | 20 |
-| 2022-07-21 | Rampdown Phase Two        | 18 | ←  | 19 | 20 |
-| 2022-08-11 | Initial Release Candidate | 18 | 19 | ←  | 20 |
-| 2022-08-25 | Final Release Candidate   | 18 | 19 | ←  | 20 |
 | 2022-09-20 | General Availability      | 19 | ←  | ←  | 20 |
+| 2022-12-08 | Rampdown Phase One        | 19 | ←  | 20 | 21 |
+| 2023-01-19 | Rampdown Phase Two        | 19 | ←  | 20 | 21 |
+| 2023-02-09 | Initial Release Candidate | 19 | 20 | ←  | 21 |
+| 2023-02-23 | Final Release Candidate   | 19 | 20 | ←  | 21 |
+| 2023-03-21 | General Availability      | 20 | ←  | ←  | 21 |
 
 The leftwards arrow (←) indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level in the column to its left. If the channel is re-opened, packages will once again be selected from the original channel.
 
