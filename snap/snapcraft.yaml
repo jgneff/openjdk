@@ -51,16 +51,16 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-19-1804:
+  jdk-20-1804:
     interface: content
     read: [$SNAP/jdk]
-  jdk-20-1804:
+  jdk-21-1804:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
-  jfx-20-1804:
+  jfx-21-1804:
     interface: content
     target: $SNAP/jfx
 
@@ -146,10 +146,12 @@ parts:
     - unzip
     - zip
     override-pull: |
-      # Gets the version from the latest release tag on GitHub
-      getversion() {
+      release=21
+
+      # Gets the JDK version from the latest release tag on GitHub
+      jdkversion() {
           # OpenJDK feature-release counter (formerly "major")
-          local feature=20
+          local feature=$release
           curl -s https://github.com/openjdk/jdk/tags.atom \
               | grep "<title>jdk-${feature}[.0-9]*+" \
               | sed -E -e '1!d' -e 's| *<title>jdk-(.*)</title>|\1|'
@@ -165,7 +167,7 @@ parts:
 
       # See https://forum.snapcraft.io/t/17597
       if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
-          version=$(getversion)
+          version=$(jdkversion)
           setversion "$version"
           git clone --branch "jdk-$version" --depth 1 \
               https://github.com/openjdk/jdk.git "$SNAPCRAFT_PART_SRC"
