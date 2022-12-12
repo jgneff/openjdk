@@ -125,7 +125,7 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk.git
+    source: https://github.com/openjdk/jdk20.git
     source-type: git
     source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
@@ -147,13 +147,16 @@ parts:
     - zip
     override-pull: |
       release=20
+      giturl=https://github.com/openjdk/jdk20.git
+      tagurl=https://github.com/openjdk/jdk20/tags.atom
 
       # Gets the JDK version from the latest release tag on GitHub
-      jdkversion() {
-          # OpenJDK feature-release counter (formerly "major")
-          local feature=$release
-          curl -s https://github.com/openjdk/jdk/tags.atom \
-              | grep "<title>jdk-${feature}[.0-9]*+" \
+      #   $1 = JDK feature release number (formerly "major" version)
+      #   $2 = URL of Atom web feed providing recent tags on GitHub
+      getversion() {
+          local feature=$1
+          local webfeed=$2
+          curl -s "$webfeed" | grep "<title>jdk-${feature}[.0-9]*+" \
               | sed -E -e '1!d' -e 's| *<title>jdk-(.*)</title>|\1|'
       }
 
@@ -167,10 +170,10 @@ parts:
 
       # See https://forum.snapcraft.io/t/17597
       if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
-          version=$(jdkversion)
+          version=$(getversion $release $tagurl)
           setversion "$version"
           git clone --branch "jdk-$version" --depth 1 \
-              https://github.com/openjdk/jdk.git "$SNAPCRAFT_PART_SRC"
+              $giturl "$SNAPCRAFT_PART_SRC"
       else
           snapcraftctl pull
       fi
