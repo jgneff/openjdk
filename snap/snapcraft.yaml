@@ -51,16 +51,16 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-18-1804:
+  jdk-19-1804:
     interface: content
     read: [$SNAP/jdk]
-  jdk-19-1804:
+  jdk-20-1804:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
-  jfx-19-1804:
+  jfx-20-1804:
     interface: content
     target: $SNAP/jfx
 
@@ -125,7 +125,7 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk19u.git
+    source: https://github.com/openjdk/jdk20.git
     source-type: git
     source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
@@ -146,9 +146,9 @@ parts:
     - unzip
     - zip
     override-pull: |
-      release=19
-      giturl=https://github.com/openjdk/jdk19u.git
-      tagurl=https://github.com/openjdk/jdk19u/tags.atom
+      release=20
+      giturl=https://github.com/openjdk/jdk20.git
+      tagurl=https://github.com/openjdk/jdk20/tags.atom
 
       # Gets the JDK version from the latest release tag on GitHub
       #   $1 = JDK feature release number (formerly "major" version)
