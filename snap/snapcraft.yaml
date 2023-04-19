@@ -125,7 +125,7 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk20.git
+    source: https://github.com/openjdk/jdk20u.git
     source-type: git
     source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
@@ -147,12 +147,12 @@ parts:
     - zip
     override-pull: |
       release=20
-      giturl=https://github.com/openjdk/jdk20.git
-      tagurl=https://github.com/openjdk/jdk20/tags.atom
+      giturl=https://github.com/openjdk/jdk20u.git
+      tagurl=https://github.com/openjdk/jdk20u/tags.atom
 
-      # Gets the JDK version from the latest release tag on GitHub
-      #   $1 = JDK feature release number (formerly "major" version)
-      #   $2 = URL of Atom web feed providing recent tags on GitHub
+      # Gets the version from the latest release tag on GitHub
+      #   $1 = feature release number (formerly "major" version)
+      #   $2 = URL of Atom web feed providing recent tags
       getversion() {
           local feature=$1
           local webfeed=$2
