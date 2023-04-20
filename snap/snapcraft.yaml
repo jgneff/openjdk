@@ -1,5 +1,5 @@
 # snapcraft.yaml - builds a Snap package of OpenJDK
-# Copyright (C) 2020-2022 John Neffenger
+# Copyright (C) 2020-2023 John Neffenger
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -150,9 +150,9 @@ parts:
       giturl=https://github.com/openjdk/jdk.git
       tagurl=https://github.com/openjdk/jdk/tags.atom
 
-      # Gets the JDK version from the latest release tag on GitHub
-      #   $1 = JDK feature release number (formerly "major" version)
-      #   $2 = URL of Atom web feed providing recent tags on GitHub
+      # Gets the version from the latest release tag on GitHub
+      #   $1 = feature release number (formerly "major" version)
+      #   $2 = URL of Atom web feed providing recent tags
       getversion() {
           local feature=$1
           local webfeed=$2
