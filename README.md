@@ -2,18 +2,18 @@
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk) on GitHub. These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-The branches of this repository publish the JDK general-availability (GA) release and early-access (EA) builds for six hardware platforms, listed below by their Debian architectures and machine hardware names:
+The branches of this repository publish the JDK general-availability release (JDK GA) and early-access builds (JDK EA) for six hardware platforms. They are listed below by their Debian architecture (`dpkg --print-architecture`), machine hardware name (`uname -m`), and Java architecture (`os.arch`):
 
-| Architecture | Machine | JDK GA | JDK EA |
-|:------------:|:-------:|:------:|:------:|
-| amd64        | x86_64  | ✔ | ✔ |
-| arm64        | aarch64 | ✔ | ✔ |
-| armhf        | armv7l  | ✔ | ✔ |
-| i386         | i686    | ✔ | ✔ |
-| ppc64el      | ppc64le | ✔ | ✔ |
-| s390x        | s390x   | ✔ | ✔ |
+| Debian  | Machine | Java    | JDK GA | JDK EA |
+|:-------:|:-------:|:-------:|:------:|:------:|
+| amd64   | x86_64  | amd64   | ✔ | ✔ |
+| arm64   | aarch64 | aarch64 | ✔ | ✔ |
+| armhf   | armv7l  | arm     | ✔ | ✔ |
+| i386    | i686    | i386    | ✔ | ✔ |
+| ppc64el | ppc64le | ppc64le | ✔ | ✔ |
+| s390x   | s390x   | s390x   | ✔ | ✔ |
 
-**Note:** this repository uses branches differently from most repositories on GitHub. It follows the workflow recommended by Junio Hamano, the core maintainer of Git, for managing [permanent parallel branches](https://www.spinics.net/linux/lists/git/msg94767.html). The `snapcraft.yaml` build files are found only on the *candidate*, *beta*, and *edge* branches, named after the Snap channels where the builds are published. The files common to all branches are updated only on the *main* branch. Merges are done from the *main* branch to the three channel branches, never the other way.
+**Note:** The branches of this repository are named after the Snap channels where the builds are published: *edge*, *beta*, *candidate*, and *stable*. The HEAD branch is *edge*, and merges follow the Snap package releases from *edge* into *beta*, *beta* into *candidate*, and *candidate* into *stable*.
 
 ## See also
 
@@ -37,16 +37,16 @@ This project is one of four that I created to gain control of my development env
 
 ## Schedule
 
-The table below shows the most recent schedule for OpenJDK. The channel columns list the JDK releases found on the channel during each phase of the schedule.
+The table below contains the most recent schedule for OpenJDK. The channel columns show the JDK releases found on the channels during each phase of the schedule.
 
 | Date       | Phase                     | Stable | Candidate | Beta | Edge |
 | ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
-| 2022-09-20 | General Availability      | 19 | ←  | ←  | 20 |
-| 2022-12-08 | Rampdown Phase One        | 19 | ←  | 20 | 21 |
-| 2023-01-19 | Rampdown Phase Two        | 19 | ←  | 20 | 21 |
-| 2023-02-09 | Initial Release Candidate | 19 | 20 | ←  | 21 |
-| 2023-02-23 | Final Release Candidate   | 19 | 20 | ←  | 21 |
 | 2023-03-21 | General Availability      | 20 | ←  | ←  | 21 |
+| 2023-06-08 | Rampdown Phase One        | 20 | ←  | 21 | 22 |
+| 2023-07-20 | Rampdown Phase Two        | 20 | ←  | 21 | 22 |
+| 2023-08-10 | Initial Release Candidate | 20 | 21 | ←  | 22 |
+| 2023-08-24 | Final Release Candidate   | 20 | 21 | ←  | 22 |
+| 2023-09-19 | General Availability      | 21 | ←  | ←  | 22 |
 
 The leftwards arrow (←) indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level in the column to its left. If the channel is re-opened, packages will once again be selected from the original channel.
 
@@ -76,18 +76,18 @@ $ sudo snap install openjdk --edge
 
 The steps in building the packages are open and transparent so that you can gain trust in the process that creates them instead of having to put all of your trust in their publisher.
 
-| Snap Channel | Build File     | Source Code         | Snap Package           |
-| ------------ | -------------- | ------------------- | ---------------------- |
-| candidate    | [candidate][1] | [openjdk/jdk19u][4] | [openjdk-candidate][7] |
-| beta         | [beta][2]      | [openjdk/jdk][5]    | [openjdk-beta][8]      |
-| edge         | [edge][3]      | [openjdk/jdk][6]    | [openjdk-edge][9]      |
+| Snap Channel | Build File          | Source Code         | Snap Package           |
+| ------------ | ------------------- | ------------------- | ---------------------- |
+| candidate    | [snapcraft.yaml][1] | [openjdk/jdk20u][4] | [openjdk-candidate][7] |
+| beta         | [snapcraft.yaml][2] | [openjdk/jdk20][5]  | [openjdk-beta][8]      |
+| edge         | [snapcraft.yaml][3] | [openjdk/jdk][6]    | [openjdk-edge][9]      |
 
 [1]: https://github.com/jgneff/openjdk/blob/candidate/snap/snapcraft.yaml
 [2]: https://github.com/jgneff/openjdk/blob/beta/snap/snapcraft.yaml
 [3]: https://github.com/jgneff/openjdk/blob/edge/snap/snapcraft.yaml
 
-[4]: https://github.com/openjdk/jdk19u/tags
-[5]: https://github.com/openjdk/jdk/tags
+[4]: https://github.com/openjdk/jdk20u/tags
+[5]: https://github.com/openjdk/jdk20/tags
 [6]: https://github.com/openjdk/jdk/tags
 
 [7]: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate
@@ -226,9 +226,9 @@ $ type java javac
 java is aliased to `openjdk.java'
 javac is aliased to `openjdk.javac'
 $ java --version
-openjdk 19 2022-09-20
-OpenJDK Runtime Environment (build 19+36-snap)
-OpenJDK 64-Bit Server VM (build 19+36-snap, mixed mode, sharing)
+openjdk 20.0.1 2023-04-18
+OpenJDK Runtime Environment (build 20.0.1+9-snap)
+OpenJDK 64-Bit Server VM (build 20.0.1+9-snap, mixed mode, sharing)
 ```
 
 If you refer to locations outside of your home directory in the arguments to the Snap package commands or aliases, such as the JUnit libraries shown below, you'll see error messages like the following when compiling your program:
@@ -265,7 +265,7 @@ $ openjdk.javac -d build/testing --class-path \
 
 ### Unconfined
 
-Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoked the JDK programs directly using their absolute paths on your system.
+Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoke the JDK programs directly using their absolute paths on your system.
 
 When the programs are invoked directly, they run outside of their strictly-confined container and in your system's environment like any normal program. They have the same access to your system as the user account that runs them, and they depend on having their supporting libraries installed on your system. This is not how you're supposed to run Snap packages, but it works when the correct system dependencies are present.
 
@@ -292,9 +292,9 @@ You can then run the programs directly from their installed locations:
 
 ```console
 $ $JAVA_HOME/bin/java --version
-openjdk 19 2022-09-20
-OpenJDK Runtime Environment (build 19+36-snap)
-OpenJDK 64-Bit Server VM (build 19+36-snap, mixed mode, sharing)
+openjdk 20.0.1 2023-04-18
+OpenJDK Runtime Environment (build 20.0.1+9-snap)
+OpenJDK 64-Bit Server VM (build 20.0.1+9-snap, mixed mode, sharing)
 ```
 
 If your system has a version of the GNU C library older than 2.27, you'll see error messages similar to the example shown below, which ran on Ubuntu 16.04 LTS with GLIBC 2.23:
@@ -311,9 +311,9 @@ In this case, either upgrade your Linux system to a more recent version, or run 
 
 ```console
 $ openjdk.java --version
-openjdk 19 2022-09-20
-OpenJDK Runtime Environment (build 19+36-snap)
-OpenJDK 64-Bit Server VM (build 19+36-snap, mixed mode, sharing)
+openjdk 20.0.1 2023-04-18
+OpenJDK Runtime Environment (build 20.0.1+9-snap)
+OpenJDK 64-Bit Server VM (build 20.0.1+9-snap, mixed mode, sharing)
 ```
 
 Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They both need the `objcopy` program from the `binutils` package to create the custom run-time image, and the `jpackage` program needs the `fakeroot` package to create a Debian package.
@@ -348,7 +348,7 @@ The table below shows the Snap package support for recent releases of Ubuntu:
 | Release   | End of Updates | C Library | Confined | Unconfined |
 | --------- |:--------------:|:---------:|:--------:|:----------:|
 | 16.04 LTS | 2021-04-30     | 2.23      | ✔ |   |
-| 18.04 LTS | 2023-04-26     | 2.27      | ✔ | ✔ |
+| 18.04 LTS | 2023-05-31     | 2.27      | ✔ | ✔ |
 | 20.04 LTS | 2025-04-23     | 2.31      | ✔ | ✔ |
 | 22.04 LTS | 2027-04-21     | 2.34      | ✔ | ✔ |
 
@@ -368,9 +368,11 @@ The table below shows the Snap package support for recent releases of Fedora:
 | 31      | 2020-11-24     | 2.30      | ✔ | ✔ |
 | 32      | 2021-05-25     | 2.31      | ✔ | ✔ |
 | 33      | 2021-11-30     | 2.32      | ✔ | ✔ |
-| 34      | 2022-05-17     | 2.33      | ✔ | ✔ |
-| 35      | 2022-12-07     | 2.34      | ✔ | ✔ |
-| 36      | 2023-05-24     | 2.35      | ✔ | ✔ |
+| 34      | 2022-06-07     | 2.33      | ✔ | ✔ |
+| 35      | 2022-12-13     | 2.34      | ✔ | ✔ |
+| 36      | 2023-05-16     | 2.35      | ✔ | ✔ |
+| 37      | 2023-11-14     | 2.36      | ✔ | ✔ |
+| 38      | 2024-05-14     | 2.37      | ✔ | ✔ |
 
 ## Build
 
@@ -393,6 +395,6 @@ See the [Snapcraft Overview](https://snapcraft.io/docs/snapcraft-overview) page 
 
 ## License
 
-This project is licensed under the GNU General Public License v2.0 with the Classpath exception, the same license used by Oracle for the OpenJDK project. See the files [LICENSE](LICENSE) and [ADDITIONAL_LICENSE_INFO](ADDITIONAL_LICENSE_INFO) for details.
+This project is licensed under the GNU General Public License v2.0 with the Classpath exception, the same license used by Oracle for the OpenJDK project. See the files [LICENSE](LICENSE), [ADDITIONAL_LICENSE_INFO](ADDITIONAL_LICENSE_INFO), and [ASSEMBLY_EXCEPTION](ASSEMBLY_EXCEPTION) for details.
 
 Java and OpenJDK are trademarks or registered trademarks of Oracle and/or its affiliates. See the file [TRADEMARK](TRADEMARK) for details.
