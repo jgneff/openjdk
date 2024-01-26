@@ -51,16 +51,16 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-20-1804:
+  jdk-21-1804:
     interface: content
     read: [$SNAP/jdk]
-  jdk-21-1804:
+  jdk-22-1804:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
-  jfx-21-1804:
+  jfx-22-1804:
     interface: content
     target: $SNAP/jfx
 
@@ -146,7 +146,7 @@ parts:
     - unzip
     - zip
     override-pull: |
-      release=21
+      release=22
       giturl=https://github.com/openjdk/jdk.git
       tagurl=https://github.com/openjdk/jdk/tags.atom
 
