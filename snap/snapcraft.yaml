@@ -1,5 +1,5 @@
 # snapcraft.yaml - builds a Snap package of OpenJDK
-# Copyright (C) 2020-2023 John Neffenger
+# Copyright (C) 2020-2024 John Neffenger
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,16 +51,16 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-21-1804:
+  jdk-22-1804:
     interface: content
     read: [$SNAP/jdk]
-  jdk-22-1804:
+  jdk-23-1804:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
-  jfx-22-1804:
+  jfx-23-1804:
     interface: content
     target: $SNAP/jfx
 
@@ -146,7 +146,7 @@ parts:
     - unzip
     - zip
     override-pull: |
-      release=22
+      release=23
       giturl=https://github.com/openjdk/jdk.git
       tagurl=https://github.com/openjdk/jdk/tags.atom
 
@@ -156,7 +156,7 @@ parts:
       getversion() {
           local feature=$1
           local webfeed=$2
-          curl -s "$webfeed" | grep "<title>jdk-${feature}[.0-9]*+" \
+          curl -s "$webfeed" | grep "<title>jdk-${feature}[.0-9]*+[^0]" \
               | sed -E -e '1!d' -e 's| *<title>jdk-(.*)</title>|\1|'
       }
 
