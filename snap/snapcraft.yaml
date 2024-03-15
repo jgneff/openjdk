@@ -1,5 +1,5 @@
 # snapcraft.yaml - builds a Snap package of OpenJDK
-# Copyright (C) 2020-2021 John Neffenger
+# Copyright (C) 2020-2023 John Neffenger
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ description: |
   Java and OpenJDK are trademarks or registered trademarks of Oracle
   and/or its affiliates.
 
-version: '17.0.2+8'
+adopt-info: jdk
 license: GPL-2.0-with-classpath-exception
 
 base: core18
@@ -51,13 +51,16 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-17-1804:
+  jdk-20-1804:
+    interface: content
+    read: [$SNAP/jdk]
+  jdk-21-1804:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
-  jfx-17-1804:
+  jfx-21-1804:
     interface: content
     target: $SNAP/jfx
 
@@ -106,6 +109,12 @@ apps:
     command: jdk/bin/jpackage
     environment:
       LC_ALL: C.UTF-8
+  jwebserver:
+    command: jdk/bin/jwebserver
+    plugs:
+    - network-bind
+    environment:
+      LC_ALL: C.UTF-8
 
 parts:
   bin:
@@ -116,13 +125,14 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk17u.git
+    source: https://github.com/openjdk/jdk21u.git
     source-type: git
     source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
     build-snaps:
     - openjdk/latest/stable
     build-packages:
+    - curl
     - libasound2-dev
     - libcups2-dev
     - libfontconfig1-dev
@@ -135,19 +145,67 @@ parts:
     - libxtst-dev
     - unzip
     - zip
+    override-pull: |
+      release=21
+      giturl=https://github.com/openjdk/jdk21u.git
+      tagurl=https://github.com/openjdk/jdk21u/tags.atom
+
+      # Gets the version from the latest release tag on GitHub
+      #   $1 = feature release number (formerly "major" version)
+      #   $2 = URL of Atom web feed providing recent tags
+      getversion() {
+          local feature=$1
+          local webfeed=$2
+          curl -s "$webfeed" | grep "<title>jdk-${feature}[.0-9]*+" \
+              | sed -E -e '1!d' -e 's| *<title>jdk-(.*)</title>|\1|'
+      }
+
+      # Sets the version and saves its environment variable
+      #   $1 = the version string
+      setversion() {
+          snapcraftctl set-version "$1"
+          printf "export SNAPCRAFT_PROJECT_VERSION=%s\n" "$1" \
+              > /tmp/snapcraft-project-version
+      }
+
+      # See https://forum.snapcraft.io/t/17597
+      if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
+          version=$(getversion $release $tagurl)
+          setversion "$version"
+          git clone --branch "jdk-$version" --depth 1 \
+              $giturl "$SNAPCRAFT_PART_SRC"
+      else
+          snapcraftctl pull
+      fi
     build-environment:
     - JAVA_HOME: /snap/openjdk/current/jdk
-    # Option '--disable-warnings-as-errors' for armhf
     override-build: |
+      # Loads the version environment variable if not defined
+      if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
+          . /tmp/snapcraft-project-version
+      fi
+
+      # Sets the environment variable for reproducible builds
+      SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
+      export SOURCE_DATE_EPOCH
+
+      # Builds the JDK ('--enable-warnings-as-errors=no' for armhf)
       bash configure \
           --enable-warnings-as-errors=no \
           --enable-javac-server=no \
+          --with-vendor-name="Snap Build" \
+          --with-vendor-url="https://snapcraft.io/openjdk" \
+          --with-vendor-bug-url="https://github.com/jgneff/openjdk/issues" \
           --with-version-pre=no \
           --with-version-opt=snap \
           --with-version-build="${SNAPCRAFT_PROJECT_VERSION#*+}" \
-          --with-source-date=version \
+          --with-extra-cflags="$CFLAGS" \
+          --with-extra-cxxflags="$CXXFLAGS" \
+          --with-extra-ldflags="$LDFLAGS" \
           --with-native-debug-symbols=none
       make images docs
+
+      # Installs the build output
       cd build/linux-*-server-release/images || exit
       mv jdk docs "$SNAPCRAFT_PART_INSTALL"
     organize:
