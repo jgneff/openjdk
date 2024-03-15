@@ -2,7 +2,7 @@
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk) on GitHub. These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
-The branches of this repository publish the JDK general-availability release (JDK GA) and early-access builds (JDK EA) for six hardware platforms. They are listed below by their Debian architecture (`dpkg --print-architecture`), machine hardware name (`uname -m`), and Java architecture (`os.arch`):
+The branches of this repository publish the JDK general-availability (GA) release and early-access (EA) builds for six hardware platforms. They are listed below by their Debian architecture, machine hardware name, and Java architecture:
 
 | Debian  | Machine | Java    | JDK GA | JDK EA |
 |:-------:|:-------:|:-------:|:------:|:------:|
@@ -41,12 +41,12 @@ The table below contains the most recent schedule for OpenJDK. The channel colum
 
 | Date       | Phase                     | Stable | Candidate | Beta | Edge |
 | ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
-| 2023-03-21 | General Availability      | 20 | ←  | ←  | 21 |
-| 2023-06-08 | Rampdown Phase One        | 20 | ←  | 21 | 22 |
-| 2023-07-20 | Rampdown Phase Two        | 20 | ←  | 21 | 22 |
-| 2023-08-10 | Initial Release Candidate | 20 | 21 | ←  | 22 |
-| 2023-08-24 | Final Release Candidate   | 20 | 21 | ←  | 22 |
 | 2023-09-19 | General Availability      | 21 | ←  | ←  | 22 |
+| 2023-12-07 | Rampdown Phase One        | 21 | ←  | 22 | 23 |
+| 2024-01-18 | Rampdown Phase Two        | 21 | ←  | 22 | 23 |
+| 2024-02-08 | Initial Release Candidate | 21 | ←  | 22 | 23 |
+| 2024-02-22 | Final Release Candidate   | 21 | 22 | ←  | 23 |
+| 2024-03-19 | General Availability      | 22 | ←  | ←  | 23 |
 
 The leftwards arrow (←) indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level in the column to its left. If the channel is re-opened, packages will once again be selected from the original channel.
 
@@ -62,7 +62,7 @@ The Snap package is [strictly confined](https://snapcraft.io/docs/snap-confineme
 
 * the [home interface](https://snapcraft.io/docs/home-interface) for the JDK tools to read and write files under your home directory,
 * the [desktop interfaces](https://snapcraft.io/docs/desktop-interfaces) for the Java launcher to run Java desktop applications, and
-* the [network interface](https://snapcraft.io/docs/network-interface) for the Java launcher to run Java networking applications and remote desktop applications with X11 forwarding.
+* the [network interface](https://snapcraft.io/docs/network-interface) for the Java launcher to run Java network applications.
 
 Install the OpenJDK Snap package from a channel other than the *stable* channel with one of the following commands:
 
@@ -78,16 +78,16 @@ The steps in building the packages are open and transparent so that you can gain
 
 | Snap Channel | Build File          | Source Code         | Snap Package           |
 | ------------ | ------------------- | ------------------- | ---------------------- |
-| candidate    | [snapcraft.yaml][1] | [openjdk/jdk20u][4] | [openjdk-candidate][7] |
-| beta         | [snapcraft.yaml][2] | [openjdk/jdk20][5]  | [openjdk-beta][8]      |
+| candidate    | [snapcraft.yaml][1] | [openjdk/jdk21u][4] | [openjdk-candidate][7] |
+| beta         | [snapcraft.yaml][2] | [openjdk/jdk22u][5] | [openjdk-beta][8]      |
 | edge         | [snapcraft.yaml][3] | [openjdk/jdk][6]    | [openjdk-edge][9]      |
 
 [1]: https://github.com/jgneff/openjdk/blob/candidate/snap/snapcraft.yaml
 [2]: https://github.com/jgneff/openjdk/blob/beta/snap/snapcraft.yaml
 [3]: https://github.com/jgneff/openjdk/blob/edge/snap/snapcraft.yaml
 
-[4]: https://github.com/openjdk/jdk20u/tags
-[5]: https://github.com/openjdk/jdk20/tags
+[4]: https://github.com/openjdk/jdk21u/tags
+[5]: https://github.com/openjdk/jdk22u/tags
 [6]: https://github.com/openjdk/jdk/tags
 
 [7]: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate
@@ -373,6 +373,7 @@ The table below shows the Snap package support for recent releases of Fedora:
 | 36      | 2023-05-16     | 2.35      | ✓ | ✓ |
 | 37      | 2023-11-14     | 2.36      | ✓ | ✓ |
 | 38      | 2024-05-14     | 2.37      | ✓ | ✓ |
+| 39      | 2024-11-12     | 2.38      | ✓ | ✓ |
 
 ## Build
 
@@ -395,6 +396,6 @@ See the [Snapcraft Overview](https://snapcraft.io/docs/snapcraft-overview) page 
 
 ## License
 
-This project is licensed under the GNU General Public License v2.0 with the Classpath exception, the same license used by Oracle for the OpenJDK project. See the files [LICENSE](LICENSE), [ADDITIONAL_LICENSE_INFO](ADDITIONAL_LICENSE_INFO), and [ASSEMBLY_EXCEPTION](ASSEMBLY_EXCEPTION) for details.
+This project is licensed under the GNU General Public License v2.0 with the Classpath exception, the same license used by Oracle for the JDK project. See the files [LICENSE](LICENSE), [ADDITIONAL_LICENSE_INFO](ADDITIONAL_LICENSE_INFO), and [ASSEMBLY_EXCEPTION](ASSEMBLY_EXCEPTION) for details.
 
 Java and OpenJDK are trademarks or registered trademarks of Oracle and/or its affiliates. See the file [TRADEMARK](TRADEMARK) for details.
