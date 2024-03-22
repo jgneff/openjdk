@@ -2,6 +2,79 @@
 
 OpenJDK is the official reference implementation of the Java Platform, Standard Edition. This project builds [Snap packages](https://snapcraft.io/openjdk) of OpenJDK directly from its [source repositories](https://github.com/openjdk) on GitHub. These packages provide everything you need to develop a Java application on Linux, including all of the latest development tools, class libraries, API documentation, and source code of the Java Development Kit (JDK).
 
+## Quick Setup
+
+Below are some quick setup instructions for developers who are familiar with the Linux command line. For complete instructions, see the [Usage](#usage) section later.
+
+### Confined Usage
+
+Run the JDK tools from your Linux distribution:
+
+```console
+$ javac --version
+javac 21.0.2
+$ java --version
+openjdk 21.0.2 2024-01-16
+OpenJDK Runtime Environment (build 21.0.2+13-Ubuntu-122.04.1)
+OpenJDK 64-Bit Server VM (build 21.0.2+13-Ubuntu-122.04.1, mixed mode, sharing)
+```
+
+Run the JDK tools from this Snap package in a stricty-confined environment:
+
+```console
+$ openjdk.javac --version
+javac 22
+$ openjdk.java --version
+openjdk 22 2024-03-19
+OpenJDK Runtime Environment (build 22+36-snap)
+OpenJDK 64-Bit Server VM (build 22+36-snap, mixed mode, sharing)
+```
+
+Set up the aliases and environment variables for the JDK tools from this Snap package:
+
+```console
+$ source $(openjdk)
+$ javac --version
+javac 22
+$ java --version
+openjdk 22 2024-03-19
+OpenJDK Runtime Environment (build 22+36-snap)
+OpenJDK 64-Bit Server VM (build 22+36-snap, mixed mode, sharing)
+```
+
+### Unconfined Usage
+
+Switch between the JDK tools from your Linux distribution and the JDK tools from this Snap package by setting the `JAVA_HOME` and `PATH` environment variables as shown below for Debian-based systems:
+
+```console
+$ javac --version
+javac 21.0.2
+$ java --version
+openjdk 21.0.2 2024-01-16
+OpenJDK Runtime Environment (build 21.0.2+13-Ubuntu-122.04.1)
+OpenJDK 64-Bit Server VM (build 21.0.2+13-Ubuntu-122.04.1, mixed mode, sharing)
+
+$ export JAVA_HOME=/snap/openjdk/current/jdk
+$ $JAVA_HOME/bin/javac --version
+javac 22
+$ $JAVA_HOME/bin/java --version
+openjdk 22 2024-03-19
+OpenJDK Runtime Environment (build 22+36-snap)
+OpenJDK 64-Bit Server VM (build 22+36-snap, mixed mode, sharing)
+
+$ export PATH=$JAVA_HOME/bin:$PATH
+$ javac --version
+javac 22
+$ java --version
+openjdk 22 2024-03-19
+OpenJDK Runtime Environment (build 22+36-snap)
+OpenJDK 64-Bit Server VM (build 22+36-snap, mixed mode, sharing)
+```
+
+For Fedora-based systems, see the [Usage](#usage) section later.
+
+## Repository
+
 The branches of this repository publish the JDK general-availability (GA) release and early-access (EA) builds for six hardware platforms. They are listed below by their Debian architecture, machine hardware name, and Java architecture:
 
 | Debian  | Machine | Java    | JDK GA | JDK EA |
@@ -13,9 +86,9 @@ The branches of this repository publish the JDK general-availability (GA) releas
 | ppc64el | ppc64le | ppc64le | ✓ | ✓ |
 | s390x   | s390x   | s390x   | ✓ | ✓ |
 
-**Note:** The branches of this repository are named after the Snap channels where the builds are published: *edge*, *beta*, *candidate*, and *stable*. The HEAD branch is *edge*, and merges follow the Snap package releases from *edge* into *beta*, *beta* into *candidate*, and *candidate* into *stable*.
+The branches of this repository are named after the Snap channels where the builds are published: *edge*, *beta*, *candidate*, and *stable*. The HEAD branch is *edge*, and merges follow the Snap package releases from *edge* into *beta*, *beta* into *candidate*, and *candidate* into *stable*.
 
-## See also
+## See Also
 
 This project is one of four that I created to gain control of my development environment:
 
@@ -50,7 +123,7 @@ The table below contains the most recent schedule for OpenJDK. The channel colum
 
 The leftwards arrow (←) indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level in the column to its left. If the channel is re-opened, packages will once again be selected from the original channel.
 
-## Install
+## Installation
 
 Install the OpenJDK Snap package with the command:
 
@@ -108,17 +181,17 @@ The [Launchpad build farm](https://launchpad.net/builders) runs each build in a 
 
 Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build log. This information is contained in a file called `manifest.yaml` in the directory `/snap/openjdk/current/snap`. The `image-info` section of the manifest provides a link to the package's page on Launchpad with its build status, including the complete log file from the container that ran the build. You can use this information to verify that the OpenJDK Snap package installed on your system was built from source on Launchpad using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
 
-For example, I'll demonstrate how I verify the OpenJDK Snap package installed on my system at the time of this writing. The `snap info` command shows that I installed OpenJDK version 19+36 with revision 1079, the revision for the *amd64* architecture:
+For example, I'll demonstrate how I verify the OpenJDK Snap package installed on my system at the time of this writing. The `snap info` command shows that I installed OpenJDK version 22+36 with revision 1735, the revision for the *amd64* architecture:
 
 ```console
 $ snap info openjdk
 ...
 channels:
-  latest/stable:    19+36 2022-09-20 (1079) 247MB -
+  latest/stable:    22+36 2024-03-19 (1735) 255MB -
   latest/candidate: ↑
   latest/beta:      ↑
-  latest/edge:      20+15 2022-09-15 (1090) 249MB -
-installed:          19+36            (1079) 247MB -
+  latest/edge:      23+14 2024-03-14 (1728) 257MB -
+installed:          22+36            (1735) 255MB -
 ```
 
 The following command prints the build information from the manifest file:
@@ -126,30 +199,33 @@ The following command prints the build information from the manifest file:
 ```console
 $ grep -A3 image-info /snap/openjdk/current/snap/manifest.yaml
 image-info:
-  build-request-id: lp-73864071
-  build-request-timestamp: '2022-09-06T16:01:55Z'
-  build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1872495
+  build-request-id: lp-86834108
+  build-request-timestamp: '2024-03-15T02:11:16Z'
+  build_url: https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/2421437
 ```
 
-The `build_url` in the manifest is a link to the [page on Launchpad](https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/1872495) with the package's **Build status** and **Store status**. The store status shows that Launchpad uploaded revision 1079 to the Snap Store, which matches the revision installed on my system. The build status shows a link to the log file with the label *buildlog*.
+The `build_url` in the manifest is a link to the [page on Launchpad](https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/2421437) with the package's **Build status** and **Store status**. The store status shows that Launchpad uploaded revision 1735 to the Snap Store, which matches the revision installed on my system. The build status shows a link to the log file with the label [buildlog](https://launchpad.net/~jgneff/openjdk-snap/+snap/openjdk-candidate/+build/2421437/+files/buildlog_snap_ubuntu_bionic_amd64_openjdk-candidate_BUILDING.txt.gz).
 
-The end of the log file contains a line with the SHA512 checksum of the package just built, shown below with the checksum edited to fit on this page:
+The end of the log file contains a line with the SHA512 checksum of the package just built, shown below with the checksum split to fit on this page:
 
 ```
 Snapping...
-Snapped openjdk_19+36_amd64.snap
-Starting Snapcraft 7.1.3
-Logging execution to
-  '/root/.cache/snapcraft/log/snapcraft-20220906-161326.995272.log'
-1594263134ecf752...bcc699101fca509f  openjdk_19+36_amd64.snap
+Snapped openjdk_22+36_amd64.snap
+Starting Snapcraft 7.5.4
+Logging execution to '/root/.local/state/snapcraft/log/snapcraft-20240315-022712.819074.log'
+ad84cd96bb5f39504313e4d7a67099458d3a6675e97255528ebd2c87201a5d95
+66488971eda26bad9dc98ec0e9b3d0d9c9dc6137ab55dc885a710e3e5948c0ff
+  openjdk_22+36_amd64.snap
 Revoking proxy token...
 ```
 
 The command below prints the checksum of the package installed on my system:
 
 ```console
-$ sudo sha512sum /var/lib/snapd/snaps/openjdk_1079.snap
-1594263134ecf752...bcc699101fca509f  /var/lib/snapd/snaps/openjdk_1079.snap
+$ sudo sha512sum /var/lib/snapd/snaps/openjdk_1735.snap
+ad84cd96bb5f39504313e4d7a67099458d3a6675e97255528ebd2c87201a5d95
+66488971eda26bad9dc98ec0e9b3d0d9c9dc6137ab55dc885a710e3e5948c0ff
+  /var/lib/snapd/snaps/openjdk_1735.snap
 ```
 
 The two checksum strings are identical. Using this procedure, I verified that the OpenJDK Snap package installed on my system and the OpenJDK Snap package built and uploaded to the Snap Store by Launchpad are in fact the exact same package. For more information, see [Launchpad Bug #1979844](https://bugs.launchpad.net/launchpad/+bug/1979844), "Allow verifying that a snap recipe build corresponds to a store revision."
@@ -170,11 +246,11 @@ You can use the package in two ways:
 1. as a confined set of programs that include all of their dependencies, or
 2. as an unconfined suite of software forming a complete Java Platform.
 
-The first method should work on any Linux system, but the programs can access only non-hidden files owned by the user in the user's home directory. See the **Confined** section below for details.
+The first method should work on any Linux system, but the programs can access only non-hidden files owned by the user in the user's home directory. See the **Confined Usage** section below for details.
 
-The second method runs with traditional file access, but the programs require a system with Linux kernel version 3.2.0 or later and GNU C library version 2.27 or later. Those versions of the kernel and C library are found, for example, in Ubuntu 18.04 LTS, Fedora 28, or later releases. See the **Unconfined** section below for details.
+The second method runs with traditional file access, but the programs require a system with Linux kernel version 3.2.0 or later and GNU C library version 2.27 or later. Those versions of the kernel and C library are found, for example, in Ubuntu 18.04 LTS, Fedora 28, or later releases. See the **Unconfined Usage** section below for details.
 
-### Confined
+### Confined Usage
 
 When you run the OpenJDK commands with the prefix `openjdk`, the programs run strictly confined and use only the supporting libraries contained in the Snap package. The package defines the following commands for each of the corresponding JDK tools:
 
@@ -191,7 +267,7 @@ The `openjdk` command itself prints the location of a file that defines environm
 
 ```console
 $ openjdk
-/var/snap/openjdk/x1/openjdk.env
+/var/snap/openjdk/1735/openjdk.env
 ```
 
 The file exports the `JAVA_HOME` and `MANPATH` environment variables, and it defines aliases for the JDK tools so that you can enter them without the package prefix:
@@ -199,8 +275,8 @@ The file exports the `JAVA_HOME` and `MANPATH` environment variables, and it def
 ```console
 $ cat $(openjdk)
 # Source this file for OpenJDK environment variables and aliases
-export JAVA_HOME=/snap/openjdk/x1/jdk
-export MANPATH=/snap/openjdk/x1/jdk/man:
+export JAVA_HOME=/snap/openjdk/1735/jdk
+export MANPATH=/snap/openjdk/1735/jdk/man:
 alias java='openjdk.java'
 alias javac='openjdk.javac'
 alias javadoc='openjdk.javadoc'
@@ -214,21 +290,21 @@ alias jwebserver='openjdk.jwebserver'
 To set the environment variables and aliases in your current shell, use the `source` or "dot" (`.`) command to read and execute the commands from the file:
 
 ```console
-$ . $(openjdk)
+$ source $(openjdk)
 ```
 
 You can then verify that `JAVA_HOME` and the aliases are defined with:
 
 ```console
 $ printenv | grep JAVA
-JAVA_HOME=/snap/openjdk/x1/jdk
+JAVA_HOME=/snap/openjdk/1735/jdk
 $ type java javac
 java is aliased to `openjdk.java'
 javac is aliased to `openjdk.javac'
 $ java --version
-openjdk 20.0.1 2023-04-18
-OpenJDK Runtime Environment (build 20.0.1+9-snap)
-OpenJDK 64-Bit Server VM (build 20.0.1+9-snap, mixed mode, sharing)
+openjdk 22 2024-03-19
+OpenJDK Runtime Environment (build 22+36-snap)
+OpenJDK 64-Bit Server VM (build 22+36-snap, mixed mode, sharing)
 ```
 
 If you refer to locations outside of your home directory in the arguments to the Snap package commands or aliases, such as the JUnit libraries shown below, you'll see error messages like the following when compiling your program:
@@ -263,13 +339,13 @@ $ openjdk.javac -d build/testing --class-path \
   src/test/java/org/status6/hello/world/HelloTest.java
 ```
 
-### Unconfined
+### Unconfined Usage
 
 Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoke the JDK programs directly using their absolute paths on your system.
 
 When the programs are invoked directly, they run outside of their strictly-confined container and in your system's environment like any normal program. They have the same access to your system as the user account that runs them, and they depend on having their supporting libraries installed on your system. This is not how you're supposed to run Snap packages, but it works when the correct system dependencies are present.
 
-Specifically, when invoked directly from their absolute paths, the commands in the OpenJDK Snap package require Linux kernel version 3.2.0 or later and GNU C library (GLIBC) version 2.27 or later. The following commands will show the versions of the kernel and GLIBC on your system:
+Specifically, when invoked directly from their absolute paths, the commands in the OpenJDK Snap package require Linux kernel version 3.2.0 or later and GNU C library (glibc) version 2.27 or later. The following commands will show the versions of the kernel and C library on your system:
 
 ```console
 $ uname -r
@@ -292,28 +368,28 @@ You can then run the programs directly from their installed locations:
 
 ```console
 $ $JAVA_HOME/bin/java --version
-openjdk 20.0.1 2023-04-18
-OpenJDK Runtime Environment (build 20.0.1+9-snap)
-OpenJDK 64-Bit Server VM (build 20.0.1+9-snap, mixed mode, sharing)
+openjdk 22 2024-03-19
+OpenJDK Runtime Environment (build 22+36-snap)
+OpenJDK 64-Bit Server VM (build 22+36-snap, mixed mode, sharing)
 ```
 
-If your system has a version of the GNU C library older than 2.27, you'll see error messages similar to the example shown below, which ran on Ubuntu 16.04 LTS with GLIBC 2.23:
+If your system has a version of the GNU C library older than 2.27, you'll see error messages similar to the example shown below, which ran on Ubuntu 16.04 LTS with glibc 2.23:
 
 ```console
 $ $JAVA_HOME/bin/java --version
 Error: dl failure on line 534
-Error: failed /snap/openjdk/x1/jdk/lib/server/libjvm.so, because
+Error: failed /snap/openjdk/1735/jdk/lib/server/libjvm.so, because
     /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.27' not found
-    (required by /snap/openjdk/x1/jdk/lib/server/libjvm.so)
+    (required by /snap/openjdk/1735/jdk/lib/server/libjvm.so)
 ```
 
 In this case, either upgrade your Linux system to a more recent version, or run the JDK tools using their Snap package commands or aliases as follows:
 
 ```console
 $ openjdk.java --version
-openjdk 20.0.1 2023-04-18
-OpenJDK Runtime Environment (build 20.0.1+9-snap)
-OpenJDK 64-Bit Server VM (build 20.0.1+9-snap, mixed mode, sharing)
+openjdk 22 2024-03-19
+OpenJDK Runtime Environment (build 22+36-snap)
+OpenJDK 64-Bit Server VM (build 22+36-snap, mixed mode, sharing)
 ```
 
 Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They both need the `objcopy` program from the `binutils` package to create the custom run-time image, and the `jpackage` program needs the `fakeroot` package to create a Debian package.

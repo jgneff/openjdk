@@ -28,7 +28,9 @@ description: |
   class libraries, API documentation, and source code of the Java
   Development Kit (JDK).
 
-  To get started, see the README file for this package on GitHub:
+  Installing this package does not replace the JDK provided by your
+  Linux distribution but instead allows you to use both of them side by
+  side. To get started, see the README file for this package on GitHub:
 
   https://github.com/jgneff/openjdk
 
