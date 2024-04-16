@@ -6,12 +6,12 @@ The branches of this repository publish the JDK general-availability release (JD
 
 | Debian  | Machine | Java    | JDK GA | JDK EA |
 |:-------:|:-------:|:-------:|:------:|:------:|
-| amd64   | x86_64  | amd64   | ✔ | ✔ |
-| arm64   | aarch64 | aarch64 | ✔ | ✔ |
-| armhf   | armv7l  | arm     | ✔ | ✔ |
-| i386    | i686    | i386    | ✔ | ✔ |
-| ppc64el | ppc64le | ppc64le | ✔ | ✔ |
-| s390x   | s390x   | s390x   | ✔ | ✔ |
+| amd64   | x86_64  | amd64   | ✓ | ✓ |
+| arm64   | aarch64 | aarch64 | ✓ | ✓ |
+| armhf   | armv7l  | arm     | ✓ | ✓ |
+| i386    | i686    | i386    | ✓ | ✓ |
+| ppc64el | ppc64le | ppc64le | ✓ | ✓ |
+| s390x   | s390x   | s390x   | ✓ | ✓ |
 
 **Note:** The branches of this repository are named after the Snap channels where the builds are published: *edge*, *beta*, *candidate*, and *stable*. The HEAD branch is *edge*, and merges follow the Snap package releases from *edge* into *beta*, *beta* into *candidate*, and *candidate* into *stable*.
 
@@ -347,10 +347,10 @@ The table below shows the Snap package support for recent releases of Ubuntu:
 
 | Release   | End of Updates | C Library | Confined | Unconfined |
 | --------- |:--------------:|:---------:|:--------:|:----------:|
-| 16.04 LTS | 2021-04-30     | 2.23      | ✔ |   |
-| 18.04 LTS | 2023-05-31     | 2.27      | ✔ | ✔ |
-| 20.04 LTS | 2025-04-23     | 2.31      | ✔ | ✔ |
-| 22.04 LTS | 2027-04-21     | 2.34      | ✔ | ✔ |
+| 16.04 LTS | 2021-04-30     | 2.23      | ✓ |   |
+| 18.04 LTS | 2023-05-31     | 2.27      | ✓ | ✓ |
+| 20.04 LTS | 2025-04-23     | 2.31      | ✓ | ✓ |
+| 22.04 LTS | 2027-04-21     | 2.34      | ✓ | ✓ |
 
 #### Fedora
 
@@ -358,21 +358,21 @@ The table below shows the Snap package support for recent releases of Fedora:
 
 | Release | End of Updates | C Library | Confined | Unconfined |
 |:-------:|:--------------:|:---------:|:--------:|:----------:|
-| 24      | 2017-08-08     | 2.23      | ✔ |   |
-| 25      | 2017-12-12     | 2.24      | ✔ |   |
-| 26      | 2018-05-29     | 2.25      | ✔ |   |
-| 27      | 2018-11-30     | 2.26      | ✔ |   |
-| 28      | 2019-05-28     | 2.27      | ✔ | ✔ |
-| 29      | 2019-11-26     | 2.28      | ✔ | ✔ |
-| 30      | 2020-05-26     | 2.29      | ✔ | ✔ |
-| 31      | 2020-11-24     | 2.30      | ✔ | ✔ |
-| 32      | 2021-05-25     | 2.31      | ✔ | ✔ |
-| 33      | 2021-11-30     | 2.32      | ✔ | ✔ |
-| 34      | 2022-06-07     | 2.33      | ✔ | ✔ |
-| 35      | 2022-12-13     | 2.34      | ✔ | ✔ |
-| 36      | 2023-05-16     | 2.35      | ✔ | ✔ |
-| 37      | 2023-11-14     | 2.36      | ✔ | ✔ |
-| 38      | 2024-05-14     | 2.37      | ✔ | ✔ |
+| 24      | 2017-08-08     | 2.23      | ✓ |   |
+| 25      | 2017-12-12     | 2.24      | ✓ |   |
+| 26      | 2018-05-29     | 2.25      | ✓ |   |
+| 27      | 2018-11-30     | 2.26      | ✓ |   |
+| 28      | 2019-05-28     | 2.27      | ✓ | ✓ |
+| 29      | 2019-11-26     | 2.28      | ✓ | ✓ |
+| 30      | 2020-05-26     | 2.29      | ✓ | ✓ |
+| 31      | 2020-11-24     | 2.30      | ✓ | ✓ |
+| 32      | 2021-05-25     | 2.31      | ✓ | ✓ |
+| 33      | 2021-11-30     | 2.32      | ✓ | ✓ |
+| 34      | 2022-06-07     | 2.33      | ✓ | ✓ |
+| 35      | 2022-12-13     | 2.34      | ✓ | ✓ |
+| 36      | 2023-05-16     | 2.35      | ✓ | ✓ |
+| 37      | 2023-11-14     | 2.36      | ✓ | ✓ |
+| 38      | 2024-05-14     | 2.37      | ✓ | ✓ |
 
 ## Build
 
