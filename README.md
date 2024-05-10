@@ -114,12 +114,12 @@ The table below contains the most recent schedule for OpenJDK. The channel colum
 
 | Date       | Phase                     | Stable | Candidate | Beta | Edge |
 | ---------- | ------------------------- |:------:|:---------:|:----:|:----:|
-| 2023-09-19 | General Availability      | 21 | ←  | ←  | 22 |
-| 2023-12-07 | Rampdown Phase One        | 21 | ←  | 22 | 23 |
-| 2024-01-18 | Rampdown Phase Two        | 21 | ←  | 22 | 23 |
-| 2024-02-08 | Initial Release Candidate | 21 | ←  | 22 | 23 |
-| 2024-02-22 | Final Release Candidate   | 21 | 22 | ←  | 23 |
 | 2024-03-19 | General Availability      | 22 | ←  | ←  | 23 |
+| 2024-06-06 | Rampdown Phase One        | 22 | ←  | 23 | 24 |
+| 2024-07-18 | Rampdown Phase Two        | 22 | ←  | 23 | 24 |
+| 2024-08-08 | Initial Release Candidate | 22 | ←  | 23 | 24 |
+| 2024-08-22 | Final Release Candidate   | 22 | 23 | ←  | 24 |
+| 2024-09-17 | General Availability      | 23 | ←  | ←  | 24 |
 
 The leftwards arrow (←) indicates that the channel is closed. When a specific risk-level channel is closed, the Snap Store will select the package from the more conservative risk level in the column to its left. If the channel is re-opened, packages will once again be selected from the original channel.
 
@@ -425,8 +425,9 @@ The table below shows the Snap package support for recent releases of Ubuntu:
 | --------- |:--------------:|:---------:|:--------:|:----------:|
 | 16.04 LTS | 2021-04-30     | 2.23      | ✓ |   |
 | 18.04 LTS | 2023-05-31     | 2.27      | ✓ | ✓ |
-| 20.04 LTS | 2025-04-23     | 2.31      | ✓ | ✓ |
-| 22.04 LTS | 2027-04-21     | 2.34      | ✓ | ✓ |
+| 20.04 LTS | 2025-05-29     | 2.31      | ✓ | ✓ |
+| 22.04 LTS | 2027-06-01     | 2.35      | ✓ | ✓ |
+| 24.04 LTS | 2029-05-31     | 2.39      | ✓ | ✓ |
 
 #### Fedora
 
@@ -447,9 +448,10 @@ The table below shows the Snap package support for recent releases of Fedora:
 | 34      | 2022-06-07     | 2.33      | ✓ | ✓ |
 | 35      | 2022-12-13     | 2.34      | ✓ | ✓ |
 | 36      | 2023-05-16     | 2.35      | ✓ | ✓ |
-| 37      | 2023-11-14     | 2.36      | ✓ | ✓ |
+| 37      | 2023-12-05     | 2.36      | ✓ | ✓ |
 | 38      | 2024-05-14     | 2.37      | ✓ | ✓ |
 | 39      | 2024-11-12     | 2.38      | ✓ | ✓ |
+| 40      | 2025-05-13     | 2.39      | ✓ | ✓ |
 
 ## Build
 
