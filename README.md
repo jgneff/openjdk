@@ -117,7 +117,7 @@ The table below contains the most recent schedule for OpenJDK. The channel colum
 | 2024-03-19 | General Availability      | 22 | ←  | ←  | 23 |
 | 2024-06-06 | Rampdown Phase One        | 22 | ←  | 23 | 24 |
 | 2024-07-18 | Rampdown Phase Two        | 22 | ←  | 23 | 24 |
-| 2024-08-08 | Initial Release Candidate | 22 | ←  | 23 | 24 |
+| 2024-08-08 | Initial Release Candidate | 22 | 23 | ←  | 24 |
 | 2024-08-22 | Final Release Candidate   | 22 | 23 | ←  | 24 |
 | 2024-09-17 | General Availability      | 23 | ←  | ←  | 24 |
 
