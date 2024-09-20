@@ -84,7 +84,6 @@ apps:
     - x11
     environment:
       LC_ALL: C.UTF-8
-      XAUTHORITY: $SNAP_REAL_HOME/.Xauthority
       LD_LIBRARY_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET
       GTK_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/gtk-3.0
   javac:
