@@ -127,7 +127,7 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk.git
+    source: https://github.com/openjdk/jdk23u.git
     source-type: git
     source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
     source-depth: 1
@@ -149,8 +149,8 @@ parts:
     - zip
     override-pull: |
       release=23
-      giturl=https://github.com/openjdk/jdk.git
-      tagurl=https://github.com/openjdk/jdk/tags.atom
+      giturl=https://github.com/openjdk/jdk23u.git
+      tagurl=https://github.com/openjdk/jdk23u/tags.atom
 
       # Gets the version from the latest release tag on GitHub
       #   $1 = feature release number (formerly "major" version)
