@@ -190,8 +190,11 @@ parts:
       SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
       export SOURCE_DATE_EPOCH
 
-      # Builds the JDK ('--enable-warnings-as-errors=no' for armhf)
+      # Builds the JDK
+      #   '--enable-deprecated-ports=yes' for i386
+      #   '--enable-warnings-as-errors=no' for armhf
       bash configure \
+          --enable-deprecated-ports=yes \
           --enable-warnings-as-errors=no \
           --enable-javac-server=no \
           --with-vendor-name="Snap Build" \
