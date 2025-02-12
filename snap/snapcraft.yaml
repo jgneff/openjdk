@@ -53,16 +53,16 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-22-1804:
+  jdk-23-1804:
     interface: content
     read: [$SNAP/jdk]
-  jdk-23-1804:
+  jdk-24-1804:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
-  jfx-23-1804:
+  jfx-24-1804:
     interface: content
     target: $SNAP/jfx
 
@@ -84,7 +84,6 @@ apps:
     - x11
     environment:
       LC_ALL: C.UTF-8
-      XAUTHORITY: $SNAP_REAL_HOME/.Xauthority
       LD_LIBRARY_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET
       GTK_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/gtk-3.0
   javac:
@@ -148,7 +147,7 @@ parts:
     - unzip
     - zip
     override-pull: |
-      release=23
+      release=24
       giturl=https://github.com/openjdk/jdk.git
       tagurl=https://github.com/openjdk/jdk/tags.atom
 
@@ -191,8 +190,11 @@ parts:
       SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
       export SOURCE_DATE_EPOCH
 
-      # Builds the JDK ('--enable-warnings-as-errors=no' for armhf)
+      # Builds the JDK
+      #   '--enable-deprecated-ports=yes' for i386
+      #   '--enable-warnings-as-errors=no' for armhf
       bash configure \
+          --enable-deprecated-ports=yes \
           --enable-warnings-as-errors=no \
           --enable-javac-server=no \
           --with-vendor-name="Snap Build" \
