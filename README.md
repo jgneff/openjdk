@@ -75,14 +75,13 @@ For Fedora-based systems, see the [Usage](#usage) section later.
 
 ## Repository
 
-The branches of this repository publish the JDK general-availability (GA) release and early-access (EA) builds for six hardware platforms. They are listed below by their Debian architecture, machine hardware name, and Java architecture:
+The branches of this repository publish the JDK general-availability release (GA) and early-access builds (EA) for the hardware platforms listed below. The table shows the Debian architecture, machine hardware name, and Java architecture of each build:
 
 | Debian  | Machine | Java    | JDK GA | JDK EA |
 |:-------:|:-------:|:-------:|:------:|:------:|
 | amd64   | x86_64  | amd64   | ✓ | ✓ |
 | arm64   | aarch64 | aarch64 | ✓ | ✓ |
 | armhf   | armv7l  | arm     | ✓ | ✓ |
-| i386    | i686    | i386    | ✓ | ✓ |
 | ppc64el | ppc64le | ppc64le | ✓ | ✓ |
 | s390x   | s390x   | s390x   | ✓ | ✓ |
 
@@ -179,7 +178,7 @@ The [Launchpad build farm](https://launchpad.net/builders) runs each build in a 
 
 ## Verify
 
-Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build log. This information is contained in a file called `manifest.yaml` in the directory `/snap/openjdk/current/snap`. The `image-info` section of the manifest provides a link to the package's page on Launchpad with its build status, including the complete log file from the container that ran the build. You can use this information to verify that the OpenJDK Snap package installed on your system was built from source on Launchpad using only the software in [Ubuntu 18.04 LTS](https://cloud-images.ubuntu.com/bionic/current/).
+Each OpenJDK package provides a software bill of materials (SBOM) and a link to its build log. This information is contained in a file called `manifest.yaml` in the directory `/snap/openjdk/current/snap`. The `image-info` section of the manifest provides a link to the package's page on Launchpad with its build status, including the complete log file from the container that ran the build. You can use this information to verify that the OpenJDK Snap package installed on your system was built from source on Launchpad using only the software in [Ubuntu 20.04 LTS](https://cloud-images.ubuntu.com/focal/current/).
 
 For example, I'll demonstrate how I verify the OpenJDK Snap package installed on my system at the time of this writing. The `snap info` command shows that I installed OpenJDK version 23.0.2+7 with revision 2108, the revision for the *amd64* architecture:
 
@@ -247,7 +246,7 @@ You can use the package in two ways:
 
 The first method should work on any Linux system, but the programs can access only non-hidden files owned by the user in the user's home directory. See the **Confined Usage** section below for details.
 
-The second method runs with traditional file access, but the programs require a system with Linux kernel version 3.2.0 or later and GNU C library version 2.27 or later. Those versions of the kernel and C library are found, for example, in Ubuntu 18.04 LTS, Fedora 28, or later releases. See the **Unconfined Usage** section below for details.
+The second method runs with traditional file access, but the programs require a system with Linux kernel version 3.2.0 or later and GNU C library version 2.29 or later. Those versions of the kernel and C library are found, for example, in Ubuntu 20.04 LTS, Fedora 30, or later releases. See the **Unconfined Usage** section below for details.
 
 ### Confined Usage
 
@@ -259,7 +258,6 @@ When you run the OpenJDK commands with the prefix `openjdk`, the programs run st
 - openjdk.jar
 - openjdk.jarsigner
 - openjdk.jlink
-- openjdk.jpackage
 - openjdk.jwebserver
 
 The `openjdk` command itself prints the location of a file that defines environment variables and aliases which make it more convenient to use the OpenJDK Snap package:
@@ -282,7 +280,6 @@ alias javadoc='openjdk.javadoc'
 alias jar='openjdk.jar'
 alias jarsigner='openjdk.jarsigner'
 alias jlink='openjdk.jlink'
-alias jpackage='openjdk.jpackage'
 alias jwebserver='openjdk.jwebserver'
 ```
 
@@ -342,9 +339,9 @@ $ openjdk.javac -d build/testing --class-path \
 
 Build automation tools and integrated development environments (IDEs) usually require the location of a Java Platform, often with a corresponding `JAVA_HOME` environment variable. These tools invoke the JDK programs directly using their absolute paths on your system.
 
-When the programs are invoked directly, they run outside of their strictly-confined container and in your system's environment like any normal program. They have the same access to your system as the user account that runs them, and they depend on having their supporting libraries installed on your system. This is not how you're supposed to run Snap packages, but it works when the correct system dependencies are present.
+When the programs are invoked directly, they run outside of their strictly-confined container and in your system's environment like any normal program. They have the same access to your system as the user account that runs them, and they depend on having their supporting libraries installed on your system. This is not how you're supposed to run a Snap package, but it works when the correct system dependencies are installed.
 
-Specifically, when invoked directly from their absolute paths, the commands in the OpenJDK Snap package require Linux kernel version 3.2.0 or later and GNU C library (glibc) version 2.27 or later. The following commands will show the versions of the kernel and C library on your system:
+Specifically, when invoked directly from their absolute paths, the commands in the OpenJDK Snap package require Linux kernel version 3.2.0 or later and GNU C library (glibc) version 2.29 or later. The following commands will show the versions of the kernel and C library on your system:
 
 ```console
 $ uname -r
@@ -372,14 +369,14 @@ OpenJDK Runtime Environment (build 23.0.2+7-snap)
 OpenJDK 64-Bit Server VM (build 23.0.2+7-snap, mixed mode, sharing)
 ```
 
-If your system has a version of the GNU C library older than 2.27, you'll see error messages similar to the example shown below, which ran on Ubuntu 16.04 LTS with glibc 2.23:
+If your system has a version of the GNU C library older than 2.29, you'll see error messages similar to the example shown below, which ran on Ubuntu 18.04 LTS with glibc 2.27:
 
 ```console
 $ $JAVA_HOME/bin/java --version
-Error: dl failure on line 534
-Error: failed /snap/openjdk/2108/jdk/lib/server/libjvm.so, because
-    /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.27' not found
-    (required by /snap/openjdk/2108/jdk/lib/server/libjvm.so)
+Error: dl failure on line 535
+Error: failed /snap/openjdk/2156/jdk/lib/server/libjvm.so, because
+    /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.29' not found
+    (required by /snap/openjdk/2156/jdk/lib/server/libjvm.so)
 ```
 
 In this case, either upgrade your Linux system to a more recent version, or run the JDK tools using their Snap package commands or aliases as follows:
@@ -391,9 +388,7 @@ OpenJDK Runtime Environment (build 23.0.2+7-snap)
 OpenJDK 64-Bit Server VM (build 23.0.2+7-snap, mixed mode, sharing)
 ```
 
-Most desktop installations will already have the libraries required by the JDK tools, but the `jlink` and `jpackage` programs require two additional packages when they run outside of the Snap package container. They both need the `objcopy` program from the `binutils` package to create the custom run-time image, and the `jpackage` program needs the `fakeroot` package to create a Debian package.
-
-Without these extra packages, you'll see error messages like the following:
+Most desktop systems will include all of the packages needed to run the JDK tools, except for one: the `binutils` package required by `jlink`. The `jlink` program needs the `objcopy` command from `binutils` to create a custom run-time image. Without the extra package, you'll see an error message like the following:
 
 ```console
 $ $JAVA_HOME/bin/jlink ...
@@ -401,17 +396,10 @@ Error: java.io.IOException: Cannot run program "objcopy": error=2,
     No such file or directory
 ```
 
-```console
-$ $JAVA_HOME/bin/jpackage ...
-Bundler DEB Bundle skipped because of a configuration problem:
-    Can not find fakeroot. Reason: Cannot run program "fakeroot":
-    error=2, No such file or directory
-```
-
-Solve these errors by installing the required packages:
+Solve the error by installing the required package:
 
 ```console
-$ sudo apt install binutils fakeroot
+$ sudo apt install binutils
 ```
 
 The following two sections compare the support on Ubuntu and Fedora Linux distributions for running the JDK programs confined in their Snap package or unconfined as a Java Platform.
@@ -423,7 +411,7 @@ The table below shows the Snap package support for recent releases of Ubuntu:
 | Release   | End of Updates | C Library | Confined | Unconfined |
 | --------- |:--------------:|:---------:|:--------:|:----------:|
 | 16.04 LTS | 2021-04-30     | 2.23      | ✓ |   |
-| 18.04 LTS | 2023-05-31     | 2.27      | ✓ | ✓ |
+| 18.04 LTS | 2023-05-31     | 2.27      | ✓ |   |
 | 20.04 LTS | 2025-05-29     | 2.31      | ✓ | ✓ |
 | 22.04 LTS | 2027-06-01     | 2.35      | ✓ | ✓ |
 | 24.04 LTS | 2029-05-31     | 2.39      | ✓ | ✓ |
@@ -438,8 +426,8 @@ The table below shows the Snap package support for recent releases of Fedora:
 | 25      | 2017-12-12     | 2.24      | ✓ |   |
 | 26      | 2018-05-29     | 2.25      | ✓ |   |
 | 27      | 2018-11-30     | 2.26      | ✓ |   |
-| 28      | 2019-05-28     | 2.27      | ✓ | ✓ |
-| 29      | 2019-11-26     | 2.28      | ✓ | ✓ |
+| 28      | 2019-05-28     | 2.27      | ✓ |   |
+| 29      | 2019-11-26     | 2.28      | ✓ |   |
 | 30      | 2020-05-26     | 2.29      | ✓ | ✓ |
 | 31      | 2020-11-24     | 2.30      | ✓ | ✓ |
 | 32      | 2021-05-25     | 2.31      | ✓ | ✓ |
