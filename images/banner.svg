@@ -13,14 +13,14 @@
 </rdf:RDF>
 </metadata>
 <style>
-/* GitHub background and link colors: light default and dark dimmed */
+/* GitHub background and link colors: light default and dark default */
 svg {background-color: #ffffff;}
 svg > g {fill: #0969da;}
 #source-5 > :nth-child(-n + 3) {stroke: #0969da;}
 @media (prefers-color-scheme: dark) {
-  svg {background-color: #22272e;}
-  svg > g {fill: #539bf5;}
-  #source-5 > :nth-child(-n + 3) {stroke: #539bf5;}
+  svg {background-color: #0d1117;}
+  svg > g {fill: #4493f8;}
+  #source-5 > :nth-child(-n + 3) {stroke: #4493f8;}
 }
 </style>
 <defs>
