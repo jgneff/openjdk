@@ -53,7 +53,7 @@ architectures:
 - build-on: s390x
 
 slots:
-  jdk-24-2004:
+  jdk-24-1804:
     interface: content
     read: [$SNAP/jdk]
   jdk-25-2004:
