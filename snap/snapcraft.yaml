@@ -53,10 +53,10 @@ architectures:
 - build-on: [s390x]
 
 slots:
-  jdk-24-1804:
+  jdk-25-2004:
     interface: content
     read: [$SNAP/jdk]
-  jdk-25-2004:
+  jdk-26-2004:
     interface: content
     read: [$SNAP/jdk]
 
@@ -138,7 +138,7 @@ parts:
     - unzip
     - zip
     override-pull: |
-      release=25
+      release=26
       gitrepo=https://github.com/openjdk/jdk.git
       tagfeed=https://github.com/openjdk/jdk/tags.atom
 
