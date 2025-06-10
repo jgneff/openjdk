@@ -139,8 +139,8 @@ parts:
     - zip
     override-pull: |
       release=25
-      gitrepo=https://github.com/openjdk/jdk.git
-      tagfeed=https://github.com/openjdk/jdk/tags.atom
+      gitrepo=https://github.com/openjdk/jdk25u.git
+      tagfeed=https://github.com/openjdk/jdk25u/tags.atom
 
       # Gets the version from the latest release tag on GitHub
       #   $1 = feature release number (formerly "major" version)
