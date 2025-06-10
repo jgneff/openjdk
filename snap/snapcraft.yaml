@@ -123,6 +123,7 @@ parts:
     - curl
     - g++-10
     - git
+    - graphviz
     - libasound2-dev
     - libcups2-dev
     - libfontconfig1-dev
@@ -133,6 +134,7 @@ parts:
     - libxrender-dev
     - libxt-dev
     - libxtst-dev
+    - pandoc
     - unzip
     - zip
     override-pull: |
