@@ -40,31 +40,28 @@ description: |
 adopt-info: jdk
 license: GPL-2.0-with-classpath-exception
 
-base: core18
+base: core20
 grade: stable
 confinement: strict
 
 architectures:
-- build-on: amd64
-- build-on: arm64
-- build-on: armhf
-- build-on: i386
-- build-on: ppc64el
-- build-on: s390x
+- build-on: [amd64]
+- build-on: [arm64]
+- build-on: [armhf]
+- build-on: [ppc64el]
+- build-on: [riscv64]
+- build-on: [s390x]
 
 slots:
-  jdk-23-1804:
+  jdk-24-1804:
     interface: content
     read: [$SNAP/jdk]
-  jdk-24-1804:
+  jdk-25-2004:
     interface: content
     read: [$SNAP/jdk]
 
 plugs:
   home: null
-  jfx-24-1804:
-    interface: content
-    target: $SNAP/jfx
 
 apps:
   openjdk:
@@ -84,8 +81,6 @@ apps:
     - x11
     environment:
       LC_ALL: C.UTF-8
-      LD_LIBRARY_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET
-      GTK_PATH: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/gtk-3.0
   javac:
     command: jdk/bin/javac
     environment:
@@ -106,10 +101,6 @@ apps:
     command: jdk/bin/jlink
     environment:
       LC_ALL: C.UTF-8
-  jpackage:
-    command: jdk/bin/jpackage
-    environment:
-      LC_ALL: C.UTF-8
   jwebserver:
     command: jdk/bin/jwebserver
     plugs:
@@ -126,14 +117,13 @@ parts:
 
   jdk:
     plugin: autotools
-    source: https://github.com/openjdk/jdk24u.git
-    source-type: git
-    source-tag: jdk-$SNAPCRAFT_PROJECT_VERSION
-    source-depth: 1
     build-snaps:
     - openjdk/latest/stable
     build-packages:
     - curl
+    - g++-10
+    - git
+    - graphviz
     - libasound2-dev
     - libcups2-dev
     - libfontconfig1-dev
@@ -144,16 +134,17 @@ parts:
     - libxrender-dev
     - libxt-dev
     - libxtst-dev
+    - pandoc
     - unzip
     - zip
     override-pull: |
-      release=24
-      giturl=https://github.com/openjdk/jdk24u.git
-      tagurl=https://github.com/openjdk/jdk24u/tags.atom
+      release=25
+      gitrepo=https://github.com/openjdk/jdk25u.git
+      tagfeed=https://github.com/openjdk/jdk25u/tags.atom
 
       # Gets the version from the latest release tag on GitHub
       #   $1 = feature release number (formerly "major" version)
-      #   $2 = URL of Atom web feed providing recent tags
+      #   $2 = URL of the Atom web feed providing recent tags
       getversion() {
           local feature=$1
           local webfeed=$2
@@ -169,33 +160,26 @@ parts:
               > /tmp/snapcraft-project-version
       }
 
-      # See https://forum.snapcraft.io/t/17597
-      if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
-          version=$(getversion $release $tagurl)
-          setversion "$version"
-          git clone --branch "jdk-$version" --depth 1 \
-              $giturl "$SNAPCRAFT_PART_SRC"
-      else
-          snapcraftctl pull
-      fi
+      # Sets the project version and clones the source repository by its tag
+      version=$(getversion $release $tagfeed)
+      setversion "$version"
+      git clone --branch "jdk-$version" --depth 1 $gitrepo "$SNAPCRAFT_PART_SRC"
     build-environment:
     - JAVA_HOME: /snap/openjdk/current/jdk
     override-build: |
-      # Loads the version environment variable if not defined
-      if [ -z "$SNAPCRAFT_PROJECT_VERSION" ]; then
-          . /tmp/snapcraft-project-version
-      fi
+      # Upgrades to version 10 of gcc and g++
+      update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 \
+          --slave /usr/bin/g++ g++ /usr/bin/g++-10
+
+      # Loads the version environment variable
+      . /tmp/snapcraft-project-version
 
       # Sets the environment variable for reproducible builds
       SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
       export SOURCE_DATE_EPOCH
 
       # Builds the JDK
-      #   '--enable-deprecated-ports=yes' for i386
-      #   '--enable-warnings-as-errors=no' for armhf
       bash configure \
-          --enable-deprecated-ports=yes \
-          --enable-warnings-as-errors=no \
           --enable-javac-server=no \
           --with-vendor-name="Snap Build" \
           --with-vendor-url="https://snapcraft.io/openjdk" \
@@ -215,10 +199,8 @@ parts:
     organize:
       docs: jdk/docs
     stage-packages:
-    # Adds all DejaVu fonts and the 'jlink' and 'jpackage' dependencies
+    # Adds the 'jlink' dependency and all DejaVu fonts
     - binutils
-    - dpkg
-    - fakeroot
     - fonts-dejavu-extra
     # Adds library packages suggested by Snapcraft plus 'libfontconfig1'
     - libasound2
@@ -240,8 +222,8 @@ parts:
     # Deletes files and links already available in the base snap
     override-prime: |
       cd "$SNAPCRAFT_PRIME" || exit
-      base=/snap/core18/current
-      for d in etc lib usr/lib usr/share; do
+      base=/snap/core20/current
+      for d in etc usr/lib usr/share; do
           find "$d" -type f -exec test -f "$base/{}" \; -delete
           find "$d" -type l -exec test -L "$base/{}" \; -delete
       done
@@ -259,36 +241,6 @@ layout:
   # because "sun.awt.FontConfiguration.head" is null
   /usr/share/fonts/truetype/dejavu:
     bind: $SNAP/usr/share/fonts/truetype/dejavu
-
-  # For the JDK 'jpackage' tool
-
-  # dpkg: error: error opening configuration directory '/etc/dpkg/dpkg.cfg.d':
-  # Permission denied
-  /etc/dpkg:
-    bind: $SNAP/etc/dpkg
-  # Can not find fakeroot. Reason: Cannot run program "fakeroot": error=2,
-  # No such file or directory
-  /usr/bin/fakeroot:
-    symlink: $SNAP/usr/bin/fakeroot-sysv
-  # fakeroot: preload library `libfakeroot-sysv.so' not found, aborting.
-  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libfakeroot/libfakeroot-sysv.so:
-    symlink: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libfakeroot/libfakeroot-sysv.so
-  # /usr/bin/fakeroot: 1: eval: /usr/bin/faked-sysv: not found
-  /usr/bin/faked-sysv:
-    symlink: $SNAP/usr/bin/faked-sysv
-
-  # For JavaFX apps
-
-  # libGL error: MESA-LOADER: failed to open i965 (search paths
-  # /usr/lib/x86_64-linux-gnu/dri:\$${ORIGIN}/dri:/usr/lib/dri)
-  # libGL error: failed to load driver: i965
-  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri:
-    symlink: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
-  # GdkPixbuf-WARNING **: 16:04:55.707: Cannot open pixbuf loader module
-  # file '/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache':
-  # No such file or directory
-  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/gdk-pixbuf-2.0:
-    symlink: $SNAP/jfx/lib/$SNAPCRAFT_ARCH_TRIPLET/gdk-pixbuf-2.0
 
   # For Raspberry Pi OS
 
