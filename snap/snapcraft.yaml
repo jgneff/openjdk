@@ -187,6 +187,7 @@ parts:
           --with-version-pre=ea \
           --with-version-opt=snap \
           --with-version-build="${SNAPCRAFT_PROJECT_VERSION#*+}" \
+          --with-boot-jdk-jvmargs="-Xmx2G" \
           --with-extra-cflags="$CFLAGS" \
           --with-extra-cxxflags="$CXXFLAGS" \
           --with-extra-ldflags="$LDFLAGS" \
