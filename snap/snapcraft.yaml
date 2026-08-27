@@ -53,10 +53,10 @@ architectures:
 - build-on: [s390x]
 
 slots:
-  jdk-25-2004:
+  jdk-26-2004:
     interface: content
     read: [$SNAP/jdk]
-  jdk-26-2004:
+  jdk-27-2004:
     interface: content
     read: [$SNAP/jdk]
 
@@ -138,9 +138,9 @@ parts:
     - unzip
     - zip
     override-pull: |
-      release=26
-      gitrepo=https://github.com/openjdk/jdk26u.git
-      tagfeed=https://github.com/openjdk/jdk26u/tags.atom
+      release=27
+      gitrepo=https://github.com/openjdk/jdk.git
+      tagfeed=https://github.com/openjdk/jdk/tags.atom
 
       # Gets the version from the latest release tag on GitHub
       #   $1 = feature release number (formerly "major" version)
@@ -187,7 +187,7 @@ parts:
           --with-version-pre=ea \
           --with-version-opt=snap \
           --with-version-build="${SNAPCRAFT_PROJECT_VERSION#*+}" \
-          --with-boot-jdk-jvmargs="-Xmx2G" \
+          --with-boot-jdk-jvmargs="-Xmx2047M" \
           --with-extra-cflags="$CFLAGS" \
           --with-extra-cxxflags="$CXXFLAGS" \
           --with-extra-ldflags="$LDFLAGS" \
